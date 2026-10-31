@@ -1,5 +1,6 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import { AppShell } from "../components/layout/AppShell";
+import { ElectronTrajectoryLabPage } from "../features/experiments/ElectronTrajectoryLabPage";
 import { HomePage } from "../features/home/HomePage";
 import { NotFoundPage } from "./NotFoundPage";
 import { SectionPage } from "./SectionPage";
@@ -22,14 +23,14 @@ export const router = createBrowserRouter([
       },
       {
         path: "experiments",
-        element: (
-          <SectionPage
-            title="Experiment Lab"
-            eyebrow="Learn by trying"
-            description="Change a physical system, observe what happens, and use the evidence to build your understanding."
-            icon="experiments"
-          />
-        ),
+        element: <Outlet />,
+        children: [
+          { index: true, element: <ElectronTrajectoryLabPage /> },
+          {
+            path: "electron-trajectory",
+            element: <ElectronTrajectoryLabPage />,
+          },
+        ],
       },
       {
         path: "challenges",

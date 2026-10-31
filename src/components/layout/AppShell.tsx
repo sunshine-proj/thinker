@@ -21,7 +21,11 @@ function Brand() {
 
 export function AppShell() {
   const { pathname } = useLocation();
-  const currentPage = PRIMARY_NAVIGATION.find((item) => item.to === pathname);
+  const currentPage =
+    PRIMARY_NAVIGATION.find((item) => item.to === pathname) ??
+    PRIMARY_NAVIGATION.find(
+      (item) => item.to !== "/" && pathname.startsWith(`${item.to}/`),
+    );
   const pageLabel = currentPage?.label ?? "Your learning space";
 
   return (

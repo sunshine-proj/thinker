@@ -435,6 +435,8 @@ Use the negative electron charge when calculating force direction.
 
 The magnetic field changes the direction of velocity but does not change particle kinetic energy when no electric field is present.
 
+The initial implementation uses a fixed-step Boris integrator with a 20 ns physics timestep for uniform, time-independent fields. It is a classical model limited to speeds below 0.1 times the speed of light and does not model radiation or collisions. The displayed playback is slowed independently of simulation time so the particle's motion can be observed.
+
 ### 6.4 Simulation Modes
 
 #### Mode A: Perpendicular Entry

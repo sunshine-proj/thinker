@@ -9,7 +9,7 @@ export interface NavigationItem {
 export const PRIMARY_NAVIGATION: readonly NavigationItem[] = [
   { label: "Home", to: "/", icon: "home" },
   { label: "Physics Worlds", to: "/worlds", icon: "worlds" },
-  { label: "Experiment Lab", to: "/experiments", icon: "experiments" },
+  { label: "Experiment Lab", to: "/experiments/electron-trajectory", icon: "experiments" },
   { label: "Challenges", to: "/challenges", icon: "challenges" },
   {
     label: "Thought Experiments",
