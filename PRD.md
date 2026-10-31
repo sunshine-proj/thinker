@@ -356,6 +356,18 @@ Users investigate a phenomenon and identify its physical explanation.
 
 Game formats should be reusable across physics worlds.
 
+### Initial Mechanics Game: Projectile Master
+
+Players predict a projectile's horizontal range, adjust its launch speed and
+angle, and attempt to hit three targets at increasing distances. Successful
+hits earn points for impact accuracy and prediction accuracy. The game teaches
+how launch speed, launch angle, and gravity determine flight time, height, and
+range.
+
+The initial model uses ideal two-dimensional motion under constant standard
+gravity, with equal launch and landing heights and no air resistance or wind.
+The controls and results use SI units.
+
 ## 6. Electron Trajectory Lab
 
 **Priority:** High  

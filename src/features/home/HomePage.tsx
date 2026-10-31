@@ -46,6 +46,12 @@ export function HomePage() {
             <Link className="button button--quiet" to="/worlds">
               Browse Physics Worlds
             </Link>
+            <Link
+              className="button button--quiet"
+              to="/worlds/mechanics/projectile-master"
+            >
+              Play Projectile Master
+            </Link>
           </div>
         </div>
         <div aria-hidden="true" className="welcome-panel__art">

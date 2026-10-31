@@ -1,6 +1,7 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { AppShell } from "../components/layout/AppShell";
 import { ElectronTrajectoryLabPage } from "../features/experiments/ElectronTrajectoryLabPage";
+import { ProjectileMasterPage } from "../features/games/projectile-master/ProjectileMasterPage";
 import { HomePage } from "../features/home/HomePage";
 import { NotFoundPage } from "./NotFoundPage";
 import { SectionPage } from "./SectionPage";
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
             icon="worlds"
           />
         ),
+      },
+      {
+        path: "worlds/mechanics/projectile-master",
+        element: <ProjectileMasterPage />,
       },
       {
         path: "experiments",
