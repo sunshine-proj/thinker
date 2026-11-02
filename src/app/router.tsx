@@ -1,13 +1,26 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter, Outlet, useSearchParams } from "react-router-dom";
 import { AppShell } from "../components/layout/AppShell";
 import { ElectronTrajectoryLabPage } from "../features/experiments/ElectronTrajectoryLabPage";
+import { ExperimentsIndexPage } from "../features/experiments/ExperimentsIndexPage";
 import { ProjectileMasterPage } from "../features/games/projectile-master/ProjectileMasterPage";
 import { BalanceChallengePage } from "../features/games/balance-challenge/BalanceChallengePage";
+import { CircuitBuilderPage } from "../features/games/circuit-builder/CircuitBuilderPage";
+import { AchievementsPage } from "../features/achievements/AchievementsPage";
+import { ChallengesPage } from "../features/challenges/ChallengesPage";
 import { HomePage } from "../features/home/HomePage";
 import { PhysicsWorldsPage } from "../features/physics-worlds/PhysicsWorldsPage";
 import { ProfilePage } from "../features/profile/ProfilePage";
 import { NotFoundPage } from "./NotFoundPage";
 import { SectionPage } from "./SectionPage";
+
+function ElectronTrajectoryLabRoute() {
+  const [searchParams] = useSearchParams();
+  return (
+    <ElectronTrajectoryLabPage
+      savedExperimentId={searchParams.get("saved") ?? undefined}
+    />
+  );
+}
 
 export const router = createBrowserRouter([
   {
@@ -24,27 +37,21 @@ export const router = createBrowserRouter([
         element: <BalanceChallengePage />,
       },
       {
+        path: "worlds/electromagnetism/circuit-builder",
+        element: <CircuitBuilderPage />,
+      },
+      {
         path: "experiments",
         element: <Outlet />,
         children: [
-          { index: true, element: <ElectronTrajectoryLabPage /> },
+          { index: true, element: <ExperimentsIndexPage /> },
           {
             path: "electron-trajectory",
-            element: <ElectronTrajectoryLabPage />,
+            element: <ElectronTrajectoryLabRoute />,
           },
         ],
       },
-      {
-        path: "challenges",
-        element: (
-          <SectionPage
-            title="Challenges"
-            eyebrow="Put your ideas to work"
-            description="Take on focused physics problems and discover which principles can help you solve them."
-            icon="challenges"
-          />
-        ),
-      },
+      { path: "challenges", element: <ChallengesPage /> },
       {
         path: "thought-experiments",
         element: (
@@ -67,17 +74,7 @@ export const router = createBrowserRouter([
           />
         ),
       },
-      {
-        path: "achievements",
-        element: (
-          <SectionPage
-            title="Achievements"
-            eyebrow="Celebrate your progress"
-            description="Keep track of the questions you have explored and the physics ideas you have mastered."
-            icon="achievements"
-          />
-        ),
-      },
+      { path: "achievements", element: <AchievementsPage /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "*", element: <NotFoundPage /> },
     ],

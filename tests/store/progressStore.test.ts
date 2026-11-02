@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { summarizeProgress } from "../../src/game-engine/progression/progress";
-import {
-  MemoryProgressRepository,
-  type ProgressRepository,
-} from "../../src/services/storage/progressRepository";
+import { MemoryProgressRepository } from "../../src/services/storage/progressRepository";
 import { createProgressStore } from "../../src/store/progressStore";
 import type { GameResult } from "../../src/types/progress";
 
@@ -18,14 +15,20 @@ function result(overrides: Partial<GameResult> = {}): GameResult {
   };
 }
 
-class FailingRepository implements ProgressRepository {
-  async listGameResults(): Promise<GameResult[]> {
+class FailingRepository extends MemoryProgressRepository {
+  override async listGameResults(): Promise<GameResult[]> {
     throw new Error("storage unavailable");
   }
-  async saveGameResult(): Promise<void> {
+  override async saveGameResult(): Promise<void> {
     throw new Error("quota exceeded");
   }
-  async clear(): Promise<void> {
+  override async listSavedExperiments(): Promise<never[]> {
+    throw new Error("storage unavailable");
+  }
+  override async saveAchievement(): Promise<void> {
+    throw new Error("quota exceeded");
+  }
+  override async clear(): Promise<void> {
     throw new Error("storage unavailable");
   }
 }

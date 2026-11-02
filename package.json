@@ -8,8 +8,9 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "lint": "oxlint --deny-warnings=false",
-    "typecheck": "tsc -b"
+    "lint": "oxlint",
+    "typecheck": "tsc -b",
+    "verify:pwa": "node tools/verify-pwa.mjs"
   },
   "dependencies": {
     "react": "19.3.1",
@@ -27,6 +28,9 @@
     "oxlint": "1.90.0",
     "typescript": "7.0.2",
     "vite": "8.3.5",
-    "vitest": "5.0.5"
+    "vite-plugin-pwa": "2.0.0",
+    "vitest": "5.0.5",
+    "workbox-build": "7.4.1",
+    "workbox-window": "7.4.1"
   }
 }

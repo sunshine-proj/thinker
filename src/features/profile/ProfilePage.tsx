@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { LevelCard } from "../../components/common";
+import { useProgressLevel } from "./useProgressLevel";
 import { findCatalogEntry } from "../../data/games/gameCatalog";
 import { useProgressStore } from "../../store/progressStore";
 
@@ -17,6 +19,9 @@ export function ProfilePage() {
   const persistenceError = useProgressStore((state) => state.persistenceError);
   const hydrate = useProgressStore((state) => state.hydrate);
   const clearProgress = useProgressStore((state) => state.clearProgress);
+  const experimentCount = useProgressStore((state) => state.experiments.length);
+  const achievementCount = useProgressStore((state) => state.achievements.length);
+  const level = useProgressLevel();
 
   useEffect(() => {
     void hydrate();
@@ -36,6 +41,19 @@ export function ProfilePage() {
         <p className="lab-error" role="alert">
           {persistenceError} Progress from this session is still shown.
         </p>
+      )}
+
+      {status === "ready" && (
+        <>
+          <LevelCard status={level} />
+          <p className="world-section__description">
+            {achievementCount} achievements ·{" "}
+            <Link className="text-link" to="/achievements">
+              view all
+            </Link>{" "}
+            · {experimentCount} saved experiments
+          </p>
+        </>
       )}
 
       {status !== "ready" ? (

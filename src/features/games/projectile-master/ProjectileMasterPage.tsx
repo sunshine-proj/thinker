@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useCallback, useState, type FormEvent } from "react";
 import { RangeControl } from "../../../components/common";
 import { useProgressStore } from "../../../store/progressStore";
 import {
@@ -7,11 +7,21 @@ import {
   GameObjectiveList,
   GameProgressBar,
   GameScoreSummary,
+  ResumePrompt,
 } from "../../../game-engine/components";
 import {
   createGameLifecycle,
   transitionGameLifecycle,
 } from "../../../game-engine/core/GameLifecycle";
+import {
+  isRecord,
+  readBooleanArray,
+  readInteger,
+  readNumber,
+  readPausableStatus,
+  readScoreState,
+  readString,
+} from "../../../game-engine/core/sessionParsing";
 import {
   createGameObjective,
   updateGameObjective,
@@ -19,7 +29,9 @@ import {
 import {
   createScoreState,
   recordScore,
+  type ScoreState,
 } from "../../../game-engine/scoring/ScoringSystem";
+import { useGameSession } from "../../../hooks/useGameSession";
 import {
   PROJECTILE_MASTER_GAME,
   PROJECTILE_MASTER_ROUNDS,
@@ -34,6 +46,39 @@ import {
 interface CompletedShot {
   readonly trajectory: ProjectileTrajectory;
   readonly result: ProjectileShotResult;
+}
+
+interface ProjectileSession {
+  readonly roundIndex: number;
+  readonly status: "playing" | "paused";
+  readonly completedRounds: boolean[];
+  readonly score: ScoreState;
+  readonly attemptCount: number;
+  readonly speedMetersPerSecond: number;
+  readonly angleDegrees: number;
+  readonly prediction: string;
+}
+
+function parseProjectileSession(raw: unknown): ProjectileSession | null {
+  if (!isRecord(raw)) {
+    return null;
+  }
+  const roundIndex = readInteger(raw, "roundIndex", 0, PROJECTILE_MASTER_ROUNDS.length - 1);
+  const status = readPausableStatus(raw, "status");
+  const completedRounds = readBooleanArray(raw, "completedRounds", PROJECTILE_MASTER_ROUNDS.length);
+  const score = readScoreState(raw, "score");
+  const attemptCount = readInteger(raw, "attemptCount", 0, 10_000);
+  const speedMetersPerSecond = readNumber(raw, "speedMetersPerSecond", 8, 30);
+  const angleDegrees = readNumber(raw, "angleDegrees", 10, 80);
+  const prediction = readString(raw, "prediction");
+  if (
+    roundIndex === null || status === null || completedRounds === null ||
+    score === null || attemptCount === null || speedMetersPerSecond === null ||
+    angleDegrees === null || prediction === null
+  ) {
+    return null;
+  }
+  return { roundIndex, status, completedRounds, score, attemptCount, speedMetersPerSecond, angleDegrees, prediction };
 }
 
 const INITIAL_SPEED_METERS_PER_SECOND = 22;
@@ -266,6 +311,40 @@ export function ProjectileMasterPage() {
   );
   const isPlaying = lifecycle.status === "playing";
 
+  const sessionSnapshot: ProjectileSession | null =
+    lifecycle.status === "playing" || lifecycle.status === "paused"
+      ? {
+          roundIndex,
+          status: lifecycle.status,
+          completedRounds,
+          score,
+          attemptCount,
+          speedMetersPerSecond,
+          angleDegrees,
+          prediction,
+        }
+      : null;
+  const restoreSession = useCallback((saved: ProjectileSession) => {
+    setRoundIndex(saved.roundIndex);
+    setCompletedRounds(saved.completedRounds);
+    setScore(saved.score);
+    setAttemptCount(saved.attemptCount);
+    setSpeedMetersPerSecond(saved.speedMetersPerSecond);
+    setAngleDegrees(saved.angleDegrees);
+    setPrediction(saved.prediction);
+    setLastShot(null);
+    setShowHint(false);
+    setErrorMessage(null);
+    // Resumed games wait for the learner to press Resume.
+    setLifecycle({ status: "paused" });
+  }, []);
+  const session = useGameSession({
+    gameId: PROJECTILE_MASTER_GAME.id,
+    snapshot: sessionSnapshot,
+    parse: parseProjectileSession,
+    onRestore: restoreSession,
+  });
+
   const handleLaunch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isPlaying) {
@@ -379,6 +458,10 @@ export function ProjectileMasterPage() {
           IDEAL PROJECTILE MOTION
         </span>
       </header>
+
+      {session.hasSavedGame && (
+        <ResumePrompt onDiscard={session.discard} onResume={session.resume} />
+      )}
 
       <GameProgressBar
         items={[

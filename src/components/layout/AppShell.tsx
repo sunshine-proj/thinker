@@ -1,5 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { AppIcon } from "../common/AppIcon";
+import { AchievementNotice } from "../feedback/AchievementNotice";
+import { PwaStatus } from "../feedback/PwaStatus";
 import { PrimaryNavigation } from "../navigation/PrimaryNavigation";
 import { PRIMARY_NAVIGATION } from "../navigation/navigationItems";
 
@@ -75,6 +77,9 @@ export function AppShell() {
         <div className="mobile-navigation">
           <PrimaryNavigation />
         </div>
+
+        <PwaStatus />
+        <AchievementNotice />
 
         <main className="main-content" id="main-content" tabIndex={-1}>
           <Outlet />

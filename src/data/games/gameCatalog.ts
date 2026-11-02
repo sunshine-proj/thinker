@@ -56,8 +56,16 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         summary: "Steer charged particles with magnetic and electric fields.",
         difficulty: "Intermediate",
       },
+      {
+        id: "circuit-builder",
+        title: "Circuit Builder",
+        kind: "game",
+        path: "/worlds/electromagnetism/circuit-builder",
+        summary: "Combine resistors to hit a target current without overheating.",
+        difficulty: "Intermediate",
+      },
     ],
-    comingSoon: ["Circuit Builder", "Electric Detective"],
+    comingSoon: ["Electric Detective"],
   },
   {
     id: "optics",
@@ -81,6 +89,12 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
     comingSoon: ["Orbit Simulator", "Moon Landing"],
   },
 ]);
+
+export function getPlayableGameIds(): string[] {
+  return PHYSICS_WORLDS.flatMap((world) => world.entries)
+    .filter((entry) => entry.kind === "game")
+    .map((entry) => entry.id);
+}
 
 export function findCatalogEntry(id: string): CatalogEntry | undefined {
   return PHYSICS_WORLDS.flatMap((world) => world.entries).find(

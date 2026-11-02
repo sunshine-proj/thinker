@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useCallback, useState, type FormEvent } from "react";
 import { RangeControl } from "../../../components/common";
 import {
   GameHint,
@@ -6,11 +6,21 @@ import {
   GameObjectiveList,
   GameProgressBar,
   GameScoreSummary,
+  ResumePrompt,
 } from "../../../game-engine/components";
 import {
   createGameLifecycle,
   transitionGameLifecycle,
 } from "../../../game-engine/core/GameLifecycle";
+import {
+  isRecord,
+  readBooleanArray,
+  readInteger,
+  readNumber,
+  readPausableStatus,
+  readScoreState,
+  readString,
+} from "../../../game-engine/core/sessionParsing";
 import {
   createGameObjective,
   updateGameObjective,
@@ -18,7 +28,9 @@ import {
 import {
   createScoreState,
   recordScore,
+  type ScoreState,
 } from "../../../game-engine/scoring/ScoringSystem";
+import { useGameSession } from "../../../hooks/useGameSession";
 import type { PointLoad } from "../../../physics/mechanics";
 import { useProgressStore } from "../../../store/progressStore";
 import {
@@ -38,6 +50,44 @@ import {
 interface Release {
   readonly controlValue: number;
   readonly result: BalanceAttemptResult;
+}
+
+interface BalanceSession {
+  readonly roundIndex: number;
+  readonly status: "playing" | "paused";
+  readonly completedRounds: boolean[];
+  readonly score: ScoreState;
+  readonly totalAttempts: number;
+  readonly roundAttempts: number;
+  readonly controlValue: number;
+  readonly prediction: string;
+}
+
+function parseBalanceSession(raw: unknown): BalanceSession | null {
+  if (!isRecord(raw)) {
+    return null;
+  }
+  const roundIndex = readInteger(raw, "roundIndex", 0, BALANCE_CHALLENGE_ROUNDS.length - 1);
+  const status = readPausableStatus(raw, "status");
+  const completedRounds = readBooleanArray(raw, "completedRounds", BALANCE_CHALLENGE_ROUNDS.length);
+  const score = readScoreState(raw, "score");
+  const totalAttempts = readInteger(raw, "totalAttempts", 0, 10_000);
+  const roundAttempts = readInteger(raw, "roundAttempts", 0, 10_000);
+  const prediction = readString(raw, "prediction");
+  if (
+    roundIndex === null || status === null || completedRounds === null ||
+    score === null || totalAttempts === null || roundAttempts === null ||
+    prediction === null
+  ) {
+    return null;
+  }
+  const { minimum, maximum } = getControlRange(
+    BALANCE_CHALLENGE_ROUNDS[roundIndex] as BalanceRound,
+  );
+  const controlValue = readNumber(raw, "controlValue", minimum, maximum);
+  return controlValue === null
+    ? null
+    : { roundIndex, status, completedRounds, score, totalAttempts, roundAttempts, controlValue, prediction };
 }
 
 const VIEWBOX_WIDTH = 960;
@@ -265,6 +315,40 @@ export function BalanceChallengePage() {
   );
   const torques = release ? summarizeTorques(round, release.controlValue) : null;
 
+  const sessionSnapshot: BalanceSession | null =
+    lifecycle.status === "playing" || lifecycle.status === "paused"
+      ? {
+          roundIndex,
+          status: lifecycle.status,
+          completedRounds,
+          score,
+          totalAttempts,
+          roundAttempts,
+          controlValue,
+          prediction,
+        }
+      : null;
+  const restoreSession = useCallback((saved: BalanceSession) => {
+    setRoundIndex(saved.roundIndex);
+    setCompletedRounds(saved.completedRounds);
+    setScore(saved.score);
+    setTotalAttempts(saved.totalAttempts);
+    setRoundAttempts(saved.roundAttempts);
+    setControlValue(saved.controlValue);
+    setPrediction(saved.prediction);
+    setRelease(null);
+    setShowHint(false);
+    setErrorMessage(null);
+    // Resumed games wait for the learner to press Resume.
+    setLifecycle({ status: "paused" });
+  }, []);
+  const session = useGameSession({
+    gameId: BALANCE_CHALLENGE_GAME.id,
+    snapshot: sessionSnapshot,
+    parse: parseBalanceSession,
+    onRestore: restoreSession,
+  });
+
   const changeControl = (value: number) => {
     setControlValue(value);
     setRelease(null);
@@ -373,6 +457,10 @@ export function BalanceChallengePage() {
         </div>
         <span className="trajectory-lab__model-tag">STATIC TORQUE BALANCE</span>
       </header>
+
+      {session.hasSavedGame && (
+        <ResumePrompt onDiscard={session.discard} onResume={session.resume} />
+      )}
 
       <GameProgressBar
         items={[

@@ -1,0 +1,82 @@
+
+All four steps are implemented. tsc, oxlint, the production build and all 136 tests pass. I haven't opened the app in a browser, so the Balance Challenge layout and the lever's tilt animation are untested visually. Nothing is committed.
+
+1. Linting
+I used oxlint (.oxlintrc.json, npm run lint) instead of ESLint. The project uses the native TypeScript 7 compiler, and typescript-eslint supports only TypeScript below 6.1. I also added npm run typecheck. The README notes this and says to revisit it once typescript-eslint supports TypeScript 7.
+The type check and lint are clean.
+
+2. Shared components
+RangeControl replaces two duplicate copies, and ToggleControl is new. Both are in src/components/common/.
+The slider label is now a proper <label>, which fixed two accessibility lint errors.
+useSimulationCanvas.ts now owns the engine lifecycle, throttled React updates, canvas resizing and cleanup. The electron lab page dropped about 80 lines because of it.
+New GameProgressBar and GameHint components are used by both games.
+I renamed the projectile-* CSS classes that were really generic to game-*.
+
+3. Progress persistence
+Results are saved in IndexedDB, with an in-memory fallback when IndexedDB isn't available. The code is in src/services/storage/, with a Zustand store in src/store/progressStore.ts.
+If storage fails, play continues and an error is shown. The store also avoids counting a result twice when saving happens before loading finishes.
+Both games save a result on completion. The Profile page now shows best scores, and Physics Worlds marks completed games.
+Syncing with Supabase is not done.
+
+4. Balance Challenge
+The torque model is torque.ts. It computes torque (τ = m g d), net torque, support force, and solves for a balancing position or mass.
+There are three rounds, one per difficulty:
+Classic seesaw: find the position for a 2 kg block.
+Three weights: find the mass to place at a fixed spot.
+Heavy beam: an off-centre beam counts as a weight at its centre.
+The player predicts first, then sets a control and releases the lever. The lever stays level until released.
+Scoring is 60 for accuracy, 20 for the prediction and 20 for the attempt count (20 on the first release, 10 on the second, then none), so speed doesn't count. Tests check that one control step off still passes and two steps off fails.
+The tilt shown on release shows the direction and relative size of the net torque, not a simulation of the lever's motion. This is documented in the game's assumptions.
+Physics Worlds is now a real catalog, gameCatalog.ts, with a route and a Home link for the game.
+
+Left for you
+Docs: the README roadmap marks step 8 done. Step 12 is still open but notes what already exists.
+Experiments: /experiments is still the electron lab itself, not an index page.
+Old state: the rename also touched CSS that applied before. A quick visual pass over Projectile Master is worth doing.
+Next in the roadmap: Circuit Builder, then PWA setup. The service worker and manifest are not started, so nothing works offline yet beyond the storage layer.
+
+========================================================================
+
+The roadmap in README.md now has 80 steps. I only edited the README; no code changed.
+
+Steps	Content
+1–10	Unchanged, all done
+11–18	The eight MVP games from before, unchanged
+19–69	The other 51 games from PRD §4.2, one step each, grouped by world
+70–77	The eight Experiment Lab experiments from PRD §7, one step each
+78–79	Local progress persistence and PWA setup (done), renumbered from 19–20
+80	Accessibility, device, offline, browser and performance testing, renumbered from 21
+The 19–69 games break down by world as follows:
+
+Mechanics: 4.
+
+Electricity & Magnetism: 4.
+
+Thermodynamics: 4.
+
+Optics & Light: 4.
+
+Waves & Sound: 6.
+
+Astronomy & Astrophysics: 5.
+
+Modern Physics & Quantum Mechanics: 6.
+
+Fluid Mechanics: 6.
+
+Nuclear Physics: 5.
+
+Physics in Everyday Life: 7.
+
+Already built: I left out Projectile Master, Balance Challenge, Circuit Builder and the Electron Trajectory Lab. The Electron Trajectory Lab covers both the "Electron trajectory" experiment and the PRD's priority simulation.
+
+Duplicate names: Wave Interference appears twice, as a game (step 24) and as a lab experiment (step 76). Projectile Motion and Orbital Motion are experiments that overlap with Projectile Master and Orbit Simulator, and the steps say they reuse those models. Orbital Motion reuses the orbit integrator from Orbit Simulator (step 17).
+
+Physics focus: every step names the physics its tests should cover. I wrote those from the game titles, so check or change them.
+
+Not included: the seven "What if…" thought experiments in PRD §8 and the example challenges in §9. I treated those as content for the Thought Experiments and Challenges sections, not as games or Experiment Lab experiments. I can add them as steps too if you want.
+
+
+==========================================
+
+

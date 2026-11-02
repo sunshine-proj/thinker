@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import { AppIcon } from "../../components/common/AppIcon";
+import { LevelCard } from "../../components/common";
+import { useChallengeStatus } from "../challenges/useChallengeStatus";
+import { useProgressLevel } from "../profile/useProgressLevel";
 
 const learningSteps = [
   {
@@ -20,6 +23,8 @@ const learningSteps = [
 ];
 
 export function HomePage() {
+  const { ready, daily } = useChallengeStatus();
+  const level = useProgressLevel();
   return (
     <div className="home-page">
       <section aria-labelledby="welcome-title" className="welcome-panel">
@@ -123,6 +128,22 @@ export function HomePage() {
             <AppIcon className="start-card__arrow" name="arrowRight" />
           </Link>
         </div>
+      </section>
+
+      <section aria-labelledby="daily-home-title" className="home-progress">
+        <div className="daily-challenge">
+          <p className="eyebrow">DAILY PHYSICS CHALLENGE</p>
+          <h2 id="daily-home-title">{daily.challenge.title}</h2>
+          <p>{daily.challenge.description}</p>
+          <p className="daily-challenge__status">
+            {ready && daily.completeToday ? "Done for today." : "Not done yet today."}
+          </p>
+          <Link className="text-link" to={daily.challenge.path}>
+            Start this challenge
+            <AppIcon name="arrowRight" />
+          </Link>
+        </div>
+        <LevelCard status={level} />
       </section>
 
       <section aria-labelledby="approach-title" className="approach-section">

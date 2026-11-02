@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   calculateCyclotronFrequency,
   calculateLorentzForce,
@@ -11,6 +11,20 @@ import type {
 } from "../../simulation/engine";
 import { RangeControl, ToggleControl } from "../../components/common";
 import { useSimulationCanvas } from "../../hooks/useSimulationCanvas";
+import { formatMeasurementValue } from "../../simulation/measurements";
+import { useProgressStore } from "../../store/progressStore";
+import { ResultExplanation } from "./components/ResultExplanation";
+import { SavedExperimentsPanel } from "./components/SavedExperimentsPanel";
+import {
+  ELECTRON_EXPERIMENT_ID,
+  ELECTRON_EXPERIMENT_NAME,
+  ELECTRON_LIMITS,
+  collectElectronMeasurements,
+  describeElectronSetup,
+  explainElectronResult,
+  parseElectronParameters,
+  serializeElectronParameters,
+} from "./electronExperiment";
 import {
   DEFAULT_ELECTRON_TRAJECTORY_PARAMETERS,
   ELECTRON_TRAJECTORY_TIME_STEP_SECONDS,
@@ -27,10 +41,12 @@ import {
 } from "./electronTrajectoryModel";
 const INITIAL_PARAMETERS = DEFAULT_ELECTRON_TRAJECTORY_PARAMETERS;
 const SIMULATION_MODEL = createElectronTrajectoryModel();
-const MAX_FIELD_MICROTESLAS = 20;
-const MAX_ELECTRIC_FIELD_VOLTS_PER_METER = 20;
-const MAX_ENTRY_POSITION_METERS = 0.5;
-const MAX_INTERACTIVE_SPEED_METERS_PER_SECOND = 29_000_000;
+const MAX_FIELD_MICROTESLAS = ELECTRON_LIMITS.maxFieldMicroteslas;
+const MAX_ELECTRIC_FIELD_VOLTS_PER_METER =
+  ELECTRON_LIMITS.maxElectricFieldVoltsPerMeter;
+const MAX_ENTRY_POSITION_METERS = ELECTRON_LIMITS.maxEntryPositionMeters;
+const MAX_INTERACTIVE_SPEED_METERS_PER_SECOND =
+  ELECTRON_LIMITS.maxSpeedMetersPerSecond;
 
 function createInitialSnapshot(): SimulationSnapshot<
   ElectronTrajectoryState,
@@ -46,23 +62,7 @@ function createInitialSnapshot(): SimulationSnapshot<
   };
 }
 
-function formatScientific(value: number | null, unit: string): string {
-  if (value === null) {
-    return "—";
-  }
-
-  if (value === 0) {
-    return `0 ${unit}`;
-  }
-
-  const magnitude = Math.abs(value);
-  const formatted =
-    magnitude >= 1e3 || magnitude < 1e-2
-      ? value.toExponential(2)
-      : value.toPrecision(3);
-
-  return `${formatted} ${unit}`;
-}
+const formatScientific = formatMeasurementValue;
 
 function formatPosition(value: number): string {
   return `${value.toFixed(3)} m`;
@@ -355,7 +355,12 @@ function StatusLabel({ status }: { status: SimulationStatus }) {
   );
 }
 
-export function ElectronTrajectoryLabPage() {
+export function ElectronTrajectoryLabPage({
+  savedExperimentId,
+}: {
+  /** When set, the lab opens with that saved experiment's setup. */
+  readonly savedExperimentId?: string;
+} = {}) {
   const [parameters, setParameters] = useState(INITIAL_PARAMETERS);
   const {
     canvasRef,
@@ -387,6 +392,43 @@ export function ElectronTrajectoryLabPage() {
     setEngineParameters(nextParameters, true);
   };
 
+  const applyParameters = (raw: Readonly<Record<string, unknown>>): boolean => {
+    const restored = parseElectronParameters(raw);
+    if (!restored) {
+      return false;
+    }
+    setParameters(restored);
+    setEngineParameters(restored, true);
+    return true;
+  };
+
+  const hydrateProgress = useProgressStore((state) => state.hydrate);
+  useEffect(() => {
+    void hydrateProgress();
+  }, [hydrateProgress]);
+  useEffect(() => {
+    if (!savedExperimentId) {
+      return;
+    }
+    let cancelled = false;
+    void hydrateProgress().then(() => {
+      if (cancelled) {
+        return;
+      }
+      const target = useProgressStore
+        .getState()
+        .experiments.find((experiment) => experiment.id === savedExperimentId);
+      const restored = target ? parseElectronParameters(target.parameters) : null;
+      if (restored) {
+        setParameters(restored);
+        setEngineParameters(restored, true);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [savedExperimentId, hydrateProgress, setEngineParameters]);
+
   const handlePlayPause = () => {
     if (snapshot.status === "running") {
       pause();
@@ -411,6 +453,19 @@ export function ElectronTrajectoryLabPage() {
     magneticField,
   );
   const hasMagneticField = magneticField.magnitude > 0;
+  const explanations = useMemo(
+    () => explainElectronResult(parameters),
+    [parameters],
+  );
+  const serializedParameters = useMemo(
+    () => serializeElectronParameters(parameters),
+    [parameters],
+  );
+  const experimentResults = collectElectronMeasurements(
+    snapshot.state,
+    snapshot.parameters,
+    snapshot.timeSeconds,
+  );
   const isRunning = snapshot.status === "running";
   const isComplete = snapshot.status === "completed" && snapshot.state.targetHit;
 
@@ -721,6 +776,23 @@ export function ElectronTrajectoryLabPage() {
           )}
         </aside>
       </div>
+
+      <ResultExplanation
+        explanations={explanations}
+        heading={`What this ${parameters.particle} experiment shows`}
+      />
+
+      <SavedExperimentsPanel
+        describe={(saved) => {
+          const restored = parseElectronParameters(saved);
+          return restored ? describeElectronSetup(restored) : "Setup unavailable";
+        }}
+        experimentId={ELECTRON_EXPERIMENT_ID}
+        experimentName={ELECTRON_EXPERIMENT_NAME}
+        onLoad={applyParameters}
+        parameters={serializedParameters}
+        results={experimentResults}
+      />
 
       <section aria-labelledby="physics-explainer-title" className="lab-explainer">
         <div className="lab-explainer__intro">

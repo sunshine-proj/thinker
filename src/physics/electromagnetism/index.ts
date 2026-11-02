@@ -16,3 +16,15 @@ export {
   type ElectromagneticField,
   type ParticleSpecies,
 } from "./chargedParticle";
+export {
+  calculateCurrent,
+  calculateParallelResistance,
+  calculatePower,
+  calculateResistance,
+  calculateSeriesResistance,
+  calculateVoltage,
+  solveSeriesParallelCircuit,
+  type CircuitSolution,
+  type ResistorReading,
+  type SeriesParallelCircuit,
+} from "./circuit";
