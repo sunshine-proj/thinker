@@ -1,7 +1,11 @@
 import { useState, type FormEvent } from "react";
+import { RangeControl } from "../../../components/common";
+import { useProgressStore } from "../../../store/progressStore";
 import {
+  GameHint,
   GameLifecycleControls,
   GameObjectiveList,
+  GameProgressBar,
   GameScoreSummary,
 } from "../../../game-engine/components";
 import {
@@ -229,52 +233,8 @@ function ProjectilePlot({
   );
 }
 
-function RangeControl({
-  id,
-  label,
-  value,
-  minimum,
-  maximum,
-  step,
-  displayValue,
-  disabled,
-  onChange,
-}: {
-  readonly id: string;
-  readonly label: string;
-  readonly value: number;
-  readonly minimum: number;
-  readonly maximum: number;
-  readonly step: number;
-  readonly displayValue: string;
-  readonly disabled: boolean;
-  readonly onChange: (value: number) => void;
-}) {
-  return (
-    <label className="lab-control" htmlFor={id}>
-      <span className="lab-control__heading">
-        <span>{label}</span>
-        <output htmlFor={id}>{displayValue}</output>
-      </span>
-      <input
-        id={id}
-        max={maximum}
-        min={minimum}
-        onChange={(event) => onChange(Number(event.currentTarget.value))}
-        step={step}
-        type="range"
-        value={value}
-        disabled={disabled}
-      />
-      <span aria-hidden="true" className="lab-control__bounds">
-        <span>{minimum}</span>
-        <span>{maximum}</span>
-      </span>
-    </label>
-  );
-}
-
 export function ProjectileMasterPage() {
+  const recordGameResult = useProgressStore((state) => state.recordGameResult);
   const [speedMetersPerSecond, setSpeedMetersPerSecond] = useState(
     INITIAL_SPEED_METERS_PER_SECOND,
   );
@@ -344,21 +304,27 @@ export function ProjectileMasterPage() {
             index === roundIndex ? true : isComplete,
           ),
         );
-        setScore((currentScore) =>
-          recordScore(
-            currentScore,
-            {
-              id: round.id,
-              label: round.title,
-              points: result.score,
-            },
-            "best",
-          ),
+        const nextScore = recordScore(
+          score,
+          {
+            id: round.id,
+            label: round.title,
+            points: result.score,
+          },
+          "best",
         );
+        setScore(nextScore);
         if (roundIndex === PROJECTILE_MASTER_ROUNDS.length - 1) {
           setLifecycle((current) =>
             transitionGameLifecycle(current, "complete"),
           );
+          void recordGameResult({
+            gameId: PROJECTILE_MASTER_GAME.id,
+            score: nextScore.totalPoints,
+            difficulty: PROJECTILE_MASTER_GAME.difficulty,
+            completionStatus: "completed",
+            completedAt: new Date().toISOString(),
+          });
         }
       }
     } catch (error) {
@@ -400,12 +366,12 @@ export function ProjectileMasterPage() {
   };
 
   return (
-    <div className="projectile-game">
-      <header className="projectile-game__header">
+    <div className="game-page">
+      <header className="game-page__header">
         <div>
           <p className="eyebrow">MECHANICS · TARGET CHALLENGE</p>
           <h1>{PROJECTILE_MASTER_GAME.title}</h1>
-          <p className="projectile-game__intro">
+          <p className="game-page__intro">
             {PROJECTILE_MASTER_GAME.introduction}
           </p>
         </div>
@@ -414,43 +380,32 @@ export function ProjectileMasterPage() {
         </span>
       </header>
 
-      <section aria-label="Game progress" className="projectile-progress">
-        <div className="projectile-progress__item">
-          <span>ROUND</span>
-          <strong>
-            {lifecycle.status === "completed"
-              ? PROJECTILE_MASTER_ROUNDS.length
-              : roundIndex + 1}{" "}
-            <span>/ {PROJECTILE_MASTER_ROUNDS.length}</span>
-          </strong>
-        </div>
-        <div className="projectile-progress__item">
-          <span>OBJECTIVES</span>
-          <strong>
-            {completedRoundCount}
-            <span> / {PROJECTILE_MASTER_ROUNDS.length}</span>
-          </strong>
-        </div>
-        <div className="projectile-progress__item">
-          <span>SHOTS</span>
-          <strong>{attemptCount}</strong>
-        </div>
-        <span
-          aria-live="polite"
-          className={`projectile-status projectile-status--${lifecycle.status}`}
-        >
-          <span aria-hidden="true" />
-          {lifecycle.status[0]?.toUpperCase()}
-          {lifecycle.status.slice(1)}
-        </span>
-      </section>
+      <GameProgressBar
+        items={[
+          {
+            label: "ROUND",
+            value:
+              lifecycle.status === "completed"
+                ? PROJECTILE_MASTER_ROUNDS.length
+                : roundIndex + 1,
+            total: PROJECTILE_MASTER_ROUNDS.length,
+          },
+          {
+            label: "OBJECTIVES",
+            value: completedRoundCount,
+            total: PROJECTILE_MASTER_ROUNDS.length,
+          },
+          { label: "SHOTS", value: attemptCount },
+        ]}
+        status={lifecycle.status}
+      />
 
       <div className="game-engine-overview">
         <GameObjectiveList objectives={[objective]} />
         <GameScoreSummary score={score} title="Best score" />
       </div>
 
-      <div className="projectile-game__layout">
+      <div className="game-page__layout">
         <section
           aria-labelledby="projectile-plot-title"
           className="trajectory-visual projectile-visual"
@@ -493,8 +448,8 @@ export function ProjectileMasterPage() {
             />
           </div>
 
-          <div aria-live="polite" className="projectile-measurements">
-            <div className="projectile-measurement">
+          <div aria-live="polite" className="game-measurements">
+            <div className="game-measurement">
               <span>RANGE</span>
               <strong>
                 {lastShot
@@ -502,7 +457,7 @@ export function ProjectileMasterPage() {
                   : "—"}
               </strong>
             </div>
-            <div className="projectile-measurement">
+            <div className="game-measurement">
               <span>FLIGHT TIME</span>
               <strong>
                 {lastShot
@@ -510,7 +465,7 @@ export function ProjectileMasterPage() {
                   : "—"}
               </strong>
             </div>
-            <div className="projectile-measurement">
+            <div className="game-measurement">
               <span>MAX HEIGHT</span>
               <strong>
                 {lastShot
@@ -518,7 +473,7 @@ export function ProjectileMasterPage() {
                   : "—"}
               </strong>
             </div>
-            <div className="projectile-measurement">
+            <div className="game-measurement">
               <span>MISS DISTANCE</span>
               <strong>
                 {lastShot
@@ -533,8 +488,8 @@ export function ProjectileMasterPage() {
               aria-live="polite"
               className={
                 lastShot.result.hit
-                  ? "projectile-result projectile-result--hit"
-                  : "projectile-result"
+                  ? "game-result game-result--hit"
+                  : "game-result"
               }
               role="status"
             >
@@ -544,7 +499,7 @@ export function ProjectileMasterPage() {
             </p>
           )}
           {lifecycle.status === "completed" && (
-            <div className="projectile-complete" role="status">
+            <div className="game-complete" role="status">
               <strong>Every target reached.</strong>
               <span>
                 You scored {score.totalPoints} points across {attemptCount}{" "}
@@ -565,7 +520,7 @@ export function ProjectileMasterPage() {
             </span>
           </div>
 
-          <p className="projectile-instructions">
+          <p className="game-instructions">
             {PROJECTILE_MASTER_GAME.instructions}
           </p>
           <GameLifecycleControls
@@ -584,7 +539,7 @@ export function ProjectileMasterPage() {
                   Before the launch
                 </output>
               </span>
-              <span className="projectile-number-input">
+              <span className="game-number-input">
                 <input
                   aria-label="Your range prediction in meters"
                   disabled={!isPlaying}
@@ -627,11 +582,11 @@ export function ProjectileMasterPage() {
               value={speedMetersPerSecond}
             />
             {errorMessage && (
-              <p className="projectile-error" role="alert">
+              <p className="game-error" role="alert">
                 {errorMessage}
               </p>
             )}
-            <div className="projectile-actions">
+            <div className="game-actions">
               <button
                 className="lab-button lab-button--primary"
                 disabled={!isPlaying || roundHasBeenHit}
@@ -653,21 +608,15 @@ export function ProjectileMasterPage() {
           </form>
 
           {!roundHasBeenHit && lifecycle.status !== "completed" && (
-            <button
-              aria-expanded={showHint}
-              className="projectile-hint-toggle"
+            <GameHint
               disabled={!isPlaying}
-              onClick={() => setShowHint((visible) => !visible)}
-              type="button"
-            >
-              {showHint ? "Hide hint" : "Need a hint?"}
-            </button>
-          )}
-          {showHint && !roundHasBeenHit && lifecycle.status !== "completed" && (
-            <p className="projectile-hint">{round.hint}</p>
+              hint={round.hint}
+              onToggle={() => setShowHint((visible) => !visible)}
+              visible={showHint}
+            />
           )}
 
-          <div className="projectile-formula">
+          <div className="game-formula">
             <span>RANGE FORMULA</span>
             <strong>{PROJECTILE_MASTER_GAME.formula}</strong>
             <p>
@@ -680,14 +629,14 @@ export function ProjectileMasterPage() {
 
       <section
         aria-labelledby="projectile-learning-title"
-        className="projectile-learning"
+        className="game-learning"
       >
         <div>
           <p className="eyebrow">THE PHYSICS</p>
           <h2 id="projectile-learning-title">Why does the range change?</h2>
           <p>{PROJECTILE_MASTER_GAME.explanation}</p>
         </div>
-        <div className="projectile-learning__note">
+        <div className="game-learning__note">
           <strong>Model assumptions</strong>
           <p>{PROJECTILE_MASTER_GAME.assumptions}</p>
         </div>

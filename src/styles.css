@@ -2001,24 +2001,24 @@ p {
   }
 }
 
-.projectile-game {
+.game-page {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-.projectile-game__header {
+.game-page__header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
 }
 
-.projectile-game__header .eyebrow {
+.game-page__header .eyebrow {
   margin-bottom: 8px;
 }
 
-.projectile-game__header h1 {
+.game-page__header h1 {
   margin: 0;
   color: #252d40;
   font-family: var(--font-display);
@@ -2028,7 +2028,7 @@ p {
   line-height: 1.15;
 }
 
-.projectile-game__intro {
+.game-page__intro {
   max-width: 650px;
   margin: 9px 0 0;
   color: #7c8498;
@@ -2036,7 +2036,7 @@ p {
   line-height: 1.6;
 }
 
-.projectile-progress {
+.game-progress {
   display: flex;
   min-height: 72px;
   align-items: center;
@@ -2047,21 +2047,21 @@ p {
   background: #fff;
 }
 
-.projectile-progress__item {
+.game-progress__item {
   display: flex;
   min-width: 83px;
   flex-direction: column;
   gap: 4px;
 }
 
-.projectile-progress__item > span {
+.game-progress__item > span {
   color: #969daf;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.8px;
 }
 
-.projectile-progress__item strong {
+.game-progress__item strong {
   color: #364057;
   font-family: var(--font-display);
   font-size: 17px;
@@ -2069,12 +2069,12 @@ p {
   font-variant-numeric: tabular-nums;
 }
 
-.projectile-progress__item strong span {
+.game-progress__item strong span {
   color: #9aa1b1;
   font-size: 12px;
 }
 
-.projectile-status {
+.game-status {
   display: inline-flex;
   min-height: 29px;
   align-items: center;
@@ -2089,44 +2089,44 @@ p {
   font-weight: 600;
 }
 
-.projectile-status > span {
+.game-status > span {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: #a4abba;
 }
 
-.projectile-status--playing {
+.game-status--playing {
   border-color: #e9e3cf;
   color: #92733b;
   background: #fffcf3;
 }
 
-.projectile-status--playing > span {
+.game-status--playing > span {
   background: #d3a746;
 }
 
-.projectile-status--paused {
+.game-status--paused {
   border-color: #f0ddc4;
   color: #9a6930;
   background: #fff8ef;
 }
 
-.projectile-status--paused > span {
+.game-status--paused > span {
   background: #d78a37;
 }
 
-.projectile-status--completed {
+.game-status--completed {
   border-color: #d3eee3;
   color: #268567;
   background: #f0faf6;
 }
 
-.projectile-status--completed > span {
+.game-status--completed > span {
   background: #34b58a;
 }
 
-.projectile-game__layout {
+.game-page__layout {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(290px, 0.8fr);
   align-items: start;
@@ -2262,7 +2262,7 @@ p {
 
 .projectile-visual,
 .projectile-controls,
-.projectile-learning {
+.game-learning {
   border: 1px solid #e7eaf2;
   border-radius: 14px;
   background: #fff;
@@ -2299,14 +2299,14 @@ p {
   height: auto;
 }
 
-.projectile-measurements {
+.game-measurements {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   margin-top: 13px;
 }
 
-.projectile-measurement {
+.game-measurement {
   display: flex;
   min-width: 0;
   min-height: 58px;
@@ -2319,14 +2319,14 @@ p {
   background: #fbfcfe;
 }
 
-.projectile-measurement span {
+.game-measurement span {
   color: #969daf;
   font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.55px;
 }
 
-.projectile-measurement strong {
+.game-measurement strong {
   overflow: hidden;
   color: #364057;
   font-family: var(--font-display);
@@ -2337,10 +2337,10 @@ p {
   white-space: nowrap;
 }
 
-.projectile-result,
-.projectile-complete,
-.projectile-error,
-.projectile-hint {
+.game-result,
+.game-complete,
+.game-error,
+.game-hint {
   margin: 12px 0 0;
   padding: 10px 12px;
   border-radius: 8px;
@@ -2348,26 +2348,26 @@ p {
   line-height: 1.55;
 }
 
-.projectile-result {
+.game-result {
   border: 1px solid #f0e2d2;
   color: #916534;
   background: #fffaf4;
 }
 
-.projectile-result--hit,
-.projectile-complete {
+.game-result--hit,
+.game-complete {
   border: 1px solid #d5efe4;
   color: #207d61;
   background: #f0faf6;
 }
 
-.projectile-complete {
+.game-complete {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-.projectile-error {
+.game-error {
   border: 1px solid #f3d9dc;
   color: #a73d4c;
   background: #fff6f6;
@@ -2380,7 +2380,7 @@ p {
   padding: 17px;
 }
 
-.projectile-instructions {
+.game-instructions {
   margin: -4px 0 0;
   color: #788196;
   font-size: 10px;
@@ -2393,13 +2393,13 @@ p {
   gap: 16px;
 }
 
-.projectile-number-input {
+.game-number-input {
   display: flex;
   align-items: center;
   gap: 9px;
 }
 
-.projectile-number-input input {
+.game-number-input input {
   width: 100%;
   min-width: 0;
   min-height: 39px;
@@ -2413,26 +2413,26 @@ p {
   font-size: 11px;
 }
 
-.projectile-number-input input:focus-visible,
-.projectile-hint-toggle:focus-visible {
+.game-number-input input:focus-visible,
+.game-hint-toggle:focus-visible {
   outline: 3px solid #aeb7ff;
   outline-offset: 2px;
 }
 
-.projectile-number-input > span {
+.game-number-input > span {
   color: #69738a;
   font-size: 10px;
   font-weight: 700;
 }
 
-.projectile-actions {
+.game-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: -1px;
 }
 
-.projectile-hint-toggle {
+.game-hint-toggle {
   align-self: flex-start;
   padding: 0;
   border: 0;
@@ -2444,13 +2444,13 @@ p {
   font-weight: 700;
 }
 
-.projectile-hint {
+.game-hint {
   margin-top: -7px;
   color: #737d92;
   background: #f6f7ff;
 }
 
-.projectile-formula {
+.game-formula {
   display: flex;
   flex-direction: column;
   gap: 7px;
@@ -2460,14 +2460,14 @@ p {
   background: #fbfcfe;
 }
 
-.projectile-formula > span {
+.game-formula > span {
   color: #969daf;
   font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.8px;
 }
 
-.projectile-formula strong {
+.game-formula strong {
   color: #4e5bb0;
   font-family: var(--font-display);
   font-size: 17px;
@@ -2475,25 +2475,25 @@ p {
   text-align: center;
 }
 
-.projectile-formula p {
+.game-formula p {
   margin: 0;
   color: #81899b;
   font-size: 9px;
   line-height: 1.5;
 }
 
-.projectile-learning {
+.game-learning {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.8fr);
   gap: 20px;
   padding: 18px;
 }
 
-.projectile-learning .eyebrow {
+.game-learning .eyebrow {
   margin: 0 0 6px;
 }
 
-.projectile-learning h2 {
+.game-learning h2 {
   margin: 0;
   color: #30384c;
   font-family: var(--font-display);
@@ -2501,25 +2501,25 @@ p {
   font-weight: 800;
 }
 
-.projectile-learning p {
+.game-learning p {
   margin: 7px 0 0;
   color: #788196;
   font-size: 10px;
   line-height: 1.65;
 }
 
-.projectile-learning__note {
+.game-learning__note {
   padding-left: 17px;
   border-left: 1px solid #edf0f5;
 }
 
-.projectile-learning__note strong {
+.game-learning__note strong {
   color: #505a70;
   font-size: 10px;
 }
 
 @media (max-width: 1100px) {
-  .projectile-game__layout {
+  .game-page__layout {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -2531,14 +2531,14 @@ p {
   }
 
   .projectile-controls__heading,
-  .projectile-instructions,
+  .game-instructions,
   .projectile-controls form,
-  .projectile-hint-toggle,
-  .projectile-hint {
+  .game-hint-toggle,
+  .game-hint {
     grid-column: 1;
   }
 
-  .projectile-formula {
+  .game-formula {
     grid-column: 2;
     grid-row: 1 / span 3;
   }
@@ -2549,40 +2549,40 @@ p {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .projectile-game {
+  .game-page {
     gap: 14px;
   }
 
-  .projectile-game__header {
+  .game-page__header {
     align-items: flex-start;
     flex-direction: column;
     gap: 10px;
   }
 
-  .projectile-game__header h1 {
+  .game-page__header h1 {
     font-size: clamp(25px, 7vw, 33px);
     letter-spacing: -1px;
   }
 
-  .projectile-game__intro {
+  .game-page__intro {
     font-size: 12px;
   }
 
-  .projectile-progress {
+  .game-progress {
     min-height: 64px;
     gap: 12px;
     padding: 10px;
   }
 
-  .projectile-progress__item {
+  .game-progress__item {
     min-width: 58px;
   }
 
-  .projectile-progress__item strong {
+  .game-progress__item strong {
     font-size: 15px;
   }
 
-  .projectile-status {
+  .game-status {
     gap: 5px;
     padding: 0 7px;
     font-size: 8px;
@@ -2597,13 +2597,13 @@ p {
     display: flex;
   }
 
-  .projectile-learning {
+  .game-learning {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
     padding: 15px;
   }
 
-  .projectile-learning__note {
+  .game-learning__note {
     padding: 10px 0 0;
     border-top: 1px solid #edf0f5;
     border-left: 0;
@@ -2611,19 +2611,19 @@ p {
 }
 
 @media (max-width: 430px) {
-  .projectile-progress {
+  .game-progress {
     flex-wrap: wrap;
   }
 
-  .projectile-progress__item {
+  .game-progress__item {
     min-width: calc(33.333% - 9px);
   }
 
-  .projectile-status {
+  .game-status {
     margin-left: 0;
   }
 
-  .projectile-measurements {
+  .game-measurements {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -2631,4 +2631,151 @@ p {
     padding: 6px 7px;
     font-size: 8px;
   }
+}
+
+/* Balance Challenge */
+.balance-situation {
+  margin: 0 0 12px;
+  color: #505a70;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.balance-plot-wrap {
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.balance-plot {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.balance-plot__pivot {
+  fill: #7180d8;
+}
+
+.balance-plot__beam {
+  fill: #c9d0e6;
+  stroke: #9aa5cf;
+}
+
+.balance-plot__block rect {
+  fill: #e8ecfb;
+  stroke: #7180d8;
+  stroke-width: 1.5;
+}
+
+.balance-plot__block--yours rect {
+  fill: #fff0d9;
+  stroke: #d98a1f;
+}
+
+.balance-plot__block text,
+.balance-plot__tick text,
+.balance-plot__centre text,
+.balance-plot__pivot-label {
+  fill: #505a70;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.balance-plot__tick line {
+  stroke: #7d869b;
+}
+
+.balance-plot__centre circle {
+  fill: #364057;
+}
+
+.game-objectives-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #505a70;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .balance-plot g {
+    transition: none !important;
+  }
+}
+
+/* Physics Worlds and Profile */
+.worlds-page,
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.worlds-page__header h1 {
+  margin: 4px 0 8px;
+}
+
+.worlds-page__header p:last-child {
+  max-width: 60ch;
+  color: #505a70;
+  line-height: 1.6;
+}
+
+.world-section h2 {
+  margin: 0 0 4px;
+}
+
+.world-section__description {
+  margin: 0 0 12px;
+  color: #69738a;
+  font-size: 13px;
+}
+
+.world-section__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.world-card {
+  display: flex;
+  min-height: 112px;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid #e7eaf2;
+  border-radius: 12px;
+  color: #505a70;
+  background: #fff;
+  font-size: 12px;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+a.world-card:hover,
+a.world-card:focus-visible {
+  border-color: #aeb7ff;
+  outline: 3px solid transparent;
+  box-shadow: 0 0 0 3px #aeb7ff;
+}
+
+.world-card strong {
+  color: #364057;
+  font-family: var(--font-display);
+  font-size: 15px;
+}
+
+.world-card__meta {
+  color: #737c90;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+.world-card--soon {
+  border-style: dashed;
+  background: #fafbfe;
 }

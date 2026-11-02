@@ -2,7 +2,10 @@ import { createBrowserRouter, Outlet } from "react-router-dom";
 import { AppShell } from "../components/layout/AppShell";
 import { ElectronTrajectoryLabPage } from "../features/experiments/ElectronTrajectoryLabPage";
 import { ProjectileMasterPage } from "../features/games/projectile-master/ProjectileMasterPage";
+import { BalanceChallengePage } from "../features/games/balance-challenge/BalanceChallengePage";
 import { HomePage } from "../features/home/HomePage";
+import { PhysicsWorldsPage } from "../features/physics-worlds/PhysicsWorldsPage";
+import { ProfilePage } from "../features/profile/ProfilePage";
 import { NotFoundPage } from "./NotFoundPage";
 import { SectionPage } from "./SectionPage";
 
@@ -11,20 +14,14 @@ export const router = createBrowserRouter([
     element: <AppShell />,
     children: [
       { index: true, element: <HomePage /> },
-      {
-        path: "worlds",
-        element: (
-          <SectionPage
-            title="Physics Worlds"
-            eyebrow="Choose a direction"
-            description="Explore the ideas that shape our universe, from everyday motion to the behavior of tiny particles."
-            icon="worlds"
-          />
-        ),
-      },
+      { path: "worlds", element: <PhysicsWorldsPage /> },
       {
         path: "worlds/mechanics/projectile-master",
         element: <ProjectileMasterPage />,
+      },
+      {
+        path: "worlds/mechanics/balance-challenge",
+        element: <BalanceChallengePage />,
       },
       {
         path: "experiments",
@@ -81,17 +78,7 @@ export const router = createBrowserRouter([
           />
         ),
       },
-      {
-        path: "profile",
-        element: (
-          <SectionPage
-            title="Your Profile"
-            eyebrow="Your learning space"
-            description="Your learning journey and progress will live here as you explore Physics Playground."
-            icon="profile"
-          />
-        ),
-      },
+      { path: "profile", element: <ProfilePage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

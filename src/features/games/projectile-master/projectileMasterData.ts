@@ -7,9 +7,10 @@ export interface ProjectileMasterRound {
 }
 
 export const PROJECTILE_MASTER_GAME = Object.freeze({
+  id: "projectile-master",
   title: "Projectile Master",
   category: "Mechanics",
-  difficulty: "Beginner",
+  difficulty: "Beginner" as const,
   introduction:
     "Predict how far a launched projectile will travel, then tune its speed and angle to hit each target.",
   learningObjectives: [

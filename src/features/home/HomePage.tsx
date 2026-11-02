@@ -52,6 +52,12 @@ export function HomePage() {
             >
               Play Projectile Master
             </Link>
+            <Link
+              className="button button--quiet"
+              to="/worlds/mechanics/balance-challenge"
+            >
+              Play Balance Challenge
+            </Link>
           </div>
         </div>
         <div aria-hidden="true" className="welcome-panel__art">

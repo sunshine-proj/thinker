@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   calculateCyclotronFrequency,
   calculateLorentzForce,
@@ -9,7 +9,8 @@ import type {
   SimulationSnapshot,
   SimulationStatus,
 } from "../../simulation/engine";
-import { SimulationEngine } from "../../simulation/engine";
+import { RangeControl, ToggleControl } from "../../components/common";
+import { useSimulationCanvas } from "../../hooks/useSimulationCanvas";
 import {
   DEFAULT_ELECTRON_TRAJECTORY_PARAMETERS,
   ELECTRON_TRAJECTORY_TIME_STEP_SECONDS,
@@ -25,6 +26,7 @@ import {
   type ParticleKind,
 } from "./electronTrajectoryModel";
 const INITIAL_PARAMETERS = DEFAULT_ELECTRON_TRAJECTORY_PARAMETERS;
+const SIMULATION_MODEL = createElectronTrajectoryModel();
 const MAX_FIELD_MICROTESLAS = 20;
 const MAX_ELECTRIC_FIELD_VOLTS_PER_METER = 20;
 const MAX_ENTRY_POSITION_METERS = 0.5;
@@ -335,50 +337,6 @@ function drawTrajectory(
   }
 }
 
-interface RangeControlProps {
-  id: string;
-  label: string;
-  value: number;
-  minimum: number;
-  maximum: number;
-  step: number;
-  displayValue: string;
-  onChange: (value: number) => void;
-}
-
-function RangeControl({
-  id,
-  label,
-  value,
-  minimum,
-  maximum,
-  step,
-  displayValue,
-  onChange,
-}: RangeControlProps) {
-  return (
-    <label className="lab-control" htmlFor={id}>
-      <span className="lab-control__heading">
-        <span>{label}</span>
-        <output htmlFor={id}>{displayValue}</output>
-      </span>
-      <input
-        id={id}
-        max={maximum}
-        min={minimum}
-        onChange={(event) => onChange(Number(event.currentTarget.value))}
-        step={step}
-        type="range"
-        value={value}
-      />
-      <span className="lab-control__bounds">
-        <span>{minimum}</span>
-        <span>{maximum}</span>
-      </span>
-    </label>
-  );
-}
-
 function StatusLabel({ status }: { status: SimulationStatus }) {
   const labels: Record<SimulationStatus, string> = {
     ready: "Ready",
@@ -398,109 +356,48 @@ function StatusLabel({ status }: { status: SimulationStatus }) {
 }
 
 export function ElectronTrajectoryLabPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const engineRef = useRef<
-    SimulationEngine<ElectronTrajectoryState, ElectronTrajectoryParameters> | null
-  >(null);
   const [parameters, setParameters] = useState(INITIAL_PARAMETERS);
-  const [snapshot, setSnapshot] = useState(createInitialSnapshot);
-  const [canvasError, setCanvasError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return;
-    }
-
-    const engine = new SimulationEngine(
-      createElectronTrajectoryModel(),
-      INITIAL_PARAMETERS,
-      {
-        fixedTimeStepSeconds: ELECTRON_TRAJECTORY_TIME_STEP_SECONDS,
-        timeScale: 1e-6,
-        maxFrameDeltaSeconds: 0.1,
-        maxSubSteps: 128,
-        onRender: (nextSnapshot) => {
-          try {
-            drawTrajectory(canvas, nextSnapshot);
-          } catch (error) {
-            setCanvasError(
-              error instanceof Error
-                ? error.message
-                : "The trajectory could not be drawn.",
-            );
-            throw error;
-          }
-        },
-      },
-    );
-    engineRef.current = engine;
-
-    let lastReactUpdateTime = 0;
-    let lastStatus: SimulationStatus | null = null;
-    const unsubscribe = engine.subscribe((nextSnapshot) => {
-      const currentTime = performance.now();
-      if (
-        nextSnapshot.status !== lastStatus ||
-        nextSnapshot.status !== "running" ||
-        currentTime - lastReactUpdateTime >= 100
-      ) {
-        lastReactUpdateTime = currentTime;
-        lastStatus = nextSnapshot.status;
-        setSnapshot(nextSnapshot);
-      }
-    });
-
-    const resizeCanvas = () => {
-      drawTrajectory(canvas, engine.getSnapshot());
-    };
-    const resizeObserver =
-      typeof ResizeObserver === "undefined"
-        ? null
-        : new ResizeObserver(resizeCanvas);
-    if (resizeObserver) {
-      resizeObserver.observe(canvas);
-    } else {
-      window.addEventListener("resize", resizeCanvas);
-    }
-    engine.reset();
-
-    return () => {
-      resizeObserver?.disconnect();
-      window.removeEventListener("resize", resizeCanvas);
-      unsubscribe();
-      engine.dispose();
-      engineRef.current = null;
-    };
-  }, []);
+  const {
+    canvasRef,
+    snapshot,
+    canvasError,
+    start,
+    pause,
+    resume,
+    reset,
+    setParameters: setEngineParameters,
+  } = useSimulationCanvas({
+    model: SIMULATION_MODEL,
+    initialParameters: INITIAL_PARAMETERS,
+    initialSnapshot: createInitialSnapshot(),
+    engineOptions: {
+      fixedTimeStepSeconds: ELECTRON_TRAJECTORY_TIME_STEP_SECONDS,
+      timeScale: 1e-6,
+      maxFrameDeltaSeconds: 0.1,
+      maxSubSteps: 128,
+    },
+    draw: drawTrajectory,
+  });
 
   const updateParameters = (
     changes: Partial<ElectronTrajectoryParameters>,
   ) => {
     const nextParameters = { ...parameters, ...changes };
     setParameters(nextParameters);
-    engineRef.current?.setParameters(nextParameters, { reset: true });
+    setEngineParameters(nextParameters, true);
   };
 
   const handlePlayPause = () => {
-    const engine = engineRef.current;
-    if (!engine) {
-      return;
-    }
-
     if (snapshot.status === "running") {
-      engine.pause();
+      pause();
     } else if (snapshot.status === "paused") {
-      engine.resume();
+      resume();
     } else if (snapshot.status === "ready") {
-      engine.start();
+      start();
     }
   };
 
-  const handleReset = () => {
-    engineRef.current?.reset();
-    setCanvasError(null);
-  };
+  const handleReset = reset;
 
   const measurements = getElectronTrajectoryMeasurements(
     snapshot.state,
@@ -691,9 +588,9 @@ export function ElectronTrajectoryLabPage() {
             <select
               id="particle-kind"
               onChange={(event) => {
-                const particle: ParticleKind =
+                const selected: ParticleKind =
                   event.currentTarget.value === "proton" ? "proton" : "electron";
-                updateParameters({ particle });
+                updateParameters({ particle: selected });
               }}
               value={parameters.particle}
             >
@@ -747,25 +644,15 @@ export function ElectronTrajectoryLabPage() {
             step={0.1}
             value={parameters.magneticFieldMicroteslas}
           />
-          <label className="lab-toggle" htmlFor="reverse-field">
-            <input
-              checked={parameters.magneticFieldReversed}
-              id="reverse-field"
-              onChange={(event) =>
-                updateParameters({
-                  magneticFieldReversed: event.currentTarget.checked,
-                })
-              }
-              type="checkbox"
-            />
-            <span className="lab-toggle__track" aria-hidden="true">
-              <span />
-            </span>
-            <span>
-              Reverse magnetic field
-              <small>Flip B from +Y to −Y</small>
-            </span>
-          </label>
+          <ToggleControl
+            checked={parameters.magneticFieldReversed}
+            description="Flip B from +Y to −Y"
+            id="reverse-field"
+            label="Reverse magnetic field"
+            onChange={(magneticFieldReversed) =>
+              updateParameters({ magneticFieldReversed })
+            }
+          />
 
           <RangeControl
             displayValue={`${parameters.electricFieldVoltsPerMeter} V/m`}
@@ -816,25 +703,16 @@ export function ElectronTrajectoryLabPage() {
             ))}
           </fieldset>
 
-          <label className="lab-toggle lab-toggle--challenge" htmlFor="target-challenge">
-            <input
-              checked={parameters.targetChallengeEnabled}
-              id="target-challenge"
-              onChange={(event) =>
-                updateParameters({
-                  targetChallengeEnabled: event.currentTarget.checked,
-                })
-              }
-              type="checkbox"
-            />
-            <span className="lab-toggle__track" aria-hidden="true">
-              <span />
-            </span>
-            <span>
-              Target challenge
-              <small>Guide the particle through the target region</small>
-            </span>
-          </label>
+          <ToggleControl
+            checked={parameters.targetChallengeEnabled}
+            className="lab-toggle--challenge"
+            description="Guide the particle through the target region"
+            id="target-challenge"
+            label="Target challenge"
+            onChange={(targetChallengeEnabled) =>
+              updateParameters({ targetChallengeEnabled })
+            }
+          />
           {parameters.targetChallengeEnabled && (
             <p className="lab-challenge-hint">
               Adjust the field, speed, and entry direction to reach the marked
