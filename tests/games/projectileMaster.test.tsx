@@ -12,6 +12,10 @@ import {
   scoreProjectileShot,
 } from "../../src/features/games/projectile-master/projectileMasterModel";
 
+function startProjectileMaster() {
+  fireEvent.click(screen.getByRole("button", { name: "Start game" }));
+}
+
 describe("Projectile motion model", () => {
   it("calculates the analytical range, flight time, height, and endpoints", () => {
     const trajectory = calculateProjectileTrajectory(
@@ -111,6 +115,7 @@ describe("Projectile Master game", () => {
     expect(screen.getByRole("img", { name: /projectile target at 25 meters/i }))
       .toBeTruthy();
 
+    startProjectileMaster();
     fireEvent.change(screen.getByRole("spinbutton", { name: /range prediction/i }), {
       target: { value: "30" },
     });
@@ -118,11 +123,12 @@ describe("Projectile Master game", () => {
 
     expect(screen.getByText(/Missed by/)).toBeTruthy();
     expect(screen.getByText("RANGE")).toBeTruthy();
-    expect(screen.getByText("In progress")).toBeTruthy();
+    expect(screen.getByText("Playing")).toBeTruthy();
   });
 
   it("records a hit and allows the player to advance to the next target", () => {
     render(<ProjectileMasterPage />);
+    startProjectileMaster();
 
     fireEvent.change(screen.getByRole("slider", { name: /Launch speed/ }), {
       target: { value: "15.5" },
@@ -144,6 +150,7 @@ describe("Projectile Master game", () => {
 
   it("completes all rounds and can be replayed", () => {
     render(<ProjectileMasterPage />);
+    startProjectileMaster();
     const speeds = [15.5, 18.5, 21];
 
     PROJECTILE_MASTER_ROUNDS.forEach((round, index) => {
@@ -168,6 +175,42 @@ describe("Projectile Master game", () => {
     fireEvent.click(screen.getByRole("button", { name: "Play again" }));
     expect(screen.getByText("Ready")).toBeTruthy();
     expect(screen.getByText("Find your range")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Start game" })).toBeTruthy();
+  });
+
+  it("pauses and resumes play, disabling game inputs while paused", () => {
+    render(<ProjectileMasterPage />);
+    startProjectileMaster();
+
+    fireEvent.click(screen.getByRole("button", { name: "Pause game" }));
+    expect(screen.getByText("Paused")).toBeTruthy();
+    expect(
+      screen
+        .getByRole("spinbutton", { name: /range prediction/i })
+        .hasAttribute("disabled"),
+    ).toBe(true);
+    expect(
+      screen
+        .getByRole("button", { name: "Launch projectile" })
+        .hasAttribute("disabled"),
+    ).toBe(true);
+
+    fireEvent.click(screen.getByRole("button", { name: "Resume game" }));
+    expect(screen.getByText("Playing")).toBeTruthy();
+    expect(
+      screen
+        .getByRole("spinbutton", { name: /range prediction/i })
+        .hasAttribute("disabled"),
+    ).toBe(false);
+  });
+
+  it("shows measurable objectives and a score summary", () => {
+    render(<ProjectileMasterPage />);
+
+    expect(screen.getByRole("region", { name: "Game objectives" })).toBeTruthy();
+    expect(screen.getByText("0 / 3 targets")).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Game score" })).toBeTruthy();
+    expect(screen.getByText("0 pts")).toBeTruthy();
   });
 
   it("links to Projectile Master from home and activates the Physics Worlds navigation", () => {

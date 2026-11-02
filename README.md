@@ -29,7 +29,7 @@ This sequence establishes the architecture before the project grows to 50+ games
 4. [x] Build the simulation lifecycle.
 5. [x] Implement the Electron Trajectory Lab as the first fully functional scientific simulation.
 6. [x] Add Projectile Master as the first physics game.
-7. [ ] Build reusable game lifecycle, objective, and scoring components; support ready, playing, paused, and completed states.
+7. [x] Build reusable game lifecycle, objective, and scoring components; support ready, playing, paused, and completed states.
 8. [ ] Add Balance Challenge as the next playable mechanics game, with tested physics, objectives, scoring, and difficulty.
 9. [ ] Add Circuit Builder as the first playable electricity game, with scientifically accurate circuit calculations and tests.
 10. [ ] Complete the experiment workflow with reusable measurements, saved experiment configurations, and educational result explanations.

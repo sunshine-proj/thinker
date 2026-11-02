@@ -2096,14 +2096,24 @@ p {
   background: #a4abba;
 }
 
-.projectile-status--in-progress {
+.projectile-status--playing {
   border-color: #e9e3cf;
   color: #92733b;
   background: #fffcf3;
 }
 
-.projectile-status--in-progress > span {
+.projectile-status--playing > span {
   background: #d3a746;
+}
+
+.projectile-status--paused {
+  border-color: #f0ddc4;
+  color: #9a6930;
+  background: #fff8ef;
+}
+
+.projectile-status--paused > span {
+  background: #d78a37;
 }
 
 .projectile-status--completed {
@@ -2121,6 +2131,133 @@ p {
   grid-template-columns: minmax(0, 1.5fr) minmax(290px, 0.8fr);
   align-items: start;
   gap: 16px;
+}
+
+.game-engine-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.game-objectives,
+.game-score-summary {
+  min-width: 0;
+  padding: 15px 17px;
+  border: 1px solid #e7eaf2;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.game-objectives h2,
+.game-score-summary h2 {
+  margin: 0;
+  color: #69738a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.game-objectives ul,
+.game-score-summary ul {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.game-objectives__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+}
+
+.game-objectives__copy {
+  display: grid;
+  gap: 3px;
+}
+
+.game-objectives__copy strong,
+.game-score-summary__heading strong {
+  color: #364057;
+  font-size: 12px;
+}
+
+.game-objectives__copy span,
+.game-objectives__progress span,
+.game-score-summary li {
+  color: #788196;
+  font-size: 10px;
+}
+
+.game-objectives__progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.game-objectives__progress progress {
+  width: 96px;
+  height: 7px;
+  accent-color: #36aa86;
+}
+
+.game-score-summary__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.game-score-summary__heading strong {
+  color: #4e5bb0;
+  font-variant-numeric: tabular-nums;
+}
+
+.game-score-summary li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.game-score-summary li strong {
+  color: #505a70;
+  font-variant-numeric: tabular-nums;
+}
+
+.game-lifecycle-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.game-lifecycle-controls__reset {
+  padding: 7px 10px;
+  border: 0;
+  color: #788196;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.game-lifecycle-controls__reset:hover {
+  color: #4e5bb0;
+}
+
+.game-paused-message {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #f0ddc4;
+  border-radius: 8px;
+  color: #8c612d;
+  background: #fff8ef;
+  font-size: 11px;
 }
 
 .projectile-visual,
@@ -2408,6 +2545,10 @@ p {
 }
 
 @media (max-width: 700px) {
+  .game-engine-overview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .projectile-game {
     gap: 14px;
   }

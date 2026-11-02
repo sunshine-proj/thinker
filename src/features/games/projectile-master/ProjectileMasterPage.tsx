@@ -1,5 +1,22 @@
 import { useState, type FormEvent } from "react";
 import {
+  GameLifecycleControls,
+  GameObjectiveList,
+  GameScoreSummary,
+} from "../../../game-engine/components";
+import {
+  createGameLifecycle,
+  transitionGameLifecycle,
+} from "../../../game-engine/core/GameLifecycle";
+import {
+  createGameObjective,
+  updateGameObjective,
+} from "../../../game-engine/objectives/GameObjective";
+import {
+  createScoreState,
+  recordScore,
+} from "../../../game-engine/scoring/ScoringSystem";
+import {
   PROJECTILE_MASTER_GAME,
   PROJECTILE_MASTER_ROUNDS,
 } from "./projectileMasterData";
@@ -220,6 +237,7 @@ function RangeControl({
   maximum,
   step,
   displayValue,
+  disabled,
   onChange,
 }: {
   readonly id: string;
@@ -229,6 +247,7 @@ function RangeControl({
   readonly maximum: number;
   readonly step: number;
   readonly displayValue: string;
+  readonly disabled: boolean;
   readonly onChange: (value: number) => void;
 }) {
   return (
@@ -245,6 +264,7 @@ function RangeControl({
         step={step}
         type="range"
         value={value}
+        disabled={disabled}
       />
       <span aria-hidden="true" className="lab-control__bounds">
         <span>{minimum}</span>
@@ -261,24 +281,37 @@ export function ProjectileMasterPage() {
   const [angleDegrees, setAngleDegrees] = useState(INITIAL_ANGLE_DEGREES);
   const [prediction, setPrediction] = useState("");
   const [roundIndex, setRoundIndex] = useState(0);
-  const [completed, setCompleted] = useState(false);
+  const [lifecycle, setLifecycle] = useState(createGameLifecycle);
   const [attemptCount, setAttemptCount] = useState(0);
   const [completedRounds, setCompletedRounds] = useState<boolean[]>(
     () => PROJECTILE_MASTER_ROUNDS.map(() => false),
   );
-  const [bestScores, setBestScores] = useState<number[]>(
-    () => PROJECTILE_MASTER_ROUNDS.map(() => 0),
-  );
+  const [score, setScore] = useState(createScoreState);
   const [lastShot, setLastShot] = useState<CompletedShot | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const round = PROJECTILE_MASTER_ROUNDS[roundIndex];
   const roundHasBeenHit = completedRounds[roundIndex];
-  const totalScore = bestScores.reduce((total, score) => total + score, 0);
+  const completedRoundCount = completedRounds.filter(Boolean).length;
+  const objective = updateGameObjective(
+    createGameObjective({
+      id: "hit-targets",
+      title: "Reach every target",
+      description: "Land a projectile inside each target zone.",
+      target: PROJECTILE_MASTER_ROUNDS.length,
+      unit: "targets",
+    }),
+    completedRoundCount,
+  );
+  const isPlaying = lifecycle.status === "playing";
 
   const handleLaunch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!isPlaying) {
+      return;
+    }
+
     const predictedRangeMeters = Number(prediction);
 
     if (
@@ -311,13 +344,21 @@ export function ProjectileMasterPage() {
             index === roundIndex ? true : isComplete,
           ),
         );
-        setBestScores((scores) =>
-          scores.map((score, index) =>
-            index === roundIndex ? Math.max(score, result.score) : score,
+        setScore((currentScore) =>
+          recordScore(
+            currentScore,
+            {
+              id: round.id,
+              label: round.title,
+              points: result.score,
+            },
+            "best",
           ),
         );
         if (roundIndex === PROJECTILE_MASTER_ROUNDS.length - 1) {
-          setCompleted(true);
+          setLifecycle((current) =>
+            transitionGameLifecycle(current, "complete"),
+          );
         }
       }
     } catch (error) {
@@ -345,20 +386,18 @@ export function ProjectileMasterPage() {
     setAngleDegrees(INITIAL_ANGLE_DEGREES);
     setPrediction("");
     setRoundIndex(0);
-    setCompleted(false);
+    setLifecycle((current) => transitionGameLifecycle(current, "reset"));
     setAttemptCount(0);
     setCompletedRounds(PROJECTILE_MASTER_ROUNDS.map(() => false));
-    setBestScores(PROJECTILE_MASTER_ROUNDS.map(() => 0));
+    setScore(createScoreState());
     setLastShot(null);
     setShowHint(false);
     setErrorMessage(null);
   };
 
-  const status = completed
-    ? "Completed"
-    : attemptCount > 0
-      ? "In progress"
-      : "Ready";
+  const handleLifecycleAction = (action: "start" | "pause" | "resume") => {
+    setLifecycle((current) => transitionGameLifecycle(current, action));
+  };
 
   return (
     <div className="projectile-game">
@@ -379,15 +418,18 @@ export function ProjectileMasterPage() {
         <div className="projectile-progress__item">
           <span>ROUND</span>
           <strong>
-            {completed
+            {lifecycle.status === "completed"
               ? PROJECTILE_MASTER_ROUNDS.length
               : roundIndex + 1}{" "}
             <span>/ {PROJECTILE_MASTER_ROUNDS.length}</span>
           </strong>
         </div>
         <div className="projectile-progress__item">
-          <span>BEST SCORE</span>
-          <strong>{totalScore}</strong>
+          <span>OBJECTIVES</span>
+          <strong>
+            {completedRoundCount}
+            <span> / {PROJECTILE_MASTER_ROUNDS.length}</span>
+          </strong>
         </div>
         <div className="projectile-progress__item">
           <span>SHOTS</span>
@@ -395,12 +437,18 @@ export function ProjectileMasterPage() {
         </div>
         <span
           aria-live="polite"
-          className={`projectile-status projectile-status--${status.toLowerCase().replace(" ", "-")}`}
+          className={`projectile-status projectile-status--${lifecycle.status}`}
         >
           <span aria-hidden="true" />
-          {status}
+          {lifecycle.status[0]?.toUpperCase()}
+          {lifecycle.status.slice(1)}
         </span>
       </section>
+
+      <div className="game-engine-overview">
+        <GameObjectiveList objectives={[objective]} />
+        <GameScoreSummary score={score} title="Best score" />
+      </div>
 
       <div className="projectile-game__layout">
         <section
@@ -410,10 +458,14 @@ export function ProjectileMasterPage() {
           <div className="trajectory-visual__heading">
             <div>
               <span className="trajectory-visual__eyebrow">
-                {completed ? "ALL TARGETS CLEARED" : `ROUND ${roundIndex + 1}`}
+                {lifecycle.status === "completed"
+                  ? "ALL TARGETS CLEARED"
+                  : `ROUND ${roundIndex + 1}`}
               </span>
               <h2 id="projectile-plot-title">
-                {completed ? "Challenge complete" : round.title}
+                {lifecycle.status === "completed"
+                  ? "Challenge complete"
+                  : round.title}
               </h2>
             </div>
             <span
@@ -423,6 +475,11 @@ export function ProjectileMasterPage() {
               {round.targetDistanceMeters} m target
             </span>
           </div>
+          {lifecycle.status === "paused" && (
+            <p className="game-paused-message" role="status">
+              Game paused. Resume when you are ready to continue.
+            </p>
+          )}
           <div className="projectile-plot-wrap">
             <ProjectilePlot
               targetDistanceMeters={round.targetDistanceMeters}
@@ -486,12 +543,12 @@ export function ProjectileMasterPage() {
                 : `Missed by ${formatNumber(lastShot.result.missDistanceMeters)} m. Adjust your launch and try again.`}
             </p>
           )}
-          {completed && (
+          {lifecycle.status === "completed" && (
             <div className="projectile-complete" role="status">
               <strong>Every target reached.</strong>
               <span>
-                You scored {totalScore} points across {attemptCount} shots.
-                Reset to play again.
+                You scored {score.totalPoints} points across {attemptCount}{" "}
+                shots.
               </span>
             </div>
           )}
@@ -511,6 +568,14 @@ export function ProjectileMasterPage() {
           <p className="projectile-instructions">
             {PROJECTILE_MASTER_GAME.instructions}
           </p>
+          <GameLifecycleControls
+            onPause={() => handleLifecycleAction("pause")}
+            onReset={handleReset}
+            onResume={() => handleLifecycleAction("resume")}
+            onStart={() => handleLifecycleAction("start")}
+            resetLabel="Play again"
+            status={lifecycle.status}
+          />
           <form onSubmit={handleLaunch}>
             <label className="lab-control" htmlFor="projectile-prediction">
               <span className="lab-control__heading">
@@ -522,6 +587,7 @@ export function ProjectileMasterPage() {
               <span className="projectile-number-input">
                 <input
                   aria-label="Your range prediction in meters"
+                  disabled={!isPlaying}
                   id="projectile-prediction"
                   inputMode="decimal"
                   max="200"
@@ -540,6 +606,7 @@ export function ProjectileMasterPage() {
             </label>
             <RangeControl
               displayValue={`${angleDegrees}°`}
+              disabled={!isPlaying}
               id="projectile-angle"
               label="Launch angle"
               maximum={80}
@@ -550,6 +617,7 @@ export function ProjectileMasterPage() {
             />
             <RangeControl
               displayValue={`${formatNumber(speedMetersPerSecond)} m/s`}
+              disabled={!isPlaying}
               id="projectile-speed"
               label="Launch speed"
               maximum={30}
@@ -566,7 +634,7 @@ export function ProjectileMasterPage() {
             <div className="projectile-actions">
               <button
                 className="lab-button lab-button--primary"
-                disabled={completed || roundHasBeenHit}
+                disabled={!isPlaying || roundHasBeenHit}
                 type="submit"
               >
                 {roundHasBeenHit ? "Target reached" : "Launch projectile"}
@@ -581,29 +649,21 @@ export function ProjectileMasterPage() {
                     Next target
                   </button>
                 )}
-              {completed && (
-                <button
-                  className="lab-button lab-button--secondary"
-                  onClick={handleReset}
-                  type="button"
-                >
-                  Play again
-                </button>
-              )}
             </div>
           </form>
 
-          {!roundHasBeenHit && !completed && (
+          {!roundHasBeenHit && lifecycle.status !== "completed" && (
             <button
               aria-expanded={showHint}
               className="projectile-hint-toggle"
+              disabled={!isPlaying}
               onClick={() => setShowHint((visible) => !visible)}
               type="button"
             >
               {showHint ? "Hide hint" : "Need a hint?"}
             </button>
           )}
-          {showHint && !roundHasBeenHit && (
+          {showHint && !roundHasBeenHit && lifecycle.status !== "completed" && (
             <p className="projectile-hint">{round.hint}</p>
           )}
 
