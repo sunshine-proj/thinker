@@ -3142,3 +3142,303 @@ a.world-card:focus-visible {
 .pwa-status p {
   margin: 0;
 }
+
+/* Charts and shared game controls */
+.line-chart {
+  margin: 0;
+}
+
+.line-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.line-chart__band {
+  fill: #dff4ea;
+  opacity: 0.8;
+}
+
+.line-chart__tick line {
+  stroke: #e1e5f0;
+}
+
+.line-chart__tick text,
+.line-chart__tick-label,
+.line-chart__axis {
+  fill: #69738a;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.line-chart figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 6px 4px 0;
+  color: #505a70;
+  font-size: 11px;
+}
+
+.line-chart__legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.line-chart__legend > span {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.game-select {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: #505a70;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.game-select select {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid #c9d0e6;
+  border-radius: 8px;
+  color: #364057;
+  background: #fff;
+  font: inherit;
+}
+
+.game-fieldset {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border: 1px solid #e7eaf2;
+  border-radius: 10px;
+  color: #505a70;
+  font-size: 11px;
+}
+
+.game-fieldset legend {
+  padding: 0 6px;
+  font-weight: 700;
+}
+
+.game-fieldset label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 14px;
+}
+
+/* Electric Detective */
+.detective-charge circle {
+  stroke-width: 2.5;
+}
+
+.detective-charge--hidden circle {
+  fill: #fde3e0;
+  stroke: #c0392b;
+}
+
+.detective-charge--guess circle {
+  fill: #fff;
+  stroke: #596be0;
+  stroke-dasharray: 5 4;
+}
+
+.detective-charge text {
+  fill: #364057;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.detective-probe line,
+.detective-next line {
+  stroke: #364057;
+  stroke-width: 2;
+}
+
+.detective-probe polygon {
+  fill: #364057;
+}
+
+.detective-probe circle {
+  fill: #364057;
+}
+
+.detective-probe text,
+.detective-legend text {
+  fill: #505a70;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Laser Maze */
+.laser-beam {
+  stroke: #d63a3a;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.laser-mirror {
+  stroke: #364057;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.laser-glass {
+  fill: #dbeeff;
+  stroke: #7fb3e6;
+  stroke-width: 1.5;
+  opacity: 0.8;
+}
+
+.laser-target {
+  fill: #dff4ea;
+  stroke: #2a9d8f;
+  stroke-width: 2.5;
+}
+
+.laser-target--hit {
+  fill: #9fe0cd;
+}
+
+.laser-source {
+  fill: #505a70;
+}
+
+/* Lens Designer */
+.lens-ray {
+  stroke: #d63a3a;
+  stroke-width: 2;
+}
+
+.lens-body {
+  fill: #dbeeff;
+  stroke: #5a8fc4;
+  stroke-width: 2;
+  opacity: 0.9;
+}
+
+.lens-object line,
+.lens-image line {
+  stroke: #2a6f4f;
+  stroke-width: 4;
+}
+
+.lens-object polygon {
+  fill: #2a6f4f;
+}
+
+.lens-image--virtual line {
+  stroke-dasharray: 6 4;
+}
+
+.lens-object text,
+.lens-image text {
+  fill: #505a70;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Ice Melting Challenge */
+.flask-water {
+  fill: #bfe0f7;
+}
+
+.flask-glass {
+  stroke: #6d7a99;
+  stroke-width: 3;
+}
+
+.flask-ice {
+  fill: #eaf6ff;
+  stroke: #7fb3e6;
+}
+
+.flask-bars rect {
+  fill: #596be0;
+}
+
+.flask-bars text {
+  fill: #505a70;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Orbit Simulator */
+.orbit-earth {
+  fill: #2f6fb5;
+}
+
+.orbit-target {
+  fill: none;
+  stroke: #8fa0d8;
+  stroke-dasharray: 6 6;
+  stroke-width: 1.5;
+}
+
+.orbit-path {
+  stroke: #ffd166;
+  stroke-width: 2;
+}
+
+.orbit-path--crash {
+  stroke: #ff7a6b;
+}
+
+.orbit-launch {
+  fill: #ffffff;
+}
+
+.orbit-label,
+.orbit-legend text {
+  fill: #dbe2ff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Moon Landing */
+.lander polygon {
+  fill: #e9ecf7;
+}
+
+.lander line {
+  stroke: #e9ecf7;
+  stroke-width: 3;
+}
+
+.lander text {
+  fill: #dbe2ff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.magnetic-symbol {
+  fill: #9aa5cf;
+  font-size: 18px;
+}
+.flow-label { fill: #364057; font-size: 13px; font-weight: 700; }
+
+/* Vision Simulator, Material Detective */
+.vision-band {
+  fill: #9fe0cd;
+  stroke: #2a9d8f;
+}
+
+.vision-band--plain {
+  fill: #e1e5f0;
+  stroke: #9aa5cf;
+}
+
+.vision-band--add {
+  fill: #ffe0a8;
+  stroke: #d98a1f;
+}
+
+.calorimeter-panel {
+  padding: 8px 4px;
+}

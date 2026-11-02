@@ -79,4 +79,112 @@ Not included: the seven "What if…" thought experiments in PRD §8 and the exam
 
 ==========================================
 
+All eight MVP games from steps 11–18 are built and playable. Type check, lint and the 497 tests pass, the production build succeeds, and verify:pwa passes. I marked steps 11–18 done in the README roadmap and committed nothing.
+
+The one thing I haven't done is open the games in a real browser. I took no screenshots of the new games, so their layouts are untested visually, and none of the eight games has been played by hand. Nor has the PWA been run in a real browser; verify:pwa only checks the build output.
+
+Shared framework
+Each game would otherwise have repeated about 300 lines of lifecycle, scoring, resume and persistence code. They share one framework in src/game-engine/rounds instead:
+
+Per game: rounds, a control model, an evaluate function backed by a tested physics module, and the visuals.
+RoundGamePage: progress, objectives, score, prediction, hints, formula, explanation and the resume prompt.
+Standard scoring: scoreStandardAttempt scores out of 100: accuracy 60, prediction 20, attempt count 20. Speed never counts.
+Persistence: results are saved and unfinished games can be resumed.
+New shared components: an accessible LineChart and MeasurementGrid.
+Not migrated: Projectile Master, Balance Challenge and Circuit Builder predate the framework, so they still have their own copies of this code.
+The eight games
+All have three rounds (Beginner, Intermediate, Advanced), a prediction step where it makes sense, hints, assumptions, and a route plus Physics Worlds entry.
+
+#	Game	New physics (tested)
+11	Bridge Builder	Beam reactions, bending moment and flexure stress σ = Mc/I, checked against a brute-force scan. Material and depth must satisfy strength, clearance and budget.
+12	Electric Detective	Coulomb's law and field superposition. You take force readings and your hypothesis is tested against them.
+13	Laser Maze	Reflection, Snell's law, total internal reflection and a ray tracer. The beam is drawn live.
+14	Lens Designer	Lensmaker's and thin-lens equations, conjugate positions and blur. Includes a virtual-image magnifier round.
+15	Ice Melting Challenge	Calorimetry with every phase case, energy conservation tested over random mixtures.
+16	Temperature Control	Conduction and room warming, checked against numerical integration.
+17	Orbit Simulator	Orbital elements, Kepler's third law, and a velocity-Verlet integrator checked against the analytic period, apoapsis and conserved energy.
+18	Moon Landing	A rocket-equation descent integrated with RK4, with the Tsiolkovsky relation, free-fall, and step-convergence tests.
+Choices you may want to review
+Moon Landing guidance rule: the engine cuts off when the lander stops moving down. Without it the working window in ignition altitude is too narrow to hit with a slider. Landing legs absorb up to 5 m/s. Both are documented in the game's assumptions.
+Electric Detective has no prediction step. Its accuracy score takes the 20 points a prediction would have given.
+Round numbers were tuned by scanning. Each round was checked to have a workable solution window, and tests lock that in.
+Physics Worlds now lists all ten PRD worlds. The non-MVP games appear as "Coming soon".
+Challenges and achievements: the eight new games feed the existing ones, plus eight new standing challenges. "Scientific Mind" now needs all 11 games.
+Test timeout: I raised the Vitest timeout to 15 s. Two page tests timed out once under load and passed on rerun.
+
+=============================================
+
+The next 10 games, steps 19–28, are built and playable. Type check, lint and all 617 tests pass, the production build succeeds, and verify:pwa passes. I marked those steps done in the README. As before, nothing is committed. I haven't opened any of the 10 games in a browser, so their layouts and charts are untested visually.
+
+What's new
+A helper for slider-only games. defineNumericGame and createNumericGamePage in numericGame.tsx wrap the round framework. A game now supplies its rounds, an evaluate function and two visual slots, and gets range validation and resume parsing for free. It made 10 games affordable.
+A shared heat-flow diagram for the two thermodynamics games.
+A reusable playThrough test helper. It plays all three rounds of a game with given slider values, checks the result text, and checks the score was saved.
+The 10 games
+All have three rounds (Beginner, Intermediate, Advanced), a prediction step, hints, stated assumptions, a route and a Physics Worlds entry. The physics modules are new unless noted.
+
+#	Game	Physics (tested)
+19	Race Simulator	Constant-acceleration kinematics with a top speed, plus stopping distance with reaction time.
+20	Space Mission	The rocket equation (existing module), single stage, engine trade-off and two-stage staging.
+21	Parachute Designer	Quadratic drag, with the simulation checked against the exact tanh solution.
+22	Roller Coaster Engineer	Energy conservation with friction, loop safety and top and bottom g-forces.
+23	Magnetic Maze	The Lorentz force through the existing Boris integrator. A test recovers the analytic radius r = mv/(eB) from the simulated path.
+24	Power Plant	Faraday induction in an AC generator, with grid frequency and coil losses.
+25	Electromagnetic Crane	Solenoid field, iron saturation at 1.6 T, magnetic pull and coil heating.
+26	Particle Accelerator Laboratory	Cyclotron resonance and extraction energy. Round 3 is an explicitly labelled advanced relativistic mode, as the PRD requires.
+27	Steam Engine	Carnot limit and first law, with entropy production.
+28	Refrigerator Engineer	COP and the steady temperature where cooling equals heat leak.
+Things you may want to review
+Parachute opening: the canopy opens instantly, so deploying low looked free. Round 3 therefore has a 150 m safety floor and a 50 s limit. Real canopies take seconds and add opening shock. The game's assumptions say this.
+Roller coaster: the bottom g-force always exceeds the top by 6 g, so round 3's window is narrow (top 0.3–0.5 g, bottom ≤ 6.5 g). The round text explains this.
+Scores: Magnetic Maze rewards how close to the centre of the target the beam passes, so edge hits score low. Its tests use a lower pass mark for that reason.
+Tuned numbers: the targets in every round were checked by hand calculation or a scan to confirm a working solution exists.
+Still open
+Challenges and achievements aren't extended to these 10 games.
+The browser, PWA and Playwright checks are the same gap as before.
+Steps 29 onward in the README (the remaining games and experiments) are untouched.
+
+=================================================
+
+The next five games, steps 29–33, are built and playable. Type check, lint, all 668 tests and the production build pass, and verify:pwa passes. I marked those steps done in the README. Nothing is committed, and I haven't opened the games in a browser, so layouts and charts are untested visually.
+
+All five have three rounds (Beginner, Intermediate, Advanced), hints, stated assumptions, a route and a Physics Worlds entry. They are built with the same slider-game helper as the last batch.
+
+#	Game	New physics (tested)
+29	Material Detective	Equilibrium temperature and specific heat from mixing, including the cup's heat capacity.
+30	Solar Cooker	Dish area, collected power with misalignment (cos θ), heating time, and steady pot temperature.
+31	Rainbow Creator	Snell's law in a drop, deviation after 1 or 2 internal reflections, minimum deviation, and wavelength-dependent refractive index.
+32	Vision Simulator	Eye focusing in diopters: far and near points, defocus, and lens correction.
+33	Mirror Illusions	Plane-mirror coverage, spherical-mirror focal length, image and magnification.
+Some tests cover physics results worth knowing:
+
+Calorimetry recovers the sample's specific heat when inverted.
+A scan confirms the formula for the minimum-deviation angle.
+The primary bow comes out near 42° for red, and the secondary bow near 51° with reversed colours.
+A half-height mirror suffices for a full-length view.
+Things you may want to review
+No prediction step in Material Detective. The thermometer reading is shown live for your experiment settings, which would give a prediction away. It works like Electric Detective, and the 20 prediction points go to accuracy.
+Rainbow Creator uses a Cauchy refractive-index fit for water, so the colours' bow angles are approximate. The assumptions list this. Round 1 shows its curve only after you submit, so the minimum isn't given away.
+Vision Simulator uses a blur tolerance of 0.25 D. Its third round needs both a distance lens and a reading addition, like a bifocal.
+Round numbers were checked by hand calculation or a scan so each round has a working solution.
+Next in the roadmap is step 34, Microscope Builder, followed by the Waves & Sound games.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

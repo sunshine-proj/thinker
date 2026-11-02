@@ -62,5 +62,7 @@ export default defineConfig(({ mode }) => ({
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
     restoreMocks: true,
+    // Several page tests walk a whole game; give them room when the machine is busy.
+    testTimeout: 15_000,
   },
 }));
