@@ -484,6 +484,6 @@ describe("catalog", () => {
     expect(waves.entries).toHaveLength(6);
     expect(waves.comingSoon).toEqual([]);
     expect(PHYSICS_WORLDS.find((w) => w.id === "optics")!.comingSoon).toEqual([]);
-    expect(PHYSICS_WORLDS.find((w) => w.id === "astronomy")!.comingSoon).toEqual(["Asteroid Mission", "Black Hole Explorer"]);
+    expect(PHYSICS_WORLDS.find((w) => w.id === "astronomy")!.comingSoon).toEqual([]);
   });
 });

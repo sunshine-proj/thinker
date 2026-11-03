@@ -39,6 +39,16 @@ import { WaveInterferencePage } from "../features/games/wave-interference/WaveIn
 import { PlanetDesignerPage } from "../features/games/planet-designer/PlanetDesignerPage";
 import { SolarSystemBuilderPage } from "../features/games/solar-system-builder/SolarSystemBuilderPage";
 import { EscapeVelocityPage } from "../features/games/escape-velocity/EscapeVelocityPage";
+import { AsteroidMissionPage } from "../features/games/asteroid-mission/AsteroidMissionPage";
+import { BlackHoleExplorerPage } from "../features/games/black-hole-explorer/BlackHoleExplorerPage";
+import { AtomBuilderPage } from "../features/games/atom-builder/AtomBuilderPage";
+import { ParticleDetectivePage } from "../features/games/particle-detective/ParticleDetectivePage";
+import { WaveOrParticlePage } from "../features/games/wave-or-particle/WaveOrParticlePage";
+import { QuantumPuzzlePage } from "../features/games/quantum-puzzle/QuantumPuzzlePage";
+import { RadioactiveCountdownPage } from "../features/games/radioactive-countdown/RadioactiveCountdownPage";
+import { PhotoelectricLabPage } from "../features/games/photoelectric-lab/PhotoelectricLabPage";
+import { ShipDesignerPage } from "../features/games/ship-designer/ShipDesignerPage";
+import { WaterPressurePage } from "../features/games/water-pressure/WaterPressurePage";
 import { MirrorIllusionsPage } from "../features/games/mirror-illusions/MirrorIllusionsPage";
 import { HomePage } from "../features/home/HomePage";
 import { PhysicsWorldsPage } from "../features/physics-worlds/PhysicsWorldsPage";
@@ -204,6 +214,46 @@ export const router = createBrowserRouter([
       {
         path: "worlds/astronomy/escape-velocity",
         element: <EscapeVelocityPage />,
+      },
+      {
+        path: "worlds/astronomy/asteroid-mission",
+        element: <AsteroidMissionPage />,
+      },
+      {
+        path: "worlds/astronomy/black-hole-explorer",
+        element: <BlackHoleExplorerPage />,
+      },
+      {
+        path: "worlds/modern-physics/atom-builder",
+        element: <AtomBuilderPage />,
+      },
+      {
+        path: "worlds/modern-physics/particle-detective",
+        element: <ParticleDetectivePage />,
+      },
+      {
+        path: "worlds/modern-physics/wave-or-particle",
+        element: <WaveOrParticlePage />,
+      },
+      {
+        path: "worlds/modern-physics/quantum-puzzle",
+        element: <QuantumPuzzlePage />,
+      },
+      {
+        path: "worlds/modern-physics/radioactive-countdown",
+        element: <RadioactiveCountdownPage />,
+      },
+      {
+        path: "worlds/modern-physics/photoelectric-lab",
+        element: <PhotoelectricLabPage />,
+      },
+      {
+        path: "worlds/fluids/ship-designer",
+        element: <ShipDesignerPage />,
+      },
+      {
+        path: "worlds/fluids/water-pressure",
+        element: <WaterPressurePage />,
       },
       {
         path: "experiments",

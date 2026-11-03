@@ -54,6 +54,17 @@ export const AIR_MOLAR_MASS = 0.0289647;
 /** Adiabatic index of air (diatomic gas). */
 export const AIR_ADIABATIC_INDEX = 1.4;
 
+/** Neutron mass, kg. */
+export const NEUTRON_MASS = 1.67492749804e-27;
+/** Avogadro constant, 1/mol. */
+export const AVOGADRO_CONSTANT = 6.02214076e23;
+/** Density of fresh water near 4 °C, kg/m³. */
+export const FRESH_WATER_DENSITY = 1000;
+/** Typical density of seawater, kg/m³. */
+export const SEAWATER_DENSITY = 1025;
+/** Standard atmospheric pressure, Pa. */
+export const ATMOSPHERIC_PRESSURE = 101325;
+
 /** Vacuum permeability μ₀, in henries per meter (CODATA 2018). */
 export const VACUUM_PERMEABILITY = 1.25663706212e-6;
 /** Electron-volt in joules. */

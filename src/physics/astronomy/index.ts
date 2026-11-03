@@ -39,3 +39,14 @@ export {
   calculateSpecificEnergy,
   doesEscape,
 } from "./escape";
+export { calculateApoapsisAfterBurn, calculateHohmannTransfer, type HohmannTransfer } from "./transfer";
+export {
+  SOLAR_MASS,
+  calculateIscoRadius,
+  calculateMassFromSchwarzschildRadius,
+  calculatePhotonSphereRadius,
+  calculateSchwarzschildRadius,
+  calculateTimeDilationFactor,
+  classifyCircularOrbit,
+  type OrbitClass,
+} from "./blackHole";
