@@ -592,7 +592,7 @@ export function ProjectileMasterPage() {
           )}
         </section>
 
-        <aside className="trajectory-controls projectile-controls">
+        <aside aria-label="Game controls" className="trajectory-controls projectile-controls">
           <div className="trajectory-controls__heading">
             <div>
               <span className="trajectory-visual__eyebrow">YOUR LAUNCH</span>

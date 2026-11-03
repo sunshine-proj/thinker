@@ -10,7 +10,7 @@
   font-weight: 400;
 
   --color-ink: #20283a;
-  --color-muted: #788196;
+  --color-muted: #687182;
   --color-brand: #5467df;
   --color-brand-dark: #4355c6;
   --color-line: #e8ebf2;
@@ -156,7 +156,7 @@ a:focus-visible {
 
 .brand__text > span {
   margin-top: 4px;
-  color: #8a91a3;
+  color: #696e7d;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -184,7 +184,7 @@ a:focus-visible {
   gap: 12px;
   padding: 0 12px;
   border-radius: 9px;
-  color: #737d92;
+  color: #677183;
   font-size: 13px;
   font-weight: 500;
   transition:
@@ -236,7 +236,7 @@ a:focus-visible {
   height: 25px;
   place-items: center;
   border-radius: 8px;
-  color: #626fe0;
+  color: #5660c4;
   background: #eceeff;
   font-size: 14px;
 }
@@ -250,7 +250,7 @@ a:focus-visible {
 }
 
 .sidebar__thought > span:last-child {
-  color: #858da0;
+  color: #696f7e;
   font-size: 11px;
   line-height: 1.55;
 }
@@ -260,7 +260,7 @@ a:focus-visible {
   align-items: center;
   gap: 8px;
   margin: 17px 5px 0;
-  color: #9299a9;
+  color: #6b717d;
   font-size: 10px;
 }
 
@@ -369,7 +369,7 @@ a:focus-visible {
 }
 
 .site-footer span:first-child {
-  color: #747d91;
+  color: #687182;
   font-weight: 600;
 }
 
@@ -404,7 +404,7 @@ a:focus-visible {
   align-items: center;
   gap: 7px;
   margin: 0 0 12px;
-  color: #6975d7;
+  color: #5e69c2;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.15px;
@@ -435,13 +435,13 @@ p {
 
 .welcome-panel h1 span {
   display: block;
-  color: #596be0;
+  color: #5363d2;
 }
 
 .welcome-panel__description {
   max-width: 500px;
   margin: 15px 0 0;
-  color: #788196;
+  color: #687182;
   font-size: 13px;
   line-height: 1.7;
 }
@@ -566,7 +566,7 @@ p {
 
 .welcome-panel__star {
   position: absolute;
-  color: #7e89e9;
+  color: #5f68b4;
 }
 
 .welcome-panel__star--one {
@@ -592,7 +592,7 @@ p {
   position: absolute;
   right: 0;
   bottom: 4%;
-  color: #858bd0;
+  color: #65699f;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 1.6px;
@@ -671,17 +671,17 @@ p {
   flex: 0 0 auto;
   place-items: center;
   border-radius: 10px;
-  color: #5568d7;
+  color: #4f61c9;
   background: #eef0ff;
 }
 
 .start-card--worlds .start-card__icon {
-  color: #29987d;
+  color: #1f7c65;
   background: #e9f8f3;
 }
 
 .start-card--challenge .start-card__icon {
-  color: #dc8e38;
+  color: #996122;
   background: #fff4e7;
 }
 
@@ -717,7 +717,7 @@ p {
 }
 
 .start-card__body > span:last-child {
-  color: #858da0;
+  color: #696f7e;
   font-size: 10px;
   line-height: 1.45;
 }
@@ -756,7 +756,7 @@ p {
 .approach-section__intro > p:last-child {
   max-width: 290px;
   margin: 9px 0 0;
-  color: #858da0;
+  color: #696f7e;
   font-size: 11px;
   line-height: 1.6;
 }
@@ -782,19 +782,19 @@ p {
   height: 28px;
   place-items: center;
   border-radius: 9px;
-  color: #5d6bd1;
+  color: #5763c3;
   background: #eff0ff;
   font-size: 9px;
   font-weight: 700;
 }
 
 .learning-step:nth-child(2) .learning-step__number {
-  color: #258f76;
+  color: #1f7d66;
   background: #e9f7f2;
 }
 
 .learning-step:nth-child(3) .learning-step__number {
-  color: #d78835;
+  color: #9a6021;
   background: #fff3e5;
 }
 
@@ -807,7 +807,7 @@ p {
 
 .learning-step p {
   margin: 0;
-  color: #9299a9;
+  color: #6b717d;
   font-size: 9px;
   line-height: 1.5;
 }
@@ -829,7 +829,7 @@ p {
   flex: 0 0 auto;
   place-items: center;
   border-radius: 11px;
-  color: #5b68d3;
+  color: #525ebf;
   background: #e8e8ff;
   font-family: var(--font-display);
   font-size: 20px;
@@ -880,7 +880,7 @@ p {
   place-items: center;
   border: 1px solid #e7e9fd;
   border-radius: 16px;
-  color: #596be0;
+  color: #5363d2;
   background: #f0f1ff;
 }
 
@@ -911,7 +911,7 @@ p {
 .section-page__description {
   max-width: 580px;
   margin: 16px 0 0;
-  color: #788196;
+  color: #687182;
   font-size: 15px;
   line-height: 1.7;
 }
@@ -934,7 +934,7 @@ p {
   flex: 0 0 auto;
   place-items: center;
   border-radius: 9px;
-  color: #596be0;
+  color: #5060cb;
   background: #eef0ff;
 }
 
@@ -949,7 +949,7 @@ p {
 .section-page__note p {
   max-width: 470px;
   margin: 0;
-  color: #81899b;
+  color: #69707e;
   font-size: 12px;
   line-height: 1.65;
 }
@@ -989,7 +989,7 @@ p {
 .trajectory-lab__intro {
   max-width: 650px;
   margin: 9px 0 0;
-  color: #7c8498;
+  color: #687080;
   font-size: 13px;
   line-height: 1.6;
 }
@@ -1000,7 +1000,7 @@ p {
   padding: 7px 10px;
   border: 1px solid #e6e9f1;
   border-radius: 20px;
-  color: #7d8597;
+  color: #6d7583;
   background: #fff;
   font-size: 8px;
   font-weight: 700;
@@ -1036,7 +1036,7 @@ p {
 }
 
 .trajectory-visual__eyebrow {
-  color: #969daf;
+  color: #6a707d;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -1060,7 +1060,7 @@ p {
   padding: 0 9px;
   border: 1px solid #e7eaf2;
   border-radius: 20px;
-  color: #737c90;
+  color: #677081;
   background: #fafbfe;
   font-size: 9px;
   font-weight: 600;
@@ -1076,7 +1076,7 @@ p {
 
 .lab-status--running {
   border-color: #d3eee3;
-  color: #268567;
+  color: #227d60;
   background: #f0faf6;
 }
 
@@ -1088,7 +1088,7 @@ p {
 
 .lab-status--completed {
   border-color: #d3eee3;
-  color: #268567;
+  color: #227d60;
   background: #f0faf6;
 }
 
@@ -1157,7 +1157,7 @@ p {
 
 .trajectory-stat > span,
 .trajectory-visual__position > span {
-  color: #969daf;
+  color: #6a707d;
   font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.65px;
@@ -1202,7 +1202,7 @@ p {
 
 .lab-button {
   display: inline-flex;
-  min-height: 38px;
+  min-height: 40px;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -1249,7 +1249,7 @@ p {
 
 .trajectory-visual__frequency {
   margin-left: auto;
-  color: #8991a4;
+  color: #686e7d;
   font-size: 9px;
   text-align: right;
 }
@@ -1261,7 +1261,7 @@ p {
 }
 
 .trajectory-visual__frequency::first-letter {
-  color: #596be0;
+  color: #5363d2;
 }
 
 .lab-error,
@@ -1288,7 +1288,7 @@ p {
 
 .lab-challenge-hint {
   margin-top: -1px;
-  color: #737d92;
+  color: #677183;
   background: #f6f7ff;
 }
 
@@ -1309,7 +1309,7 @@ p {
   height: 31px;
   place-items: center;
   border-radius: 10px;
-  color: #6574da;
+  color: #5864bf;
   background: #f0f1ff;
   font-size: 17px;
 }
@@ -1325,7 +1325,7 @@ p {
 
 .lab-select select {
   width: 100%;
-  min-height: 39px;
+  min-height: 40px;
   padding: 0 10px;
   border: 1px solid #e4e8f0;
   border-radius: 8px;
@@ -1384,14 +1384,14 @@ p {
 
 .lab-control__hint {
   margin: -11px 0 -4px;
-  color: #8790a3;
+  color: #6a7181;
   font-size: 9px;
   line-height: 1.55;
 }
 
 .lab-toggle {
   display: flex;
-  min-height: 39px;
+  min-height: 40px;
   align-items: center;
   gap: 10px;
   cursor: pointer;
@@ -1455,7 +1455,7 @@ p {
 }
 
 .lab-toggle small {
-  color: #9199aa;
+  color: #6a717d;
   font-size: 8px;
   font-weight: 400;
 }
@@ -1482,7 +1482,7 @@ p {
   min-width: 0;
   flex-direction: column;
   gap: 5px;
-  color: #8991a3;
+  color: #686e7d;
   font-size: 8px;
   font-weight: 700;
 }
@@ -1490,7 +1490,7 @@ p {
 .position-control input {
   width: 100%;
   min-width: 0;
-  min-height: 34px;
+  min-height: 40px;
   padding: 0 6px;
   border: 1px solid #e4e8f0;
   border-radius: 6px;
@@ -1524,7 +1524,7 @@ p {
 
 .lab-explainer__intro > p:last-child {
   margin: 8px 0 0;
-  color: #80899d;
+  color: #687080;
   font-size: 10px;
   line-height: 1.65;
 }
@@ -1542,7 +1542,7 @@ p {
 }
 
 .lab-explainer__formula > span {
-  color: #8e96aa;
+  color: #686e7d;
   font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -1557,7 +1557,7 @@ p {
 }
 
 .lab-explainer__formula small {
-  color: #8a92a4;
+  color: #696f7d;
   font-size: 8px;
   line-height: 1.5;
 }
@@ -1567,7 +1567,7 @@ p {
   margin: 0;
   padding-top: 10px;
   border-top: 1px solid #edf0f5;
-  color: #8a92a4;
+  color: #696f7d;
   font-size: 9px;
   line-height: 1.55;
 }
@@ -1696,7 +1696,7 @@ p {
   }
 
   .topbar__profile {
-    min-height: 36px;
+    min-height: 40px;
     padding-right: 5px;
     border: 0;
     font-size: 0;
@@ -1854,7 +1854,7 @@ p {
   }
 
   .question-card .text-link {
-    min-height: 33px;
+    min-height: 40px;
     margin-left: 49px;
   }
 
@@ -2031,7 +2031,7 @@ p {
 .game-page__intro {
   max-width: 650px;
   margin: 9px 0 0;
-  color: #7c8498;
+  color: #687080;
   font-size: 13px;
   line-height: 1.6;
 }
@@ -2055,7 +2055,7 @@ p {
 }
 
 .game-progress__item > span {
-  color: #969daf;
+  color: #6a707d;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -2083,7 +2083,7 @@ p {
   padding: 0 10px;
   border: 1px solid #e7eaf2;
   border-radius: 20px;
-  color: #737c90;
+  color: #677081;
   background: #fafbfe;
   font-size: 9px;
   font-weight: 600;
@@ -2098,7 +2098,7 @@ p {
 
 .game-status--playing {
   border-color: #e9e3cf;
-  color: #92733b;
+  color: #8d6f39;
   background: #fffcf3;
 }
 
@@ -2108,7 +2108,7 @@ p {
 
 .game-status--paused {
   border-color: #f0ddc4;
-  color: #9a6930;
+  color: #95652e;
   background: #fff8ef;
 }
 
@@ -2118,7 +2118,7 @@ p {
 
 .game-status--completed {
   border-color: #d3eee3;
-  color: #268567;
+  color: #227d60;
   background: #f0faf6;
 }
 
@@ -2151,7 +2151,7 @@ p {
 .game-objectives h2,
 .game-score-summary h2 {
   margin: 0;
-  color: #69738a;
+  color: #656f85;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.7px;
@@ -2189,7 +2189,7 @@ p {
 .game-objectives__copy span,
 .game-objectives__progress span,
 .game-score-summary li {
-  color: #788196;
+  color: #687182;
   font-size: 10px;
 }
 
@@ -2238,7 +2238,7 @@ p {
 .game-lifecycle-controls__reset {
   padding: 7px 10px;
   border: 0;
-  color: #788196;
+  color: #687182;
   background: transparent;
   cursor: pointer;
   font: inherit;
@@ -2278,7 +2278,7 @@ p {
   padding: 7px 10px;
   border: 1px solid #f1e4d3;
   border-radius: 20px;
-  color: #a87437;
+  color: #986831;
   background: #fffaf3;
   font-size: 9px;
   font-weight: 700;
@@ -2320,7 +2320,7 @@ p {
 }
 
 .game-measurement span {
-  color: #969daf;
+  color: #6a707d;
   font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.55px;
@@ -2382,7 +2382,7 @@ p {
 
 .game-instructions {
   margin: -4px 0 0;
-  color: #788196;
+  color: #687182;
   font-size: 10px;
   line-height: 1.6;
 }
@@ -2402,7 +2402,7 @@ p {
 .game-number-input input {
   width: 100%;
   min-width: 0;
-  min-height: 39px;
+  min-height: 40px;
   padding: 0 10px;
   border: 1px solid #e4e8f0;
   border-radius: 8px;
@@ -2420,7 +2420,7 @@ p {
 }
 
 .game-number-input > span {
-  color: #69738a;
+  color: #656f85;
   font-size: 10px;
   font-weight: 700;
 }
@@ -2446,7 +2446,7 @@ p {
 
 .game-hint {
   margin-top: -7px;
-  color: #737d92;
+  color: #677183;
   background: #f6f7ff;
 }
 
@@ -2461,7 +2461,7 @@ p {
 }
 
 .game-formula > span {
-  color: #969daf;
+  color: #6a707d;
   font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -2477,7 +2477,7 @@ p {
 
 .game-formula p {
   margin: 0;
-  color: #81899b;
+  color: #69707e;
   font-size: 9px;
   line-height: 1.5;
 }
@@ -2503,7 +2503,7 @@ p {
 
 .game-learning p {
   margin: 7px 0 0;
-  color: #788196;
+  color: #687182;
   font-size: 10px;
   line-height: 1.65;
 }
@@ -2727,7 +2727,7 @@ p {
 
 .world-section__description {
   margin: 0 0 12px;
-  color: #69738a;
+  color: #656f85;
   font-size: 13px;
 }
 
@@ -2769,7 +2769,7 @@ a.world-card:focus-visible {
 }
 
 .world-card__meta {
-  color: #737c90;
+  color: #677081;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -2885,7 +2885,7 @@ a.world-card:focus-visible {
 
 .circuit-chip,
 .circuit-inventory button {
-  min-height: 36px;
+  min-height: 40px;
   padding: 0 12px;
   border: 1px solid #c9d0e6;
   border-radius: 18px;
@@ -2935,13 +2935,13 @@ a.world-card:focus-visible {
 
 .circuit-readings caption {
   margin-bottom: 4px;
-  color: #737c90;
+  color: #677081;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.8px;
   text-align: left;
 }
-.circuit-heading { margin: 14px 0 6px; color: #737c90; font-size: 9px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; }
+.circuit-heading { margin: 14px 0 6px; color: #677081; font-size: 9px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; }
 
 /* Saved experiments and explanations */
 .saved-experiments,
@@ -2987,7 +2987,7 @@ a.world-card:focus-visible {
 
 .saved-experiments__empty {
   margin: 0;
-  color: #69738a;
+  color: #656f85;
   font-size: 12px;
 }
 
@@ -3021,7 +3021,7 @@ a.world-card:focus-visible {
   flex: 1 1 220px;
   flex-direction: column;
   gap: 2px;
-  color: #69738a;
+  color: #656f85;
 }
 
 .saved-experiment__details strong {

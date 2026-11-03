@@ -4,15 +4,17 @@ import { PRIMARY_NAVIGATION } from "./navigationItems";
 
 interface PrimaryNavigationProps {
   className?: string;
+  /** Landmarks of the same kind need different names; the compact bar uses its own. */
+  label?: string;
 }
 
-export function PrimaryNavigation({ className }: PrimaryNavigationProps) {
+export function PrimaryNavigation({ className, label = "Primary navigation" }: PrimaryNavigationProps) {
   const navigationClassName = className
     ? `primary-navigation ${className}`
     : "primary-navigation";
 
   return (
-    <nav aria-label="Primary navigation" className={navigationClassName}>
+    <nav aria-label={label} className={navigationClassName}>
       {PRIMARY_NAVIGATION.map((item) => (
         <NavLink
           key={item.to}

@@ -37,9 +37,8 @@ describe("application shell", () => {
         name: "Physics is not just something to learn.It’s something to explore.",
       }),
     ).toBeTruthy();
-    expect(
-      screen.getAllByRole("navigation", { name: "Primary navigation" }),
-    ).toHaveLength(2);
+    expect(screen.getAllByRole("navigation", { name: "Primary navigation" })).toHaveLength(1);
+    expect(screen.getAllByRole("navigation", { name: "Quick navigation" })).toHaveLength(1);
   });
 
   it("navigates to a section and marks its navigation item current", () => {

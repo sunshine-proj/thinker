@@ -20,6 +20,7 @@ npm run lint
 npm test
 npm run build
 npm run verify:pwa   # after a build: checks manifest, icons, service worker and offline precache
+npm run verify:performance   # after a build: bundle-size budgets
 ```
 
 Linting uses [oxlint](https://oxc.rs/docs/guide/usage/linter) (`.oxlintrc.json`) rather than ESLint: the project uses the native TypeScript 7 compiler, which typescript-eslint does not support yet. Revisit this when typescript-eslint supports TypeScript 7.
@@ -38,6 +39,7 @@ Linting uses [oxlint](https://oxc.rs/docs/guide/usage/linter) (`.oxlintrc.json`)
 - Modern-physics modules live in `src/physics/quantum` (Bohr model, particle tracks, matter waves, two-state systems, photoelectric effect), radioactive decay with a seeded stochastic simulation in `src/physics/nuclear`, and hydrostatics and buoyancy in `src/physics/fluids`; Hohmann transfers and Schwarzschild black holes are in `src/physics/astronomy`.
 - Fluid-mechanics modules (dam, aerodynamics, pipes, buoyancy) are in `src/physics/fluids`; nuclear modules (nuclide table with binding energy and decay bookkeeping, decay chains, fusion energetics, mass-energy) in `src/physics/nuclear`; the bicycle model in `src/physics/mechanics/bicycle.ts`.
 - Experiment Lab: the original Electron Trajectory Lab has its own canvas simulation; the newer analytic labs (Gravity Comparison, Friction on Different Surfaces, Projectile Motion, Magnetic Field Strength) are declared as data in `src/features/experiments/labs` (controls, a pure `run` function returning measurements, charts and explanations) and rendered by one generic `LabPage`, which also provides the saved-runs notebook. A new lab needs only a definition, a catalog entry and a route.
+- Pages are loaded on demand with `React.lazy` (the first visit downloads about 116 kB gzip instead of 307 kB); `AppShell` shows a loading status while a page chunk arrives. Quality checks (axe on every route, contrast and responsive CSS rules, performance budgets) are described in [docs/TESTING.md](./docs/TESTING.md).
 - Playable content is registered in `src/data/games/gameCatalog.ts`, which drives the Physics Worlds page.
 
 ## Development Roadmap
@@ -117,10 +119,10 @@ This sequence establishes the architecture before the project grows to 50+ games
 71. [x] Add the Friction on Different Surfaces experiment to the Experiment Lab: tested static- and kinetic-friction calculations on flat and inclined surfaces. Includes saved runs, measurements, and explanations.
 72. [x] Add the Projectile Motion experiment to the Experiment Lab: an open-ended lab reusing the Projectile Master model, with adjustable gravity and launch height. Includes saved runs, measurements, and explanations.
 73. [x] Add the Magnetic Field Strength experiment to the Experiment Lab: tested magnetic-field calculations for wires and solenoids against current and distance. Includes saved runs, measurements, and explanations.
-74. [ ] Add the Heat Transfer experiment to the Experiment Lab: tested conduction, convection, and radiation calculations compared side by side. Includes saved runs, measurements, and explanations.
-75. [ ] Add the Lens Focal Length experiment to the Experiment Lab: tested thin-lens calculations for measuring focal length. Includes saved runs, measurements, and explanations.
-76. [ ] Add the Wave Interference experiment to the Experiment Lab: an open-ended lab with tested two-source interference calculations. Includes saved runs, measurements, and explanations.
-77. [ ] Add the Orbital Motion experiment to the Experiment Lab: an open-ended lab reusing the validated orbit integrator. Includes saved runs, measurements, and explanations.
+74. [x] Add the Heat Transfer experiment to the Experiment Lab: tested conduction, convection, and radiation calculations compared side by side. Includes saved runs, measurements, and explanations.
+75. [x] Add the Lens Focal Length experiment to the Experiment Lab: tested thin-lens calculations for measuring focal length. Includes saved runs, measurements, and explanations.
+76. [x] Add the Wave Interference experiment to the Experiment Lab: an open-ended lab with tested two-source interference calculations. Includes saved runs, measurements, and explanations.
+77. [x] Add the Orbital Motion experiment to the Experiment Lab: an open-ended lab reusing the validated orbit integrator. Includes saved runs, measurements, and explanations.
 78. [x] Add local progress persistence, resume support, challenges, and achievements.
 79. [x] Configure PWA installation and offline access to the application shell and downloaded learning content.
-80. [ ] Complete accessibility, responsive-device, offline, browser-compatibility, and performance testing.
+80. [x] Complete accessibility, responsive-device, offline, browser-compatibility, and performance testing. Automated checks and a manual device checklist are in [docs/TESTING.md](./docs/TESTING.md); the manual checklist still has to be run on real devices.

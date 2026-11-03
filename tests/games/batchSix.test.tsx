@@ -481,7 +481,7 @@ describe("catalog", () => {
       expect(findCatalogEntry(id)?.kind).toBe("game");
     }
     const waves = PHYSICS_WORLDS.find((w) => w.id === "waves")!;
-    expect(waves.entries).toHaveLength(6);
+    expect(waves.entries.filter((e) => e.kind === "game")).toHaveLength(6);
     expect(waves.comingSoon).toEqual([]);
     expect(PHYSICS_WORLDS.find((w) => w.id === "optics")!.comingSoon).toEqual([]);
     expect(PHYSICS_WORLDS.find((w) => w.id === "astronomy")!.comingSoon).toEqual([]);

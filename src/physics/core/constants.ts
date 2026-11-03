@@ -76,6 +76,9 @@ export const CONCRETE_DENSITY = 2400;
 /** Density of steel, kg/m³. */
 export const STEEL_DENSITY = 7850;
 
+/** Stefan–Boltzmann constant σ, W/(m²·K⁴). */
+export const STEFAN_BOLTZMANN_CONSTANT = 5.670374419e-8;
+
 /** Vacuum permeability μ₀, in henries per meter (CODATA 2018). */
 export const VACUUM_PERMEABILITY = 1.25663706212e-6;
 /** Electron-volt in joules. */

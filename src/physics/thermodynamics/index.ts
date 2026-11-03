@@ -37,3 +37,12 @@ export {
   calculateSteadyPotTemperature,
 } from "./solarCooker";
 export { calculateHeatingTime as calculateKettleTime, calculateIcedDrink, type IcedDrink } from "./kitchen";
+export {
+  CONDUCTORS,
+  CONVECTION_MEDIA,
+  calculateConvectionPower,
+  calculateRadiationPower,
+  compareHeatTransfer,
+  type Fluid,
+  type Material,
+} from "./heatModes";

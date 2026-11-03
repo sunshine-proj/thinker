@@ -578,7 +578,7 @@ export function BalanceChallengePage() {
           )}
         </section>
 
-        <aside className="trajectory-controls">
+        <aside aria-label="Game controls" className="trajectory-controls">
           <div className="trajectory-controls__heading">
             <div>
               <span className="trajectory-visual__eyebrow">YOUR MASS</span>

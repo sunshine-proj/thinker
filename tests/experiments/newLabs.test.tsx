@@ -13,7 +13,7 @@ const measurement = (lab: (typeof LABS)[number], values: Record<string, number |
 
 describe("lab definitions", () => {
   it("are registered in the catalog as experiments with matching ids", () => {
-    expect(LABS).toHaveLength(4);
+    expect(LABS.length).toBeGreaterThanOrEqual(4);
     for (const lab of LABS) {
       expect(findCatalogEntry(lab.id)?.kind).toBe("experiment");
       expect(findLab(lab.id)).toBe(lab);

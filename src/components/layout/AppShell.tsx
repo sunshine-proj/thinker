@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { AppIcon } from "../common/AppIcon";
 import { AchievementNotice } from "../feedback/AchievementNotice";
@@ -35,7 +36,7 @@ export function AppShell() {
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <aside className="sidebar">
+      <aside aria-label="Playground sidebar" className="sidebar">
         <Brand />
         <p className="sidebar__label">YOUR PLAYGROUND</p>
         <PrimaryNavigation />
@@ -75,14 +76,16 @@ export function AppShell() {
         </header>
 
         <div className="mobile-navigation">
-          <PrimaryNavigation />
+          <PrimaryNavigation label="Quick navigation" />
         </div>
 
         <PwaStatus />
         <AchievementNotice />
 
         <main className="main-content" id="main-content" tabIndex={-1}>
-          <Outlet />
+          <Suspense fallback={<p className="route-loading" role="status">Loading…</p>}>
+            <Outlet />
+          </Suspense>
         </main>
 
         <footer className="site-footer">

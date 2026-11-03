@@ -483,7 +483,7 @@ export function CircuitBuilderPage() {
           )}
         </section>
 
-        <aside className="trajectory-controls">
+        <aside aria-label="Game controls" className="trajectory-controls">
           <div className="trajectory-controls__heading">
             <div>
               <span className="trajectory-visual__eyebrow">YOUR CIRCUIT</span>

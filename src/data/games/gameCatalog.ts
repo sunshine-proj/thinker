@@ -185,6 +185,14 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
     description: "Reflection, refraction and lenses.",
     entries: [
       {
+        id: "lens-focal-length",
+        title: "Lens Focal Length",
+        kind: "experiment",
+        path: "/experiments/lens-focal-length",
+        summary: "Measure a lens's focal length three ways.",
+        difficulty: "Intermediate",
+      },
+      {
         id: "microscope-builder",
         title: "Microscope Builder",
         kind: "game",
@@ -241,6 +249,14 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
     description: "Heat, temperature and energy transfer.",
     entries: [
       {
+        id: "heat-transfer-modes",
+        title: "Heat Transfer",
+        kind: "experiment",
+        path: "/experiments/heat-transfer",
+        summary: "Compare conduction, convection and radiation side by side.",
+        difficulty: "Intermediate",
+      },
+      {
         id: "solar-cooker",
         title: "Solar Cooker",
         kind: "game",
@@ -296,6 +312,14 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
     title: "Astronomy & Astrophysics",
     description: "Gravity, orbits and space missions.",
     entries: [
+      {
+        id: "orbital-motion-lab",
+        title: "Orbital Motion",
+        kind: "experiment",
+        path: "/experiments/orbital-motion",
+        summary: "Launch satellites and watch circles, ellipses and escapes.",
+        difficulty: "Advanced",
+      },
       {
         id: "black-hole-explorer",
         title: "Black Hole Explorer",
@@ -360,6 +384,14 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
     title: "Waves & Sound",
     description: "Frequency, resonance and interference.",
     entries: [
+      {
+        id: "wave-interference-lab",
+        title: "Sound Interference Lab",
+        kind: "experiment",
+        path: "/experiments/wave-interference",
+        summary: "Find loud and silent spots between two speakers.",
+        difficulty: "Intermediate",
+      },
       {
         id: "wave-interference",
         title: "Wave Interference",
