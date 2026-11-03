@@ -51,3 +51,12 @@ export {
   calculateSpeedSquared,
   calculateTopGForce,
 } from "./energy";
+export {
+  calculateBicycleSpeed,
+  calculateDriveForce,
+  calculateResistiveForce,
+  calculateRiderPower,
+  calculateSpeedForPower,
+  calculateWheelTorque,
+  type RideParameters,
+} from "./bicycle";

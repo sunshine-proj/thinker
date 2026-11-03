@@ -203,17 +203,70 @@ The next step is 44, Asteroid Mission. Tell me if you want that batch or want th
 
 
 
+===============================================
+
+
+
+Steps 44–53 are built, registered in the catalog and router, and marked done in the README. Typecheck and lint are clean, all 860 tests pass (64 files), and the build and verify:pwa pass. I haven't opened the games in a real browser.
+
+Step	Game	World
+44	Asteroid Mission	Astronomy
+45	Black Hole Explorer	Astronomy
+46	Atom Builder	Modern Physics
+47	Particle Detective	Modern Physics
+48	Wave or Particle?	Modern Physics
+49	Quantum Puzzle	Modern Physics
+50	Radioactive Countdown	Modern Physics
+51	Photoelectric Lab	Modern Physics
+52	Ship Designer	Fluid Mechanics
+53	Water Pressure	Fluid Mechanics
+Each game has three rounds, a prediction step, and a tested physics module behind it. I added about 50 physics tests and about 50 game tests, checked against hand-worked numbers. Astronomy and Modern Physics now have no "coming soon" items left.
+
+Particle Detective: the third round makes the learner use relativistic energy for a fast electron. The classical formula would give about 220 MeV instead of 14.5 MeV.
+Radioactive Countdown: the counting round simulates each nucleus with a fixed random seed, so results are repeatable. It accepts any estimate within two standard deviations of the expected count.
+Asteroid Mission and Black Hole Explorer: these are analytic models with the assumptions stated in the game text. Asteroid Mission ignores Earth's and the asteroid's own gravity. Black Hole Explorer is non-rotating only.
+Test changes along the way:
+The Asteroid Mission burn slider now goes up to 14 km/s, so an escape-speed burn is reachable. The Black Hole Explorer clock slider now starts at 20 km, so a radius inside the horizon is reachable.
+I updated one older catalog test that expected Asteroid Mission and Black Hole Explorer to still be "coming soon".
+Nothing is committed to git. The next step in the roadmap is 54, Dam Engineer.
+
+
 
 ===============================================
 
 
 
+Steps 54–63 are built, registered in the catalog and router, and marked done in the README. Typecheck and lint are clean, all 948 tests pass (66 files), and the build and verify:pwa pass. I haven't opened any of the games in a real browser.
+
+Step	Game	World
+54	Dam Engineer	Fluids
+55	Flight Simulator	Fluids
+56	Pipe Puzzle	Fluids
+57	Floating Challenge	Fluids
+58	Nuclear Puzzle	Nuclear
+59	Half-Life Challenge	Nuclear
+60	Fusion Simulator	Nuclear
+61	Energy Detective	Nuclear
+62	Isotope Explorer	Nuclear
+63	Bicycle Physics	Everyday
+Each game has three rounds, a prediction step and a tested physics module behind it. The Fluid Mechanics and Nuclear Physics worlds now have no "coming soon" items left. The Everyday world still has six: Basketball Challenge, Tennis Physics, Kitchen Scientist, Car Safety Engineer, Smartphone Detective and Amusement Park Physics.
+
+New physics modules:
+src/physics/fluids/: dam, aerodynamics, pipes, buoyancy.
+src/physics/nuclear/: a nuclide table with binding energy and decay bookkeeping, decay chains, fusion energetics, mass-energy.
+src/physics/mechanics/bicycle.ts.
+Binding energy: values come from the table's measured atomic masses where available, and from the liquid-drop (semi-empirical) formula elsewhere. That formula is poor for very light nuclei, and the game text says so. Nuclear Puzzle's peak round uses it.
+Flight Simulator: this is a teaching model with a sharp stall at C_L,max = 1.6, no propeller, fuselage or flaps, and thin symmetric wing theory. The game text states these simplifications.
+Dam Engineer: it only checks tipping about the toe, not sliding, and uses a simple linear uplift model.
+Fixes along the way:
+My hand estimate for the mixed-sample round was off (4.6 days vs the real 5.9 days). The test caught it and I corrected the game text.
+I had Energy Detective's hydrogen round in petajoules; it should be terajoules. Fixed.
+Three older tests had stale expectations after the catalog change. Updated.
+Nothing is committed to git. The next steps in the roadmap are 64–73: Basketball Challenge, Tennis Physics, Kitchen Scientist, Car Safety Engineer, Smartphone Detective, Amusement Park Physics, then the first four Experiment Lab experiments.
 
 
 
-
-
-
+===============================================
 
 
 

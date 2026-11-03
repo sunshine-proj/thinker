@@ -65,6 +65,17 @@ export const SEAWATER_DENSITY = 1025;
 /** Standard atmospheric pressure, Pa. */
 export const ATMOSPHERIC_PRESSURE = 101325;
 
+/** Atomic mass unit, kg. */
+export const ATOMIC_MASS_UNIT = 1.66053906660e-27;
+/** Energy equivalent of one atomic mass unit, MeV. */
+export const ATOMIC_MASS_UNIT_MEV = 931.49410242;
+/** Density of dry air at sea level and 15 °C, kg/m³. */
+export const AIR_DENSITY = 1.225;
+/** Density of concrete, kg/m³. */
+export const CONCRETE_DENSITY = 2400;
+/** Density of steel, kg/m³. */
+export const STEEL_DENSITY = 7850;
+
 /** Vacuum permeability μ₀, in henries per meter (CODATA 2018). */
 export const VACUUM_PERMEABILITY = 1.25663706212e-6;
 /** Electron-volt in joules. */

@@ -49,6 +49,16 @@ import { RadioactiveCountdownPage } from "../features/games/radioactive-countdow
 import { PhotoelectricLabPage } from "../features/games/photoelectric-lab/PhotoelectricLabPage";
 import { ShipDesignerPage } from "../features/games/ship-designer/ShipDesignerPage";
 import { WaterPressurePage } from "../features/games/water-pressure/WaterPressurePage";
+import { DamEngineerPage } from "../features/games/dam-engineer/DamEngineerPage";
+import { FlightSimulatorPage } from "../features/games/flight-simulator/FlightSimulatorPage";
+import { PipePuzzlePage } from "../features/games/pipe-puzzle/PipePuzzlePage";
+import { FloatingChallengePage } from "../features/games/floating-challenge/FloatingChallengePage";
+import { NuclearPuzzlePage } from "../features/games/nuclear-puzzle/NuclearPuzzlePage";
+import { HalfLifeChallengePage } from "../features/games/half-life-challenge/HalfLifeChallengePage";
+import { FusionSimulatorPage } from "../features/games/fusion-simulator/FusionSimulatorPage";
+import { EnergyDetectivePage } from "../features/games/energy-detective/EnergyDetectivePage";
+import { IsotopeExplorerPage } from "../features/games/isotope-explorer/IsotopeExplorerPage";
+import { BicyclePhysicsPage } from "../features/games/bicycle-physics/BicyclePhysicsPage";
 import { MirrorIllusionsPage } from "../features/games/mirror-illusions/MirrorIllusionsPage";
 import { HomePage } from "../features/home/HomePage";
 import { PhysicsWorldsPage } from "../features/physics-worlds/PhysicsWorldsPage";
@@ -254,6 +264,46 @@ export const router = createBrowserRouter([
       {
         path: "worlds/fluids/water-pressure",
         element: <WaterPressurePage />,
+      },
+      {
+        path: "worlds/fluids/dam-engineer",
+        element: <DamEngineerPage />,
+      },
+      {
+        path: "worlds/fluids/flight-simulator",
+        element: <FlightSimulatorPage />,
+      },
+      {
+        path: "worlds/fluids/pipe-puzzle",
+        element: <PipePuzzlePage />,
+      },
+      {
+        path: "worlds/fluids/floating-challenge",
+        element: <FloatingChallengePage />,
+      },
+      {
+        path: "worlds/nuclear/nuclear-puzzle",
+        element: <NuclearPuzzlePage />,
+      },
+      {
+        path: "worlds/nuclear/half-life-challenge",
+        element: <HalfLifeChallengePage />,
+      },
+      {
+        path: "worlds/nuclear/fusion-simulator",
+        element: <FusionSimulatorPage />,
+      },
+      {
+        path: "worlds/nuclear/energy-detective",
+        element: <EnergyDetectivePage />,
+      },
+      {
+        path: "worlds/nuclear/isotope-explorer",
+        element: <IsotopeExplorerPage />,
+      },
+      {
+        path: "worlds/everyday/bicycle-physics",
+        element: <BicyclePhysicsPage />,
       },
       {
         path: "experiments",

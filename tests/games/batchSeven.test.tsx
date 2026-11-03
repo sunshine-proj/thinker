@@ -382,6 +382,6 @@ describe("catalog", () => {
     }
     expect(PHYSICS_WORLDS.find((w) => w.id === "astronomy")!.comingSoon).toEqual([]);
     expect(PHYSICS_WORLDS.find((w) => w.id === "modern-physics")!.comingSoon).toEqual([]);
-    expect(PHYSICS_WORLDS.find((w) => w.id === "fluids")!.comingSoon).toEqual(["Dam Engineer", "Flight Simulator", "Pipe Puzzle", "Floating Challenge"]);
+    expect(PHYSICS_WORLDS.find((w) => w.id === "fluids")!.comingSoon).toEqual([]);
   });
 });
