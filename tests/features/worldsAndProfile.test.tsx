@@ -19,7 +19,9 @@ describe("Physics Worlds", () => {
       const link = screen.getByRole("link", { name: new RegExp(entry.title) });
       expect(link.getAttribute("href")).toBe(entry.path);
     }
-    expect(screen.getAllByText("COMING SOON").length).toBeGreaterThan(0);
+    // Every planned game is playable now, so no world lists anything as coming soon.
+    expect(PHYSICS_WORLDS.every((world) => world.comingSoon.length === 0)).toBe(true);
+    expect(screen.queryAllByText("COMING SOON")).toHaveLength(0);
   });
 
   it("only lists paths that exist in the router", () => {

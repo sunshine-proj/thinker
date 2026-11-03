@@ -60,3 +60,24 @@ export {
   calculateWheelTorque,
   type RideParameters,
 } from "./bicycle";
+export {
+  calculateHeightAtDistance, calculateLaunchAngles, calculateLaunchSpeed, calculateReboundHeight, calculateRestitution,
+  calculateVerticalVelocityAtDistance,
+} from "./bounce";
+export { TENNIS_BALL, calculateBallTerminalSpeed, simulateBallFlight, type BallFlight, type BallLaunch, type BallProperties } from "./ballFlight";
+export {
+  calculateAverageCrashForce, calculateCrashGForce, calculateImpulseForce, calculateInelasticVelocity, calculateKineticEnergyLoss,
+  calculateStoppingDistanceForGForce, calculateStoppingTime,
+} from "./collisions";
+export {
+  calculateBrakingGForce, calculateCentripetalAcceleration, calculateFreeFallSpeed, calculatePeriodForAcceleration,
+  calculateRotorMinimumAngularSpeed, calculateWallGForce, rpmToRadiansPerSecond,
+} from "./circular";
+export {
+  calculateDistanceForIlluminance, calculateElevatorReading, calculateIlluminance, calculateRotationAngleDegrees,
+  calculateTiltFromReading, calculateTiltedAccelerometerReading,
+} from "./sensors";
+export { SURFACES, calculateCriticalAngle, calculateFriction, calculateSlideTime, type FrictionState, type Surface } from "./friction";
+export {
+  calculateExactPendulumPeriod, calculateFallTime, calculateImpactSpeed, calculatePendulumPeriod, calculateSmallAngleSwing,
+} from "./pendulum";

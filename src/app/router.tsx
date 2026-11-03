@@ -59,12 +59,26 @@ import { FusionSimulatorPage } from "../features/games/fusion-simulator/FusionSi
 import { EnergyDetectivePage } from "../features/games/energy-detective/EnergyDetectivePage";
 import { IsotopeExplorerPage } from "../features/games/isotope-explorer/IsotopeExplorerPage";
 import { BicyclePhysicsPage } from "../features/games/bicycle-physics/BicyclePhysicsPage";
+import { BasketballChallengePage } from "../features/games/basketball-challenge/BasketballChallengePage";
+import { TennisPhysicsPage } from "../features/games/tennis-physics/TennisPhysicsPage";
+import { KitchenScientistPage } from "../features/games/kitchen-scientist/KitchenScientistPage";
+import { CarSafetyEngineerPage } from "../features/games/car-safety-engineer/CarSafetyEngineerPage";
+import { SmartphoneDetectivePage } from "../features/games/smartphone-detective/SmartphoneDetectivePage";
+import { AmusementParkPhysicsPage } from "../features/games/amusement-park-physics/AmusementParkPhysicsPage";
+import { LabPage } from "../features/experiments/labs/LabPage";
+import { LABS } from "../features/experiments/labs";
+import type { LabDefinition } from "../features/experiments/labs/labTypes";
 import { MirrorIllusionsPage } from "../features/games/mirror-illusions/MirrorIllusionsPage";
 import { HomePage } from "../features/home/HomePage";
 import { PhysicsWorldsPage } from "../features/physics-worlds/PhysicsWorldsPage";
 import { ProfilePage } from "../features/profile/ProfilePage";
 import { NotFoundPage } from "./NotFoundPage";
 import { SectionPage } from "./SectionPage";
+
+function LabRoute({ definition }: { definition: LabDefinition }) {
+  const [searchParams] = useSearchParams();
+  return <LabPage definition={definition} savedExperimentId={searchParams.get("saved") ?? undefined} />;
+}
 
 function ElectronTrajectoryLabRoute() {
   const [searchParams] = useSearchParams();
@@ -306,10 +320,38 @@ export const router = createBrowserRouter([
         element: <BicyclePhysicsPage />,
       },
       {
+        path: "worlds/everyday/basketball-challenge",
+        element: <BasketballChallengePage />,
+      },
+      {
+        path: "worlds/everyday/tennis-physics",
+        element: <TennisPhysicsPage />,
+      },
+      {
+        path: "worlds/everyday/kitchen-scientist",
+        element: <KitchenScientistPage />,
+      },
+      {
+        path: "worlds/everyday/car-safety-engineer",
+        element: <CarSafetyEngineerPage />,
+      },
+      {
+        path: "worlds/everyday/smartphone-detective",
+        element: <SmartphoneDetectivePage />,
+      },
+      {
+        path: "worlds/everyday/amusement-park-physics",
+        element: <AmusementParkPhysicsPage />,
+      },
+      {
         path: "experiments",
         element: <Outlet />,
         children: [
           { index: true, element: <ExperimentsIndexPage /> },
+          { path: "gravity-comparison", element: <LabRoute definition={LABS.find((lab) => lab.id === "gravity-comparison")!} /> },
+          { path: "friction", element: <LabRoute definition={LABS.find((lab) => lab.id === "friction-surfaces")!} /> },
+          { path: "projectile-motion", element: <LabRoute definition={LABS.find((lab) => lab.id === "projectile-motion-lab")!} /> },
+          { path: "magnetic-field", element: <LabRoute definition={LABS.find((lab) => lab.id === "magnetic-field-strength")!} /> },
           {
             path: "electron-trajectory",
             element: <ElectronTrajectoryLabRoute />,

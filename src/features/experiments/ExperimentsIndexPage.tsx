@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { PHYSICS_WORLDS } from "../../data/games/gameCatalog";
+import { PHYSICS_WORLDS, findCatalogEntry } from "../../data/games/gameCatalog";
 import { useProgressStore } from "../../store/progressStore";
 
 const LAB_PATH = "/experiments/electron-trajectory";
@@ -62,7 +62,7 @@ export function ExperimentsIndexPage() {
               <li key={experiment.id}>
                 <Link
                   className="world-card"
-                  to={`${LAB_PATH}?saved=${encodeURIComponent(experiment.id)}`}
+                  to={`${findCatalogEntry(experiment.experimentId)?.path ?? LAB_PATH}?saved=${encodeURIComponent(experiment.id)}`}
                 >
                   <span className="world-card__meta">
                     {experiment.experimentName.toUpperCase()}

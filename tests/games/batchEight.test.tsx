@@ -373,6 +373,6 @@ describe("catalog", () => {
     }
     expect(PHYSICS_WORLDS.find((w) => w.id === "fluids")!.comingSoon).toEqual([]);
     expect(PHYSICS_WORLDS.find((w) => w.id === "nuclear")!.comingSoon).toEqual([]);
-    expect(PHYSICS_WORLDS.find((w) => w.id === "everyday")!.comingSoon).toHaveLength(6);
+    expect(PHYSICS_WORLDS.find((w) => w.id === "everyday")!.comingSoon).toEqual([]);
   });
 });

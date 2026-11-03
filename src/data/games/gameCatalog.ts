@@ -25,6 +25,30 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
     description: "Motion, forces and equilibrium.",
     entries: [
       {
+        id: "projectile-motion-lab",
+        title: "Projectile Motion",
+        kind: "experiment",
+        path: "/experiments/projectile-motion",
+        summary: "Launch with any speed, angle, gravity and height.",
+        difficulty: "Beginner",
+      },
+      {
+        id: "friction-surfaces",
+        title: "Friction on Different Surfaces",
+        kind: "experiment",
+        path: "/experiments/friction",
+        summary: "Push a block over different surfaces, flat or on a slope.",
+        difficulty: "Intermediate",
+      },
+      {
+        id: "gravity-comparison",
+        title: "Gravity Comparison",
+        kind: "experiment",
+        path: "/experiments/gravity-comparison",
+        summary: "Compare free fall and a pendulum on Earth, the Moon, Mars and more.",
+        difficulty: "Beginner",
+      },
+      {
         id: "roller-coaster",
         title: "Roller Coaster Engineer",
         kind: "game",
@@ -88,6 +112,14 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
     title: "Electricity & Magnetism",
     description: "Charges, fields and circuits.",
     entries: [
+      {
+        id: "magnetic-field-strength",
+        title: "Magnetic Field Strength",
+        kind: "experiment",
+        path: "/experiments/magnetic-field",
+        summary: "Measure the field of wires and solenoids against current and distance.",
+        difficulty: "Intermediate",
+      },
       {
         id: "particle-accelerator",
         title: "Particle Accelerator Laboratory",
@@ -545,6 +577,54 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
     description: "Sports, transport and the home.",
     entries: [
       {
+        id: "amusement-park-physics",
+        title: "Amusement Park Physics",
+        kind: "game",
+        path: "/worlds/everyday/amusement-park-physics",
+        summary: "Set carousels, drop towers and the Rotor with circular motion and g-forces.",
+        difficulty: "Intermediate",
+      },
+      {
+        id: "smartphone-detective",
+        title: "Smartphone Detective",
+        kind: "game",
+        path: "/worlds/everyday/smartphone-detective",
+        summary: "Read tilt, rotation and distance from phone sensors.",
+        difficulty: "Beginner",
+      },
+      {
+        id: "car-safety-engineer",
+        title: "Car Safety Engineer",
+        kind: "game",
+        path: "/worlds/everyday/car-safety-engineer",
+        summary: "Use momentum and impulse for crumple zones, airbags and collisions.",
+        difficulty: "Intermediate",
+      },
+      {
+        id: "kitchen-scientist",
+        title: "Kitchen Scientist",
+        kind: "game",
+        path: "/worlds/everyday/kitchen-scientist",
+        summary: "Boil, chill and conduct: heat and phase change in the kitchen.",
+        difficulty: "Intermediate",
+      },
+      {
+        id: "tennis-physics",
+        title: "Tennis Physics",
+        kind: "game",
+        path: "/worlds/everyday/tennis-physics",
+        summary: "Serve through air drag, meet the bounce standard, and find terminal speed.",
+        difficulty: "Intermediate",
+      },
+      {
+        id: "basketball-challenge",
+        title: "Basketball Challenge",
+        kind: "game",
+        path: "/worlds/everyday/basketball-challenge",
+        summary: "Sink shots with projectile motion and tune a ball's bounce.",
+        difficulty: "Intermediate",
+      },
+      {
         id: "bicycle-physics",
         title: "Bicycle Physics",
         kind: "game",
@@ -553,7 +633,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         difficulty: "Beginner",
       },
     ],
-    comingSoon: ["Basketball Challenge", "Tennis Physics", "Kitchen Scientist", "Car Safety Engineer", "Smartphone Detective", "Amusement Park Physics"],
+    comingSoon: [],
   },
 ]);
 

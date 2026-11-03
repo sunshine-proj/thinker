@@ -36,3 +36,4 @@ export {
   calculateHeatingTime,
   calculateSteadyPotTemperature,
 } from "./solarCooker";
+export { calculateHeatingTime as calculateKettleTime, calculateIcedDrink, type IcedDrink } from "./kitchen";

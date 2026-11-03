@@ -270,6 +270,50 @@ Nothing is committed to git. The next steps in the roadmap are 64–73: Basketba
 
 
 
+Steps 64–73 are built, registered, and marked done in the README. Typecheck and lint are clean, all 1025 tests pass (69 files), and the build and verify:pwa pass. I haven't opened any of the new games or labs in a real browser.
+
+Games (64–69, Everyday Life)
+
+Step	Game	Topic
+64	Basketball Challenge	Projectile motion and bounce (restitution)
+65	Tennis Physics	Quadratic drag and the official drop test
+66	Kitchen Scientist	Heating time, ice and latent heat, conduction through a pot base
+67	Car Safety Engineer	Crumple zones, airbags and a sticking head-on collision
+68	Smartphone Detective	Accelerometer tilt, gyroscope angle and light-sensor distance
+69	Amusement Park Physics	Carousel, drop tower and Rotor g-forces
+Each game has three rounds and a tested physics module. Every world now has nothing left to come.
+
+Experiments (70–73)
+
+Step	Experiment	World
+70	Gravity Comparison	Mechanics
+71	Friction on Different Surfaces	Mechanics
+72	Projectile Motion	Mechanics
+73	Magnetic Field Strength	Electricity & Magnetism
+Shared lab page: the four labs share one LabPage. A lab is just data: controls, a pure run function returning measurements, charts and explanations. The page adds a reset button, an assumptions panel and the saved-runs notebook with comparison. A new lab now needs only a definition, a catalog entry and a route.
+
+Projectile Motion reuses the Projectile Master model, with adjustable gravity and launch height.
+
+Experiments index: it now opens a saved run in its own lab. It used to link every saved run to the Electron lab.
+
+Tennis serve: the speed that lands on the service line is about 56.7 m/s, found by bisection on the drag simulation. Spin is ignored and the game text says so.
+
+Not covered: the original Electron Trajectory Lab is still a bespoke canvas page and doesn't use the new LabPage. The new labs are analytic, so they have no start/pause. Say if you want the Electron lab moved onto the framework.
+
+Test change: I changed one older test that expected "COMING SOON" to appear on the worlds page, since nothing is coming soon now.
+
+Nothing is committed to git. The next steps are 74–77, the remaining Experiment Lab experiments: Heat Transfer, Lens Focal Length, Wave Interference and Orbital Motion. After that comes step 80, the accessibility, device and performance testing pass.
+
+
+
+
+===============================================
+
+
+
+
+
+
 
 
 

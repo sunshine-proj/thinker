@@ -50,3 +50,4 @@ export {
   classifyCircularOrbit,
   type OrbitClass,
 } from "./blackHole";
+export { SURFACE_BODIES, findSurfaceBody, type Body_ } from "./bodies";

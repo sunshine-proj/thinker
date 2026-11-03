@@ -60,3 +60,9 @@ export {
   type GeneratorDesign,
   type GeneratorOutput,
 } from "./induction";
+export {
+  EARTH_FIELD_TESLA,
+  calculateLongSolenoidField,
+  calculateWireDistanceForField,
+  calculateWireField,
+} from "./fieldSources";
