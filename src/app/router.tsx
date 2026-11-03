@@ -29,6 +29,16 @@ import { MaterialDetectivePage } from "../features/games/material-detective/Mate
 import { SolarCookerPage } from "../features/games/solar-cooker/SolarCookerPage";
 import { RainbowCreatorPage } from "../features/games/rainbow-creator/RainbowCreatorPage";
 import { VisionSimulatorPage } from "../features/games/vision-simulator/VisionSimulatorPage";
+import { MicroscopeBuilderPage } from "../features/games/microscope-builder/MicroscopeBuilderPage";
+import { SoundCreatorPage } from "../features/games/sound-creator/SoundCreatorPage";
+import { VirtualGuitarPage } from "../features/games/virtual-guitar/VirtualGuitarPage";
+import { WaveSimulatorPage } from "../features/games/wave-simulator/WaveSimulatorPage";
+import { EchoExplorerPage } from "../features/games/echo-explorer/EchoExplorerPage";
+import { FrequencyDetectivePage } from "../features/games/frequency-detective/FrequencyDetectivePage";
+import { WaveInterferencePage } from "../features/games/wave-interference/WaveInterferencePage";
+import { PlanetDesignerPage } from "../features/games/planet-designer/PlanetDesignerPage";
+import { SolarSystemBuilderPage } from "../features/games/solar-system-builder/SolarSystemBuilderPage";
+import { EscapeVelocityPage } from "../features/games/escape-velocity/EscapeVelocityPage";
 import { MirrorIllusionsPage } from "../features/games/mirror-illusions/MirrorIllusionsPage";
 import { HomePage } from "../features/home/HomePage";
 import { PhysicsWorldsPage } from "../features/physics-worlds/PhysicsWorldsPage";
@@ -154,6 +164,46 @@ export const router = createBrowserRouter([
       {
         path: "worlds/optics/mirror-illusions",
         element: <MirrorIllusionsPage />,
+      },
+      {
+        path: "worlds/optics/microscope-builder",
+        element: <MicroscopeBuilderPage />,
+      },
+      {
+        path: "worlds/waves/sound-creator",
+        element: <SoundCreatorPage />,
+      },
+      {
+        path: "worlds/waves/virtual-guitar",
+        element: <VirtualGuitarPage />,
+      },
+      {
+        path: "worlds/waves/wave-simulator",
+        element: <WaveSimulatorPage />,
+      },
+      {
+        path: "worlds/waves/echo-explorer",
+        element: <EchoExplorerPage />,
+      },
+      {
+        path: "worlds/waves/frequency-detective",
+        element: <FrequencyDetectivePage />,
+      },
+      {
+        path: "worlds/waves/wave-interference",
+        element: <WaveInterferencePage />,
+      },
+      {
+        path: "worlds/astronomy/planet-designer",
+        element: <PlanetDesignerPage />,
+      },
+      {
+        path: "worlds/astronomy/solar-system-builder",
+        element: <SolarSystemBuilderPage />,
+      },
+      {
+        path: "worlds/astronomy/escape-velocity",
+        element: <EscapeVelocityPage />,
       },
       {
         path: "experiments",

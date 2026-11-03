@@ -39,3 +39,12 @@ export {
   type Eye,
 } from "./vision";
 export { calculateMirrorFocalLength, calculateMirrorImage, calculatePlaneMirrorCoverage } from "./mirrors";
+export {
+  NEAR_POINT_METERS,
+  calculateEyepieceMagnification,
+  calculateMicroscopeMagnification,
+  calculateObjectiveMagnification,
+  calculateResolutionLimit,
+  calculateSpecimenDistance,
+  calculateUsefulMagnificationLimit,
+} from "./microscope";

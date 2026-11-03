@@ -170,6 +170,43 @@ Round numbers were checked by hand calculation or a scan so each round has a wor
 Next in the roadmap is step 34, Microscope Builder, followed by the Waves & Sound games.
 
 
+================================================
+
+
+
+
+All ten games (steps 34–43) are built and playable, and every check passes. Typecheck and lint are clean, all 771 tests across 62 files pass, the build succeeds and verify:pwa passes. I haven't opened any of the games in a real browser.
+
+Step	Game	World
+34	Microscope Builder	Optics
+35	Sound Creator	Waves & Sound
+36	Virtual Guitar	Waves & Sound
+37	Wave Simulator	Waves & Sound
+38	Echo Explorer	Waves & Sound
+39	Frequency Detective	Waves & Sound
+40	Wave Interference	Waves & Sound
+41	Planet Designer	Astronomy
+42	Solar System Builder	Astronomy
+43	Escape Velocity	Astronomy
+Each game has three rounds and a tested physics module behind it. All ten are registered in the catalog and router, and the README roadmap marks steps 34–43 done. The Waves & Sound world now has all six of its games. The Optics world has no "coming soon" items left.
+
+New physics: I added src/physics/waves/ (sound, strings, a wave-equation solver, echoes, FFT spectrum, interference). I also added a microscope module and three astronomy modules: planets, an N-body integrator, and escape velocity. The new shared constants (Sun's gravitational parameter, AU, year, Moon, air) are centralized in constants.ts.
+Physics bug caught by a test: My first r_max formula for a straight-up launch was missing a factor of 2. The test caught it, and the 1000 km round now needs about 4.12 km/s instead of the 8.4 km/s I first had.
+Input fix for all round-based games: Prediction boxes used step validation, so typing a value like 0.877 into a step=0.01 box silently blocked the submit button. I made the round form noValidate, which fixes it for every game that uses the round framework.
+Real simulations behind the games: Wave Simulator solves the wave equation numerically, and Solar System Builder measures orbital periods from an N-body run. The tests check them against Kepler's laws and conservation of energy and momentum.
+Known limits:
+Microscope Builder picks numerical aperture independently of focal length, which real objectives don't.
+The Escape Velocity "leave the Solar System" round uses a patched-conic approximation, which the game text states.
+Projectile Master, Balance Challenge and Circuit Builder still don't use the round framework.
+Nothing is committed to git.
+The next step is 44, Asteroid Mission. Tell me if you want that batch or want these committed first.
+
+
+
+
+===============================================
+
+
 
 
 

@@ -12,3 +12,30 @@ export {
   type OrbitState,
   type OrbitStop,
 } from "./orbits";
+export {
+  calculateMeanDensity,
+  calculatePlanetEscapeSpeed,
+  calculatePlanetProperties,
+  calculatePlanetPropertiesFromEarthUnits,
+  calculateSurfaceGravity,
+  type PlanetProperties,
+} from "./planets";
+export {
+  calculateTotalAngularMomentum,
+  calculateTotalEnergy,
+  calculateTotalMomentum,
+  integrateNBody,
+  measureOrbitalPeriod,
+  validateBodies,
+  type Body,
+  type NBodyOptions,
+  type NBodyResult,
+} from "./nBody";
+export {
+  calculateEscapeSpeedAt,
+  calculateExcessToLeaveStar,
+  calculateLaunchSpeedForExcess,
+  calculateMaximumRadius,
+  calculateSpecificEnergy,
+  doesEscape,
+} from "./escape";

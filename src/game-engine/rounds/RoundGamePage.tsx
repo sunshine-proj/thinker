@@ -152,7 +152,7 @@ export function RoundGamePage<
             status={lifecycle.status}
           />
 
-          <form onSubmit={handleSubmit}>
+          <form noValidate onSubmit={handleSubmit}>
             {renderControls(game)}
             {game.predictionSpec && (
               <label className="lab-control" htmlFor="round-prediction">

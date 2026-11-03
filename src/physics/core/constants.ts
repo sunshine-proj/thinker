@@ -35,6 +35,25 @@ export const EARTH_MEAN_RADIUS = 6.371e6;
 /** Surface gravity of the Moon, m/s². */
 export const LUNAR_GRAVITY = 1.62;
 
+/** Mass of Earth, kg. */
+export const EARTH_MASS = 5.9722e24;
+/** Gravitational parameter GM of the Sun, m³/s². */
+export const SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20;
+/** Astronomical unit (mean Earth–Sun distance), m. */
+export const ASTRONOMICAL_UNIT = 1.495978707e11;
+/** Julian year, s. */
+export const JULIAN_YEAR = 365.25 * 86400;
+/** Gravitational parameter GM of the Moon, m³/s². */
+export const MOON_GRAVITATIONAL_PARAMETER = 4.9028e12;
+/** Mean radius of the Moon, m. */
+export const MOON_MEAN_RADIUS = 1.7374e6;
+/** Molar gas constant R, J/(mol·K). */
+export const MOLAR_GAS_CONSTANT = 8.314462618;
+/** Mean molar mass of dry air, kg/mol. */
+export const AIR_MOLAR_MASS = 0.0289647;
+/** Adiabatic index of air (diatomic gas). */
+export const AIR_ADIABATIC_INDEX = 1.4;
+
 /** Vacuum permeability μ₀, in henries per meter (CODATA 2018). */
 export const VACUUM_PERMEABILITY = 1.25663706212e-6;
 /** Electron-volt in joules. */
