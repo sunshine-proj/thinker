@@ -174,3 +174,83 @@ Most games are slider-and-submit rounds. That works for learning, but it is not 
 - [ ] 131. Run the manual checklist in [docs/TESTING.md](./docs/TESTING.md) on real devices and browsers: screen readers, keyboard, zoom, phones and tablets, offline, a mid-range phone and colour vision. Record the results.
 - [x] 132. Check performance budgets after the new games are added. The budget is 60 kB gzip per page chunk, and the entry script must stay within its budget.
 - [x] 133. Update the README, PRD and this roadmap once the phase is complete.
+
+## Phase 9: Playground Games for Kids
+
+**Goal:** add colourful, quick-to-start arcade games for younger pupils, three per physics world, in which a real physics rule decides every win. Each game:
+
+- runs on the live-game framework (`src/game-engine/live`) with a tested physics step;
+- uses bright colours, but never colour alone (shapes, labels and text descriptions carry the same information);
+- respects the mute switch and reduced motion;
+- has three levels, stars, a "predict, try, see" loop, and keyboard and touch controls;
+- is registered in the catalog with its PRD topics, and comes with a test proving every level can be won.
+
+### 9.1 Foundations
+
+- [x] 134. Let a live game stand on its own (no classic version required), with its own catalog entry and route `/worlds/<world>/<game>`, and optional extra panels such as sound buttons.
+- [x] 135. A shared playground look for the canvas: sky gradients, bright scenery, simple burst and splash effects, and a fixed colour palette checked against the backgrounds for contrast.
+
+### 9.2 Mechanics
+
+- [x] 136. **Tank Duel.** Turn-based artillery against a computer tank on rolling hills, with wind and different gravity per level. Physics: projectile motion with constant gravity and wind acceleration.
+- [ ] 137. **Domino Rally.** Place a ball, ramps and blocks to set off a chain reaction that rings a bell. Physics: energy transfer and momentum in collisions.
+- [ ] 138. **Space Hockey.** Steer a puck with thruster puffs through a slalom of stars on frictionless ice. Physics: Newton's first and second laws.
+
+### 9.3 Electricity & Magnetism
+
+- [x] 139. **Light Up the City.** Wire bulbs into streets (series) and streets onto the battery (parallel) so every house glows without blowing a bulb or the fuse. Physics: series and parallel circuits, Ohm's law, power.
+- [ ] 140. **Magnet Fishing.** Lower an electromagnet into a pond and set the current to catch only the metal fish. Physics: electromagnet strength and magnetic materials.
+- [ ] 141. **Balloon Static Party.** Charge balloons by rubbing them, then stick them to walls or make them push each other apart. Physics: electric charge and Coulomb's law.
+
+### 9.4 Thermodynamics
+
+- [ ] 142. **Ice Cream Rescue.** Choose the insulation for an ice-cream van so the ice cream survives a hot journey. Physics: conduction and insulation.
+- [ ] 143. **Hot Air Balloon Race.** Control the burner to climb and dodge obstacles. Physics: density of hot air and buoyancy.
+- [ ] 144. **Penguin Igloo Builder.** Keep penguins warm through the night on a heat budget. Physics: heat loss and thermal equilibrium.
+
+### 9.5 Optics & Light
+
+- [ ] 145. **Laser Heist.** Rotate mirrors to guide a laser past the guards to a gem. Physics: the law of reflection.
+- [ ] 146. **Rainbow Painter.** Split white light with prisms to paint a picture colour by colour. Physics: dispersion.
+- [ ] 147. **Shadow Puppet Theatre.** Move the lamp so a puppet's shadow matches a target size. Physics: light travels in straight lines; similar triangles.
+
+### 9.6 Waves & Sound
+
+- [x] 148. **Bottle Band.** Fill jars with water to tune them, then play the tune you made. Physics: the air column as a closed pipe, f = v / 4L, and the speed of sound.
+- [ ] 149. **Bat Night Hunt.** Fly a bat through a dark cave, timing echoes to find moths. Physics: echoes and the speed of sound.
+- [ ] 150. **Surf the Wave.** Make waves so a surfer rides them to the beach. Physics: amplitude, frequency and interference.
+
+### 9.7 Astronomy
+
+- [ ] 151. **Slingshot Space Probe.** Use the gravity of passing planets to reach a distant comet. Physics: gravity assists and orbits.
+- [ ] 152. **Planet Bakery.** Bake a planet by choosing its size and mass, and see whether an astronaut can jump on it. Physics: surface gravity.
+- [ ] 153. **Rocket Delivery.** Land pizza deliveries on the Moon, Mars and an asteroid. Physics: thrust and weight under different gravity.
+
+### 9.8 Modern Physics
+
+- [ ] 154. **Atom Disco.** Fire coloured photons at an atom; only the right colours make the electron jump and light the dance floor. Physics: energy levels.
+- [ ] 155. **Ghost Particle Maze.** Set the thickness of walls so a quantum particle can sometimes pass through them. Physics: tunnelling probability.
+- [ ] 156. **Solar Power Plant.** Choose light colours that knock electrons out of panels to charge a robot. Physics: the photoelectric effect.
+
+### 9.9 Fluid Mechanics
+
+- [x] 157. **Pirate Cargo Ship.** Load chests, cannons and barrels onto a pirate ship, one at a time, without capsizing or swamping it. Physics: buoyancy and stability (metacentric height).
+- [ ] 158. **Submarine Explorer.** Flood and empty ballast tanks to hover beside sea creatures at set depths. Physics: pressure and buoyancy.
+- [ ] 159. **Paper Plane Contest.** Choose wing size and angle to glide the farthest. Physics: lift and drag.
+
+### 9.10 Nuclear Physics
+
+- [ ] 160. **Isotope Puzzle.** Match tiles to build stable nuclei from protons and neutrons; unstable ones pop. Physics: nuclear stability.
+- [ ] 161. **Fossil Detective.** Date dinosaur bones and mummies with carbon clocks. Physics: half-life.
+- [ ] 162. **Star Furnace.** Smash hydrogen together fast enough to make the Sun shine. Physics: fusion and the Coulomb barrier.
+
+### 9.11 Everyday Life
+
+- [x] 163. **Skate Park.** Pick the drop-in height and kicker angle to clear gaps, land a spin and make it round a loop. Physics: energy conservation with friction, projectile motion and circular motion.
+- [ ] 164. **Bike Downhill Race.** Choose gears and when to brake on a twisty hill. Physics: friction and braking distance.
+- [ ] 165. **Water Balloon Fight.** Lob water balloons over a fence onto targets, a gentler version of Tank Duel. Physics: projectile motion.
+
+### 9.12 Quality
+
+- [ ] 166. Playtest the playground games with pupils aged 8–12, using [docs/PLAYTEST.md](./docs/PLAYTEST.md).
+- [ ] 167. Run the manual accessibility checks on the playground games (keyboard only, screen reader, colour-blindness simulator).

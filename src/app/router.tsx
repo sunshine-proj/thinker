@@ -89,6 +89,7 @@ const LightspeedVoyagerPage = lazy(() => import("../features/games/lightspeed-vo
 const QuantumTunnelPage = lazy(() => import("../features/games/quantum-tunnel/QuantumTunnelPage").then((module) => ({ default: module.QuantumTunnelPage })));
 const HoneyDropRacePage = lazy(() => import("../features/games/honey-drop-race/HoneyDropRacePage").then((module) => ({ default: module.HoneyDropRacePage })));
 const ReactorOperatorPage = lazy(() => import("../features/games/reactor-operator/ReactorOperatorPage").then((module) => ({ default: module.ReactorOperatorPage })));
+const PlaygroundGameRoute = lazy(() => import("../features/playground-games/PlaygroundGameRoute").then((module) => ({ default: module.PlaygroundGameRoute })));
 const LiveGameRoute = lazy(() => import("../features/live-games/LiveGameRoute").then((module) => ({ default: module.LiveGameRoute })));
 const ThoughtExperimentsPage = lazy(() => import("../features/thought-experiments/ThoughtExperimentsPage").then((module) => ({ default: module.ThoughtExperimentsPage })));
 const ThoughtExperimentRoute = lazy(() => import("../features/thought-experiments/ThoughtExperimentRoute").then((module) => ({ default: module.ThoughtExperimentRoute })));
@@ -424,6 +425,11 @@ export const router = createBrowserRouter([
         element: <ReactorOperatorPage />,
       },
       { path: "worlds/:worldId/:gameId/live", element: <LiveGameRoute /> },
+      { path: "worlds/mechanics/tank-duel", element: <PlaygroundGameRoute gameId="tank-duel" /> },
+      { path: "worlds/electromagnetism/light-up-the-city", element: <PlaygroundGameRoute gameId="light-up-the-city" /> },
+      { path: "worlds/waves/bottle-band", element: <PlaygroundGameRoute gameId="bottle-band" /> },
+      { path: "worlds/fluids/pirate-cargo-ship", element: <PlaygroundGameRoute gameId="pirate-cargo-ship" /> },
+      { path: "worlds/everyday/skate-park", element: <PlaygroundGameRoute gameId="skate-park" /> },
       {
         path: "experiments",
         element: <Outlet />,

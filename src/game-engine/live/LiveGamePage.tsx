@@ -196,7 +196,7 @@ export function LiveGamePage<State>({ definition }: { readonly definition: LiveG
 
   const input = inputFromParameters(snapshot.parameters);
   const totalStars = shownStars.reduce((sum, value) => sum + value, 0);
-  const relatedPath = `/worlds/${definition.worldId}/${definition.relatedGameId}`;
+  const relatedPath = definition.relatedGameId ? `/worlds/${definition.worldId}/${definition.relatedGameId}` : null;
 
   return (
     <div className="game-page live-game">
@@ -250,6 +250,7 @@ export function LiveGamePage<State>({ definition }: { readonly definition: LiveG
           )}
           {canvasError && <p className="lab-error" role="alert">Visualization error: {canvasError}</p>}
           <MeasurementGrid items={definition.readouts(snapshot.state.game, input, snapshot.parameters.level)} />
+          {definition.extras?.(snapshot.state.game, input, snapshot.parameters.level)}
           <p aria-live="polite" className={verdict.status === "won" ? "game-result game-result--hit" : "game-result"} role="status">
             {finished
               ? `${verdict.status === "won" ? "Level complete! " : "Mission failed. "}${verdict.message}`
@@ -269,7 +270,7 @@ export function LiveGamePage<State>({ definition }: { readonly definition: LiveG
           )}
         </section>
 
-        <aside aria-label="Live controls" className="trajectory-controls">
+        <aside aria-label="Controls" className="trajectory-controls">
           <h2>Controls</h2>
           <p className="game-instructions" id="live-help">{definition.howToPlay}</p>
           <div className="game-actions">
@@ -323,13 +324,15 @@ export function LiveGamePage<State>({ definition }: { readonly definition: LiveG
               ),
             )}
           </div>
-          <p className="game-instructions">
-            {inRouter ? (
-              <Link className="text-link" to={relatedPath}>Play the classic round-based version</Link>
-            ) : (
-              <a className="text-link" href={relatedPath}>Play the classic round-based version</a>
-            )}
-          </p>
+          {relatedPath && (
+            <p className="game-instructions">
+              {inRouter ? (
+                <Link className="text-link" to={relatedPath}>Play the classic round-based version</Link>
+              ) : (
+                <a className="text-link" href={relatedPath}>Play the classic round-based version</a>
+              )}
+            </p>
+          )}
         </aside>
       </div>
 

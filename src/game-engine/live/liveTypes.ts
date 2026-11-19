@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { MeasurementItem } from "../../components/common";
 
 /**
@@ -49,8 +50,8 @@ export interface LiveGameDefinition<State> {
   readonly id: string;
   readonly title: string;
   readonly worldId: string;
-  /** The round-based game this is the live version of. */
-  readonly relatedGameId: string;
+  /** The round-based game this is the live version of; omitted for stand-alone playground games. */
+  readonly relatedGameId?: string;
   readonly eyebrow: string;
   readonly modelTag: string;
   readonly introduction: string;
@@ -73,6 +74,8 @@ export interface LiveGameDefinition<State> {
   draw(context: CanvasRenderingContext2D, state: State, input: LiveInput, width: number, height: number, level: number): void;
   /** A text description of the scene for screen readers. */
   describe(state: State, input: LiveInput, level: number): string;
+  /** Optional extra panel under the readouts, for example buttons that play sounds. */
+  readonly extras?: (state: State, input: LiveInput, level: number) => ReactNode;
 }
 
 /** Parameters handed to the simulation engine. */

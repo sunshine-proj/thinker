@@ -74,3 +74,4 @@ export {
   pushPendulum,
   type PendulumState,
 } from "./pendulumDynamics";
+export { calculateClosedPipeFrequency, calculateJarFrequency, calculateWaterDepthForFrequency } from "./airColumn";

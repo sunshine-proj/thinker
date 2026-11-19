@@ -71,3 +71,4 @@ export {
   calculateWireDistanceForField,
   calculateWireField,
 } from "./fieldSources";
+export { wireCity, type CityReading, type StreetReading } from "./streetLights";

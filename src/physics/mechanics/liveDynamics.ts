@@ -23,12 +23,16 @@ export function launchProjectile(x: number, y: number, speed: number, angleDegre
   return { x, y, vx: speed * Math.cos(angle), vy: speed * Math.sin(angle) };
 }
 
-export function advanceProjectile(state: ProjectileState, dt: number, gravity = STANDARD_GRAVITY): ProjectileState {
+/**
+ * One exact step of constant-acceleration motion: gravity downward and, optionally, a
+ * steady sideways acceleration (a simple model of wind pushing on the projectile).
+ */
+export function advanceProjectile(state: ProjectileState, dt: number, gravity = STANDARD_GRAVITY, horizontalAcceleration = 0): ProjectileState {
   assertPositive(dt, "dt");
   return {
-    x: state.x + state.vx * dt,
+    x: state.x + state.vx * dt + 0.5 * horizontalAcceleration * dt * dt,
     y: state.y + state.vy * dt - 0.5 * gravity * dt * dt,
-    vx: state.vx,
+    vx: state.vx + horizontalAcceleration * dt,
     vy: state.vy - gravity * dt,
   };
 }

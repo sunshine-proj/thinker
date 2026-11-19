@@ -23,6 +23,8 @@ describe("live games registry", () => {
   it("has one flagship live game per physics world, each linked from its classic game", () => {
     expect(new Set(LIVE_GAMES.map((game) => game.worldId))).toEqual(new Set(PHYSICS_WORLDS.map((world) => world.id)));
     for (const game of LIVE_GAMES) {
+      expect(game.relatedGameId).toBeTruthy();
+      if (!game.relatedGameId) continue;
       expect(findCatalogEntry(game.relatedGameId)?.path).toBe(`/worlds/${game.worldId}/${game.relatedGameId}`);
       expect(LIVE_VERSIONS[game.relatedGameId]).toEqual({ id: game.id, title: game.title });
       expect(game.levels.length).toBeGreaterThanOrEqual(3);
