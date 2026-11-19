@@ -18,6 +18,8 @@ export const ELEMENTARY_CHARGE = 1.602176634e-19;
 export const ELECTRON_CHARGE = -ELEMENTARY_CHARGE;
 /** Electron rest mass, in kilograms. */
 export const ELECTRON_MASS = 9.1093837139e-31;
+/** Muon mass, kg (CODATA 2022). */
+export const MUON_MASS = 1.883531627e-28;
 /** Proton rest mass, in kilograms. */
 export const PROTON_MASS = 1.67262192595e-27;
 /** Boltzmann constant, in joules per kelvin. */
@@ -42,6 +44,10 @@ export const EARTH_GRAVITATIONAL_PARAMETER = 3.986004418e14;
 export const EARTH_MEAN_RADIUS = 6.371e6;
 /** Surface gravity of the Moon, m/s². */
 export const LUNAR_GRAVITY = 1.62;
+/** Surface gravity of Mars at its equator, m/s² (NASA fact sheet). */
+export const MARS_GRAVITY = 3.71;
+/** Surface gravity of the asteroid 4 Vesta, m/s² (Dawn mission, mean value). */
+export const VESTA_GRAVITY = 0.25;
 
 /** Mass of Earth, kg. */
 export const EARTH_MASS = 5.9722e24;

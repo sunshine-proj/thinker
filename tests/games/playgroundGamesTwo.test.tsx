@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { findCatalogEntry } from "../../src/data/games/gameCatalog";
@@ -269,9 +269,11 @@ describe("new playground games are wired in", () => {
     }
   });
 
-  it("renders a game page with its controls", () => {
-    render(<MemoryRouter><PlaygroundGameRoute gameId="laser-heist" /></MemoryRouter>);
-    expect(screen.getByRole("heading", { name: "Laser Heist" })).toBeTruthy();
+  it("renders a game page with its controls", async () => {
+    await act(async () => {
+      render(<MemoryRouter><PlaygroundGameRoute gameId="laser-heist" /></MemoryRouter>);
+    });
+    expect(await screen.findByRole("heading", { name: "Laser Heist" })).toBeTruthy();
     expect(screen.getByRole("button", { name: /Fire laser/ })).toBeTruthy();
   });
 });

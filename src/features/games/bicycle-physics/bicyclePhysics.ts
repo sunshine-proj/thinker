@@ -85,7 +85,7 @@ export function runBike(round: BikeRound, v: NumericControl): BikeOutcome {
     return {
       speedKmh: speed, powerWatts: null, ...common(rear), success, accuracyFraction: success ? 1 - error / GEAR_TOLERANCE_KMH : 0,
       predictionActual: (CADENCE / 60) * FRONT_TEETH * WHEEL_CIRCUMFERENCE / (GEAR_TARGET_KMH / 3.6),
-      feedback: success ? `${FRONT_TEETH}/${rear} turns the wheel ${(FRONT_TEETH / rear).toFixed(2)} times per pedal turn: ${speed.toFixed(1)} km/h. The wheel torque is ${(PEDAL_TORQUE * FRONT_TEETH / rear).toFixed(0)} N·m for ${PEDAL_TORQUE} N·m at the pedals.`
+      feedback: success ? `${FRONT_TEETH}/${rear} turns the wheel ${(FRONT_TEETH / rear).toFixed(2)} times per pedal turn: ${speed.toFixed(1)} km/h. The wheel torque is ${(PEDAL_TORQUE * rear / FRONT_TEETH).toFixed(0)} N·m for ${PEDAL_TORQUE} N·m at the pedals: the faster the wheel turns, the less it can push.`
         : `${FRONT_TEETH}/${rear} gives ${speed.toFixed(1)} km/h, ${speed > GEAR_TARGET_KMH ? "too fast: use a bigger sprocket" : "too slow: use a smaller sprocket"}.`,
     };
   }

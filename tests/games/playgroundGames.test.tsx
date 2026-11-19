@@ -1,10 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { PHYSICS_WORLDS, findCatalogEntry } from "../../src/data/games/gameCatalog";
 import { runLiveGame } from "../../src/game-engine/live/liveModel";
 import { PLAYGROUND_GAMES } from "../../src/features/playground-games";
 import { PlaygroundGameRoute } from "../../src/features/playground-games/PlaygroundGameRoute";
+import { PLAYGROUND_GAME_LOADERS } from "../../src/features/playground-games/loaders";
 import { SONGS, bottleBand, jarFrequency, waterForNote } from "../../src/features/playground-games/bottleBand";
 import { TOWNS, checkCity, lightUpTheCity } from "../../src/features/playground-games/lightUpTheCity";
 import { VOYAGES, pirateCargoShip, shipCondition } from "../../src/features/playground-games/pirateCargoShip";
@@ -136,9 +137,11 @@ describe("playground catalog and pages", () => {
     }
   });
 
-  it("renders a playground game with levels, controls and sound buttons", () => {
-    render(<MemoryRouter><PlaygroundGameRoute gameId="bottle-band" /></MemoryRouter>);
-    expect(screen.getByRole("heading", { level: 1, name: "Bottle Band" })).toBeTruthy();
+  it("renders a playground game with levels, controls and sound buttons", async () => {
+    await act(async () => {
+      render(<MemoryRouter><PlaygroundGameRoute gameId="bottle-band" /></MemoryRouter>);
+    });
+    expect(await screen.findByRole("heading", { level: 1, name: "Bottle Band" })).toBeTruthy();
     expect(screen.queryByRole("link", { name: /classic round-based version/ })).toBeNull();
     expect(screen.getByRole("group", { name: "Listen" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /2\. Happy chord/ }));
@@ -148,5 +151,10 @@ describe("playground catalog and pages", () => {
   it("shows not-found for an unknown playground game", () => {
     render(<MemoryRouter><PlaygroundGameRoute gameId="nope" /></MemoryRouter>);
     expect(screen.queryByRole("button", { name: /Start/ })).toBeNull();
+  });
+
+  it("has a lazy loader for every playground game, returning the registered definition", async () => {
+    expect(Object.keys(PLAYGROUND_GAME_LOADERS).sort()).toEqual(PLAYGROUND_GAMES.map((game) => game.id).sort());
+    for (const game of PLAYGROUND_GAMES) expect(await PLAYGROUND_GAME_LOADERS[game.id]!()).toBe(game);
   });
 });

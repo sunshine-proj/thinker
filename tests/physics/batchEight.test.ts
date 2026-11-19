@@ -242,9 +242,11 @@ describe("bicycle", () => {
     expect(calculateBicycleSpeed(90, 48, 11, 2.1)).toBeCloseTo(2 * calculateBicycleSpeed(90, 48, 22, 2.1), 10);
   });
   it("trades torque for speed through the gears", () => {
-    expect(calculateWheelTorque(40, 48, 24)).toBe(80);
+    expect(calculateWheelTorque(40, 48, 24)).toBe(20);
     expect(calculateDriveForce(80, 0.33)).toBeCloseTo(242.4, 1);
-    expect(calculateWheelTorque(40, 48, 12)).toBeGreaterThan(calculateWheelTorque(40, 48, 24));
+    // A high gear (small sprocket) spins the wheel faster, so it can push less: τ_wheel ω_wheel = τ_pedal ω_pedal.
+    expect(calculateWheelTorque(40, 48, 12)).toBeLessThan(calculateWheelTorque(40, 48, 24));
+    expect(calculateWheelTorque(40, 48, 12) * (48 / 12)).toBeCloseTo(40, 12);
   });
   it("needs 200 W to climb a 6 % grade at about 12.4 km/h", () => {
     expect(calculateRiderPower(3.4, ride)).toBeCloseTo(198.3, 0);

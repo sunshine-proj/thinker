@@ -78,3 +78,4 @@ export {
   calculateTemperatureFromPeak,
   classifySpectralType,
 } from "./stars";
+export { calculateStarEnergy, planetPosition, stepProbe, type AssistPlanet, type ProbeState } from "./gravityAssist";

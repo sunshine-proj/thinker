@@ -481,9 +481,8 @@ describe("catalog", () => {
       expect(findCatalogEntry(id)?.kind).toBe("game");
     }
     const waves = PHYSICS_WORLDS.find((w) => w.id === "waves")!;
-    // Six games from this batch plus Resonance Swing and Doppler Chase (Phase 8).
-    // Six games from this batch, Resonance Swing and Doppler Chase (Phase 8), and Bottle Band (Phase 9).
-    expect(waves.entries.filter((e) => e.kind === "game")).toHaveLength(9);
+    // Six games from this batch, Resonance Swing and Doppler Chase (Phase 8), and Bottle Band, Bat Night Hunt and Surf the Wave (Phase 9).
+    expect(waves.entries.filter((e) => e.kind === "game")).toHaveLength(11);
     expect(waves.comingSoon).toEqual([]);
     expect(PHYSICS_WORLDS.find((w) => w.id === "optics")!.comingSoon).toEqual([]);
     expect(PHYSICS_WORLDS.find((w) => w.id === "astronomy")!.comingSoon).toEqual([]);

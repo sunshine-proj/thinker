@@ -333,15 +333,15 @@ describe("Isotope Explorer (worked by hand)", () => {
 });
 
 describe("Bicycle Physics (worked by hand)", () => {
-  it("round 1: 22 or 21 teeth gives about 25 km/h at 90 rpm; the torque is 87 N·m", () => {
+  it("round 1: 22 or 21 teeth gives about 25 km/h at 90 rpm; the wheel torque is 40 × 22/48 ≈ 18 N·m", () => {
     const o = runBike(gear, { front: 48, rear: 22 });
     expect(o.speedKmh).toBeCloseTo(24.74, 1);
-    expect(o.wheelTorque).toBeCloseTo(87.3, 0);
+    expect(o.wheelTorque).toBeCloseTo(18.33, 1);
     expect(o.success).toBe(true);
     expect(runBike(gear, { front: 48, rear: 21 }).success).toBe(true);
     expect(runBike(gear, { front: 48, rear: 15 }).feedback).toMatch(/too fast/);
     expect(runBike(gear, { front: 48, rear: 30 }).feedback).toMatch(/too slow/);
-    expect(runBike(gear, { front: 48, rear: 11 }).driveForce).toBeGreaterThan(runBike(gear, { front: 48, rear: 30 }).driveForce);
+    expect(runBike(gear, { front: 48, rear: 11 }).driveForce).toBeLessThan(runBike(gear, { front: 48, rear: 30 }).driveForce);
   });
   it("round 2: about 12.4 km/h on a 6 % hill takes 200 W", () => {
     expect(runBike(climb, { grade: 6, speed: 12.4 }).success).toBe(true);

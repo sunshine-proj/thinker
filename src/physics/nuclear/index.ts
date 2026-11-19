@@ -38,7 +38,11 @@ export {
   calculateKeVFromTemperature,
   calculateReactionEnergyMeV,
   calculateTemperatureFromKeV,
+  calculateGamowEnergyKeV,
+  calculateGamowPeakKeV,
+  calculateTunnellingRateFactor,
 } from "./fusion";
+export { STABLE_LIGHT_NUCLEI, classifyLightNucleus, elementSymbol, type NucleusVerdict } from "./stability";
 export { calculateConvertedFraction, calculateEnergyFromMass, calculateMassFromEnergy } from "./massEnergy";
 export {
   DELAYED_DECAY_CONSTANT,

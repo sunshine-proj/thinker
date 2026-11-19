@@ -1,4 +1,4 @@
-import { ATOMIC_MASS_UNIT, ATOMIC_MASS_UNIT_MEV, BOLTZMANN_CONSTANT, ELEMENTARY_CHARGE, assertPositive } from "../core";
+import { ATOMIC_MASS_UNIT, ATOMIC_MASS_UNIT_MEV, BOLTZMANN_CONSTANT, ELEMENTARY_CHARGE, PLANCK_CONSTANT, SPEED_OF_LIGHT, VACUUM_PERMITTIVITY, assertPositive } from "../core";
 
 /**
  * Fusion energetics: the Coulomb barrier and the energy released.
@@ -54,4 +54,34 @@ export function calculateReactionEnergyMeV(inputsU: readonly number[], outputsU:
 export function calculateEnergyPerKilogram(energyMeV: number, reactantMassU: number): number {
   assertPositive(reactantMassU, "reactantMassU");
   return (energyMeV * 1e6 * ELEMENTARY_CHARGE) / (reactantMassU * ATOMIC_MASS_UNIT);
+}
+
+/**
+ * Quantum tunnelling through the Coulomb barrier (Gamow). Two nuclei with charges Z₁, Z₂
+ * and reduced mass m_r tunnel with probability ≈ exp(−√(E_G/E)), where the Gamow energy
+ * is E_G = 2 m_r c² (π α Z₁ Z₂)² (about 493 keV for two protons). Averaged over a Maxwell
+ * distribution at temperature T, the rate's temperature dependence is τ² e^(−τ) with
+ * τ = 3 (E_G / 4kT)^(1/3), and the reacting nuclei have energies near the Gamow peak
+ * E₀ = (E_G (kT)² / 4)^(1/3). Limitations: non-resonant reactions, the S-factor (the
+ * nuclear part) taken as constant, and no electron screening.
+ */
+const FINE_STRUCTURE_CONSTANT = ELEMENTARY_CHARGE ** 2 / (4 * Math.PI * VACUUM_PERMITTIVITY * (PLANCK_CONSTANT / (2 * Math.PI)) * SPEED_OF_LIGHT);
+
+export function calculateGamowEnergyKeV(charge1: number, charge2: number, reducedMassU: number): number {
+  assertPositive(charge1, "charge1");
+  assertPositive(charge2, "charge2");
+  assertPositive(reducedMassU, "reducedMassU");
+  return 2 * reducedMassU * ATOMIC_MASS_UNIT_MEV * 1e3 * (Math.PI * FINE_STRUCTURE_CONSTANT * charge1 * charge2) ** 2;
+}
+
+/** Temperature-dependent part of a thermonuclear rate, τ² e^(−τ). */
+export function calculateTunnellingRateFactor(gamowEnergyKeV: number, kelvin: number): number {
+  assertPositive(gamowEnergyKeV, "gamowEnergyKeV");
+  const tau = 3 * (gamowEnergyKeV / (4 * calculateKeVFromTemperature(kelvin))) ** (1 / 3);
+  return tau ** 2 * Math.exp(-tau);
+}
+
+export function calculateGamowPeakKeV(gamowEnergyKeV: number, kelvin: number): number {
+  assertPositive(gamowEnergyKeV, "gamowEnergyKeV");
+  return ((gamowEnergyKeV * calculateKeVFromTemperature(kelvin) ** 2) / 4) ** (1 / 3);
 }

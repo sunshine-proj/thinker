@@ -5,7 +5,8 @@ import { AIR_DENSITY, STANDARD_GRAVITY, assertNonNegative, assertPositive } from
  *
  * The chain links the chainring (front, Tf teeth) to the sprocket on the rear wheel (Tr teeth), so one pedal turn
  * spins the wheel Tf/Tr times and the speed is v = cadence × (Tf/Tr) × wheel circumference. The same ratio
- * multiplies the speed and divides the torque: wheel torque = pedal torque × Tf/Tr (less chain losses). The rider
+ * multiplies the speed and divides the torque (power τω is passed on unchanged): wheel torque = pedal torque × Tr/Tf
+ * (less chain losses). The rider
  * must supply the power to overcome rolling resistance C_rr m g cosθ, gravity m g sinθ on a slope, and air drag
  * ½ρ C_dA v²: P = v (C_rr m g cosθ + m g sinθ + ½ρ C_dA v²)/η, where η is the drivetrain efficiency.
  *
@@ -25,7 +26,7 @@ export function calculateWheelTorque(pedalTorque: number, frontTeeth: number, re
   assertNonNegative(pedalTorque, "pedalTorque");
   assertPositive(frontTeeth, "frontTeeth");
   assertPositive(rearTeeth, "rearTeeth");
-  return (pedalTorque * frontTeeth) / rearTeeth;
+  return (pedalTorque * rearTeeth) / frontTeeth;
 }
 
 /** Forward force at the road for a wheel torque and wheel radius. */

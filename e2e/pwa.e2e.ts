@@ -74,3 +74,18 @@ test.describe("live game on a phone-sized screen", () => {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 });
+
+test.describe("playground game", () => {
+  test("loads Laser Heist on its own and wins the first vault with a 45° mirror", async ({ page }) => {
+    await page.goto("/worlds/optics/laser-heist");
+    await expect(page.getByRole("heading", { level: 1, name: "Laser Heist" })).toBeVisible();
+    const mirror = page.getByRole("slider", { name: /Mirror 1 angle/ });
+    await mirror.focus();
+    for (let i = 0; i < 25; i += 1) await mirror.press("ArrowRight");
+    await expect(mirror).toHaveValue("45");
+    const start = page.getByRole("button", { name: "Start" });
+    if (await start.isVisible()) await start.click();
+    await page.getByRole("button", { name: /Fire laser/ }).click();
+    await expect(page.getByText(/The gem sparkles/).first()).toBeVisible();
+  });
+});

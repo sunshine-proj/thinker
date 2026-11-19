@@ -217,38 +217,38 @@ Most games are slider-and-submit rounds. That works for learning, but it is not 
 ### 9.6 Waves & Sound
 
 - [x] 148. **Bottle Band.** Fill jars with water to tune them, then play the tune you made. Physics: the air column as a closed pipe, f = v / 4L, and the speed of sound.
-- [ ] 149. **Bat Night Hunt.** Fly a bat through a dark cave, timing echoes to find moths. Physics: echoes and the speed of sound.
-- [ ] 150. **Surf the Wave.** Make waves so a surfer rides them to the beach. Physics: amplitude, frequency and interference.
+- [x] 149. **Bat Night Hunt.** Fly a bat through a dark cave, timing echoes to find moths. Physics: echoes and the speed of sound.
+- [x] 150. **Surf the Wave.** Make waves so a surfer rides them to the beach. Physics: amplitude, frequency and interference.
 
 ### 9.7 Astronomy
 
-- [ ] 151. **Slingshot Space Probe.** Use the gravity of passing planets to reach a distant comet. Physics: gravity assists and orbits.
-- [ ] 152. **Planet Bakery.** Bake a planet by choosing its size and mass, and see whether an astronaut can jump on it. Physics: surface gravity.
-- [ ] 153. **Rocket Delivery.** Land pizza deliveries on the Moon, Mars and an asteroid. Physics: thrust and weight under different gravity.
+- [x] 151. **Slingshot Space Probe.** Use the gravity of passing planets to reach a distant comet. Physics: gravity assists and orbits.
+- [x] 152. **Planet Bakery.** Bake a planet by choosing its size and mass, and see whether an astronaut can jump on it. Physics: surface gravity.
+- [x] 153. **Rocket Delivery.** Land pizza deliveries on the Moon, Mars and an asteroid. Physics: thrust and weight under different gravity.
 
 ### 9.8 Modern Physics
 
-- [ ] 154. **Atom Disco.** Fire coloured photons at an atom; only the right colours make the electron jump and light the dance floor. Physics: energy levels.
-- [ ] 155. **Ghost Particle Maze.** Set the thickness of walls so a quantum particle can sometimes pass through them. Physics: tunnelling probability.
-- [ ] 156. **Solar Power Plant.** Choose light colours that knock electrons out of panels to charge a robot. Physics: the photoelectric effect.
+- [x] 154. **Atom Disco.** Fire coloured photons at an atom; only the right colours make the electron jump and light the dance floor. Physics: energy levels.
+- [x] 155. **Ghost Particle Maze.** Set the thickness of walls so a quantum particle can sometimes pass through them. Physics: tunnelling probability.
+- [x] 156. **Solar Power Plant.** Choose light colours that knock electrons out of panels to charge a robot. Physics: the photoelectric effect.
 
 ### 9.9 Fluid Mechanics
 
 - [x] 157. **Pirate Cargo Ship.** Load chests, cannons and barrels onto a pirate ship, one at a time, without capsizing or swamping it. Physics: buoyancy and stability (metacentric height).
-- [ ] 158. **Submarine Explorer.** Flood and empty ballast tanks to hover beside sea creatures at set depths. Physics: pressure and buoyancy.
-- [ ] 159. **Paper Plane Contest.** Choose wing size and angle to glide the farthest. Physics: lift and drag.
+- [x] 158. **Submarine Explorer.** Flood and empty ballast tanks to hover beside sea creatures at set depths. Physics: pressure and buoyancy.
+- [x] 159. **Paper Plane Contest.** Choose wing size and angle to glide the farthest. Physics: lift and drag.
 
 ### 9.10 Nuclear Physics
 
-- [ ] 160. **Isotope Puzzle.** Match tiles to build stable nuclei from protons and neutrons; unstable ones pop. Physics: nuclear stability.
-- [ ] 161. **Fossil Detective.** Date dinosaur bones and mummies with carbon clocks. Physics: half-life.
-- [ ] 162. **Star Furnace.** Smash hydrogen together fast enough to make the Sun shine. Physics: fusion and the Coulomb barrier.
+- [x] 160. **Isotope Puzzle.** Match tiles to build stable nuclei from protons and neutrons; unstable ones pop. Physics: nuclear stability.
+- [x] 161. **Fossil Detective.** Date dinosaur bones and mummies with carbon clocks. Physics: half-life.
+- [x] 162. **Star Furnace.** Smash hydrogen together fast enough to make the Sun shine. Physics: fusion and the Coulomb barrier.
 
 ### 9.11 Everyday Life
 
 - [x] 163. **Skate Park.** Pick the drop-in height and kicker angle to clear gaps, land a spin and make it round a loop. Physics: energy conservation with friction, projectile motion and circular motion.
-- [ ] 164. **Bike Downhill Race.** Choose gears and when to brake on a twisty hill. Physics: friction and braking distance.
-- [ ] 165. **Water Balloon Fight.** Lob water balloons over a fence onto targets, a gentler version of Tank Duel. Physics: projectile motion.
+- [x] 164. **Bike Downhill Race.** Choose gears and when to brake on a twisty hill. Physics: friction and braking distance.
+- [x] 165. **Water Balloon Fight.** Lob water balloons over a fence onto targets, a gentler version of Tank Duel. Physics: projectile motion.
 
 ### 9.12 Quality
 
