@@ -40,3 +40,19 @@ export {
   calculateTemperatureFromKeV,
 } from "./fusion";
 export { calculateConvertedFraction, calculateEnergyFromMass, calculateMassFromEnergy } from "./massEnergy";
+export {
+  DELAYED_DECAY_CONSTANT,
+  DELAYED_NEUTRON_FRACTION,
+  PROMPT_GENERATION_TIME,
+  advancePointKinetics,
+  steadyKineticsState,
+  type KineticsState,
+  calculateDoublingTime,
+  calculateMultiplicationFromReactivity,
+  calculateReactivity,
+  calculateReactivityForPeriod,
+  calculateReactorPeriod,
+  calculateRelativePower,
+  calculateRodMultiplication,
+  isPromptCritical,
+} from "./reactor";

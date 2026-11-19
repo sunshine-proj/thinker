@@ -38,6 +38,8 @@ export {
 } from "./kinematics";
 export {
   SEA_LEVEL_AIR_DENSITY,
+  calculateDragFallDistance,
+  calculateDragFallTime,
   calculateDragForce,
   calculateTerminalSpeed,
   simulateParachuteFall,
@@ -81,3 +83,41 @@ export { SURFACES, calculateCriticalAngle, calculateFriction, calculateSlideTime
 export {
   calculateExactPendulumPeriod, calculateFallTime, calculateImpactSpeed, calculatePendulumPeriod, calculateSmallAngleSwing,
 } from "./pendulum";
+export {
+  calculateAccelerationFromForce,
+  calculateBrakingDistance,
+  calculatePushOffSpeeds,
+  calculateSpeedAfterPush,
+} from "./newtonsLaws";
+export {
+  SLED_ON_SNOW,
+  calculateConstantSpeedAngle,
+  calculateRunOutDistance,
+  calculateSlopeAcceleration,
+  calculateSpeedAtBottom,
+} from "./sledding";
+export { calculateCollisionVelocities, calculateTotalKineticEnergy } from "./collisions";
+export {
+  calculateInputPower,
+  calculateLiftingPower,
+  calculateLiftingWork,
+  calculateTimeForWork,
+} from "./workPower";
+export {
+  SHAPE_FACTORS,
+  SHAPE_NAMES,
+  calculateRollingAcceleration,
+  calculateRollingTime,
+  calculateRotationalEnergy,
+  calculateSlopeForRollingTime,
+  calculateSpinAfterChange,
+  type RollingShape,
+} from "./rolling";
+export {
+  advanceLander,
+  advanceProjectile,
+  launchProjectile,
+  type LanderSpecification,
+  type LanderState,
+  type ProjectileState,
+} from "./liveDynamics";

@@ -51,7 +51,7 @@ export const SENSOR_ROUNDS: readonly SensorRound[] = Object.freeze([
     id: "the-tilted-phone", title: "The tilted phone", difficulty: "Beginner", kind: "tilt",
     situation: `The phone rests on a ramp. Its accelerometer reads ${TILT_READING} m/s² along the long edge (the phone is not accelerating). By what angle is the ramp tilted? (± ${TILT_TOLERANCE}°)`,
     controls: [fixed("reading", "Accelerometer reading", "m/s²", TILT_READING), slider("angle", "Tilt angle", "°", 0, 90, 0.1, 10)],
-    hint: "a = g sinθ, so θ = arcsin(4.9/9.81).",
+    hint: "a = g sinθ, so θ = arcsin(4.9/g) with g ≈ 9.81 m/s².",
   },
   {
     id: "the-turning-phone", title: "The turning phone", difficulty: "Intermediate", kind: "gyro",

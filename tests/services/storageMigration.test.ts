@@ -55,6 +55,7 @@ describe.each([
     await repository.saveSession({ gameId: "g", savedAt: "t2", data: { round: 2 } });
 
     expect(await repository.loadSession("g")).toEqual({ gameId: "g", savedAt: "t2", data: { round: 2 } });
+    expect(await repository.listSessions()).toEqual([{ gameId: "g", savedAt: "t2", data: { round: 2 } }]);
     await repository.deleteSession("g");
     expect(await repository.loadSession("g")).toBeNull();
   });
@@ -71,6 +72,20 @@ describe.each([
     expect(await repository.listSavedExperiments()).toEqual([]);
     expect(await repository.listAchievements()).toEqual([]);
     expect(await repository.loadSession("g")).toBeNull();
+  });
+
+  it("stores one prediction per id, replacing an earlier answer", async () => {
+    const repository = create();
+    const prediction = {
+      id: "gravity-doubles:main", activityId: "gravity-doubles", activityKind: "thought-experiment" as const,
+      questionId: "main", answer: "faster", correct: null, recordedAt: "2026-11-02T10:00:00.000Z",
+    };
+    await repository.savePrediction(prediction);
+    await repository.savePrediction({ ...prediction, correct: true });
+
+    expect(await repository.listPredictions()).toEqual([{ ...prediction, correct: true }]);
+    await repository.clear();
+    expect(await repository.listPredictions()).toEqual([]);
   });
 });
 
@@ -96,5 +111,32 @@ describe("upgrading a version 1 database", () => {
     expect(await repository.listGameResults()).toEqual([result]);
     await repository.saveExperiment(experiment);
     expect(await repository.listSavedExperiments()).toEqual([experiment]);
+  });
+});
+
+describe("upgrading a version 2 database", () => {
+  it("keeps v2 data and adds the predictions store", async () => {
+    const factory = new IDBFactory();
+    await new Promise<void>((resolve, reject) => {
+      const request = factory.open(DATABASE_NAME, 2);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        db.createObjectStore("gameResults", { autoIncrement: true }).add(result);
+        db.createObjectStore("savedExperiments", { keyPath: "id" }).add(experiment);
+        db.createObjectStore("achievements", { keyPath: "achievementId" }).add(achievement);
+        db.createObjectStore("gameSessions", { keyPath: "gameId" });
+      };
+      request.onsuccess = () => {
+        request.result.close();
+        resolve();
+      };
+      request.onerror = () => reject(request.error);
+    });
+
+    const repository = new IndexedDbProgressRepository(factory);
+    expect(await repository.listGameResults()).toEqual([result]);
+    expect(await repository.listSavedExperiments()).toEqual([experiment]);
+    expect(await repository.listAchievements()).toEqual([achievement]);
+    expect(await repository.listPredictions()).toEqual([]);
   });
 });

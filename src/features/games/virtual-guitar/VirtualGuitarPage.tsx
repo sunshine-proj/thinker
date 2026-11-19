@@ -1,4 +1,4 @@
-import { LineChart } from "../../../components/common";
+import { LineChart, ListenButtons } from "../../../components/common";
 import { createNumericGamePage } from "../../../game-engine/rounds";
 import { runGuitar, sampleString, virtualGuitar } from "./virtualGuitar";
 
@@ -16,6 +16,7 @@ export const VirtualGuitarPage = createNumericGamePage({
   visual: (game) => {
     const o = runGuitar(game.round, game.control);
     return (
+      <>
       <LineChart
         description={`Standing wave of harmonic ${o.mode} on ${o.vibratingLengthMeters.toFixed(3)} meters of string, sounding ${o.frequencyHz.toFixed(1)} hertz.`}
         series={[{ label: `Mode ${o.mode}`, points: sampleString(game.round, game.control, o.mode) }]}
@@ -25,6 +26,8 @@ export const VirtualGuitarPage = createNumericGamePage({
         yDomain={[-1.2, 1.2]}
         yLabel="Displacement (relative)"
       />
+      <ListenButtons tones={[{ label: "Pluck the string", frequency: o.frequencyHz, durationSeconds: 1.5, harmonics: [1, 0.5, 0.33, 0.25, 0.2] }]} />
+      </>
     );
   },
 });

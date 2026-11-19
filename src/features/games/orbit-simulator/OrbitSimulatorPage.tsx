@@ -1,5 +1,6 @@
 import { RangeControl } from "../../../components/common";
 import { RoundGamePage } from "../../../game-engine/rounds";
+import { calculateSemiMajorAxisForPeriod } from "../../../physics/astronomy";
 import { EARTH_GRAVITATIONAL_PARAMETER as MU, EARTH_MEAN_RADIUS as EARTH_RADIUS } from "../../../physics/core";
 import type { OrbitControl, OrbitRound } from "./orbitSimulatorData";
 import { orbitElementsFor, orbitPath, orbitSimulator, resolveLaunch } from "./orbitSimulatorModel";
@@ -17,7 +18,7 @@ function targetRadiusMeters(round: OrbitRound): number | null {
   if (goal.kind === "apoapsis") {
     return EARTH_RADIUS + goal.targetAltitudeKm * 1000;
   }
-  return Math.cbrt((MU * (goal.targetMinutes * 60) ** 2) / (4 * Math.PI ** 2));
+  return calculateSemiMajorAxisForPeriod(MU, goal.targetMinutes * 60);
 }
 
 function OrbitView({ round, control }: { round: OrbitRound; control: OrbitControl }) {

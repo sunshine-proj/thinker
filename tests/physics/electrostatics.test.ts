@@ -12,14 +12,14 @@ const nC = 1e-9;
 
 describe("constants", () => {
   it("derives the Coulomb constant from the permittivity", () => {
-    expect(COULOMB_CONSTANT).toBeCloseTo(8.9875517923e9, -1);
+    expect(COULOMB_CONSTANT).toBeCloseTo(8.9875517862e9, -1);
     expect(COULOMB_CONSTANT * 4 * Math.PI * VACUUM_PERMITTIVITY).toBeCloseTo(1, 12);
   });
 });
 
 describe("Coulomb's law", () => {
   it("gives F = k q₁ q₂ / r² (textbook value: 1 µC and 1 µC at 1 m → 8.99 mN)", () => {
-    expect(calculateCoulombForceMagnitude(1e-6, 1e-6, 1)).toBeCloseTo(8.9875517923e-3, 9);
+    expect(calculateCoulombForceMagnitude(1e-6, 1e-6, 1)).toBeCloseTo(8.9875517862e-3, 9);
   });
 
   it("follows the inverse-square law", () => {

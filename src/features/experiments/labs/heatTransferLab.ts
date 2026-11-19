@@ -30,6 +30,8 @@ export const heatTransferLab: LabDefinition = {
     { kind: "number", key: "emissivity", label: "Surface emissivity (radiation)", unit: "", minimum: 0.05, maximum: 1, step: 0.05, initial: 0.9 },
   ],
   describe: (v) => `${v.hot} °C to ${v.cold} °C · ${material(v).name} ${v.thickness} cm · ${medium(v).name} · ε ${v.emissivity}`,
+  prediction: { prompt: "How much heat will be conducted through the wall?", measurementId: "conduction" },
+  modes: { advancedControls: ["medium", "emissivity"], beginnerSteps: ["Set the hot and cold temperatures.", "Predict the heat conducted through the wall, then run.", "Double the wall thickness: what happens to the conduction?"] },
   run(v) {
     const p = powers(v);
     const total = p.conduction + p.convection + p.radiation;

@@ -56,7 +56,7 @@ export const CRASH_ROUNDS: readonly CrashRound[] = Object.freeze([
     id: "the-crumple-zone", title: "The crumple zone", difficulty: "Beginner", kind: "crumple",
     situation: `A ${CAR_MASS} kg car hits a wall at ${CRASH_SPEED} m/s (54 km/h). Choose the length of the crumple zone so the average deceleration is between ${G_LOW} g and ${G_HIGH} g: survivable, without a needlessly long car.`,
     controls: [fixed("speed", "Impact speed", "m/s", CRASH_SPEED), slider("distance", "Crumple distance", "m", 0.1, 1.5, 0.01, 0.2)],
-    hint: "a = v²/(2s). For 20 g, s = v²/(2 × 20 × 9.81).",
+    hint: "a = v²/(2s). For 20 g, s = v²/(2 × 20 g), with g ≈ 9.81 m/s².",
   },
   {
     id: "the-airbag", title: "The airbag", difficulty: "Intermediate", kind: "airbag",

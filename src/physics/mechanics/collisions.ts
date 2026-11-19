@@ -58,3 +58,39 @@ export function calculateKineticEnergyLoss(m1: number, v1: number, m2: number, v
   const v = calculateInelasticVelocity(m1, v1, m2, v2);
   return 0.5 * m1 * v1 ** 2 + 0.5 * m2 * v2 ** 2 - 0.5 * (m1 + m2) * v ** 2;
 }
+
+/**
+ * Velocities after a head-on collision of two bodies on a line, with coefficient of
+ * restitution e (1 elastic, 0 sticking together). Momentum is conserved and the
+ * separation speed is e times the approach speed:
+ * v₁ = (m₁u₁ + m₂u₂ − m₂e(u₁ − u₂))/(m₁ + m₂), v₂ = (m₁u₁ + m₂u₂ + m₁e(u₁ − u₂))/(m₁ + m₂).
+ * Assumptions: one dimension, a brief collision with no outside forces (frictionless track).
+ */
+export function calculateCollisionVelocities(
+  massA: number,
+  speedA: number,
+  massB: number,
+  speedB: number,
+  restitution: number,
+): { readonly velocityA: number; readonly velocityB: number } {
+  assertPositive(massA, "massA");
+  assertPositive(massB, "massB");
+  if (!(restitution >= 0 && restitution <= 1)) {
+    throw new RangeError("The coefficient of restitution must be between 0 and 1.");
+  }
+  const momentum = massA * speedA + massB * speedB;
+  const approach = speedA - speedB;
+  const total = massA + massB;
+  return {
+    velocityA: (momentum - massB * restitution * approach) / total,
+    velocityB: (momentum + massA * restitution * approach) / total,
+  };
+}
+
+/** Total kinetic energy (J) of bodies with the given masses and speeds. */
+export function calculateTotalKineticEnergy(bodies: readonly { readonly massKg: number; readonly speed: number }[]): number {
+  return bodies.reduce((sum, body) => {
+    assertPositive(body.massKg, "massKg");
+    return sum + 0.5 * body.massKg * body.speed ** 2;
+  }, 0);
+}

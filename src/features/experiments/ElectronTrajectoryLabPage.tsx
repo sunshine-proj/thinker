@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   calculateCyclotronFrequency,
   calculateLorentzForce,
+  calculateRelativisticCyclotronFrequency,
   getParticleSpecies,
 } from "../../physics/electromagnetism";
-import { Vector3 } from "../../physics/core";
+import { SPEED_OF_LIGHT, Vector3 } from "../../physics/core";
 import type {
   SimulationSnapshot,
   SimulationStatus,
@@ -27,7 +28,7 @@ import {
 } from "./electronExperiment";
 import {
   DEFAULT_ELECTRON_TRAJECTORY_PARAMETERS,
-  ELECTRON_TRAJECTORY_TIME_STEP_SECONDS,
+  getSimulationTiming,
   TARGET_POSITION_METERS,
   TARGET_RADIUS_METERS,
   createElectronTrajectoryModel,
@@ -47,6 +48,14 @@ const MAX_ELECTRIC_FIELD_VOLTS_PER_METER =
 const MAX_ENTRY_POSITION_METERS = ELECTRON_LIMITS.maxEntryPositionMeters;
 const MAX_INTERACTIVE_SPEED_METERS_PER_SECOND =
   ELECTRON_LIMITS.maxSpeedMetersPerSecond;
+
+function speedLimit(relativistic: boolean): number {
+  return relativistic ? ELECTRON_LIMITS.maxRelativisticSpeedMetersPerSecond : MAX_INTERACTIVE_SPEED_METERS_PER_SECOND;
+}
+
+function fieldLimit(relativistic: boolean): number {
+  return relativistic ? ELECTRON_LIMITS.maxRelativisticFieldMicroteslas : MAX_FIELD_MICROTESLAS;
+}
 
 function createInitialSnapshot(): SimulationSnapshot<
   ElectronTrajectoryState,
@@ -70,6 +79,22 @@ function formatPosition(value: number): string {
 
 function formatDuration(seconds: number): string {
   return seconds === 0 ? "0 s" : `${seconds.toExponential(2)} s`;
+}
+
+export type TrajectoryView = "projection" | "top";
+
+/** Looking down the −Y axis onto the x–z plane: x to the right, z down the screen. */
+function projectTop(point: Vector3): { x: number; y: number } {
+  return { x: point.x, y: -point.z };
+}
+
+/** Short text for the field direction, e.g. "+Y" or "tilted 45° from +Y". */
+export function describeFieldDirection(parameters: ElectronTrajectoryParameters): string {
+  const { fieldPolarDegrees: polar, fieldAzimuthDegrees: azimuth, magneticFieldReversed: reversed } = parameters;
+  if (polar === 0 || polar === 180) {
+    return (polar === 0) !== reversed ? "+Y" : "−Y";
+  }
+  return `${reversed ? "reversed, " : ""}tilted ${polar}° from +Y toward ${azimuth}°`;
 }
 
 function project(point: Vector3): { x: number; y: number } {
@@ -115,7 +140,9 @@ function drawTrajectory(
     ElectronTrajectoryState,
     ElectronTrajectoryParameters
   >,
+  view: TrajectoryView = "projection",
 ): void {
+  const projectPoint = view === "top" ? projectTop : project;
   const pixelRatio = window.devicePixelRatio || 1;
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
@@ -155,34 +182,62 @@ function drawTrajectory(
   }
   context.stroke();
 
-  const fieldIsReversed = snapshot.parameters.magneticFieldReversed;
   const magneticField = getMagneticField(snapshot.parameters);
   const hasMagneticField = magneticField.magnitude > 0;
   if (hasMagneticField) {
+    const unit = magneticField.scale(1 / magneticField.magnitude);
+    // In the top view the line of sight is −Y: B toward the viewer (+Y) is drawn as
+    // dots ⊙ and B away from the viewer as crosses ⊗ (PRD §6.5).
+    const towardViewer = view === "top" ? unit.y : 0;
+    const inPlane = projectPoint(unit);
+    const inPlaneLength = Math.hypot(inPlane.x, inPlane.y);
     context.save();
-    context.globalAlpha = 0.38;
+    context.globalAlpha = 0.42;
     for (let x = 35; x < width; x += 72) {
       for (let y = 35; y < height; y += 70) {
-        drawArrow(
-          context,
-          x,
-          y,
-          x,
-          y + (fieldIsReversed ? 13 : -13),
-          "#7180d8",
-          1.2,
-        );
+        if (Math.abs(towardViewer) > 0.2) {
+          context.strokeStyle = "#7180d8";
+          context.fillStyle = "#7180d8";
+          context.lineWidth = 1.4;
+          context.beginPath();
+          context.arc(x, y, 6, 0, 2 * Math.PI);
+          context.stroke();
+          if (towardViewer > 0) {
+            context.beginPath();
+            context.arc(x, y, 1.8, 0, 2 * Math.PI);
+            context.fill();
+          } else {
+            context.beginPath();
+            context.moveTo(x - 4, y - 4);
+            context.lineTo(x + 4, y + 4);
+            context.moveTo(x + 4, y - 4);
+            context.lineTo(x - 4, y + 4);
+            context.stroke();
+          }
+        }
+        if (inPlaneLength > 0.2) {
+          const length = 13 * Math.min(1, inPlaneLength);
+          drawArrow(
+            context,
+            x + 12,
+            y,
+            x + 12 + (inPlane.x / inPlaneLength) * length,
+            y - (inPlane.y / inPlaneLength) * length,
+            "#7180d8",
+            1.2,
+          );
+        }
       }
     }
     context.restore();
   }
 
   const origin = snapshot.state.trail[0] ?? snapshot.state.position;
-  const points = snapshot.state.trail.map(project);
+  const points = snapshot.state.trail.map(projectPoint);
   if (snapshot.parameters.targetChallengeEnabled) {
-    points.push(project(TARGET_POSITION_METERS));
+    points.push(projectPoint(TARGET_POSITION_METERS));
   }
-  points.push(project(origin));
+  points.push(projectPoint(origin));
 
   const minX = Math.min(...points.map((point) => point.x));
   const maxX = Math.max(...points.map((point) => point.x));
@@ -194,7 +249,7 @@ function drawTrajectory(
   const centerX = (minX + maxX) / 2;
   const centerY = (minY + maxY) / 2;
   const toCanvas = (point: Vector3) => {
-    const projected = project(point);
+    const projected = projectPoint(point);
     return {
       x: width / 2 + (projected.x - centerX) * scale,
       y: height / 2 - (projected.y - centerY) * scale,
@@ -205,8 +260,8 @@ function drawTrajectory(
   context.font = "600 10px 'DM Sans', sans-serif";
   context.fillText(
     hasMagneticField
-      ? `MAGNETIC FIELD · ${fieldIsReversed ? "−Y" : "+Y"}`
-      : "MAGNETIC FIELD · OFF",
+      ? `MAGNETIC FIELD · ${describeFieldDirection(snapshot.parameters)}${view === "top" ? " · TOP VIEW (⊙ OUT, ⊗ IN)" : ""}`
+      : `MAGNETIC FIELD · OFF${view === "top" ? " · TOP VIEW" : ""}`,
     15,
     20,
   );
@@ -257,9 +312,9 @@ function drawTrajectory(
   context.fill();
 
   const particle = toCanvas(snapshot.state.position);
-  const velocity = project(snapshot.state.velocity);
+  const velocity = projectPoint(snapshot.state.velocity);
   const species = getParticleSpecies(snapshot.parameters.particle);
-  const force = project(
+  const force = projectPoint(
     calculateLorentzForce(
       species.chargeCoulombs,
       snapshot.state.velocity,
@@ -362,34 +417,68 @@ export function ElectronTrajectoryLabPage({
   readonly savedExperimentId?: string;
 } = {}) {
   const [parameters, setParameters] = useState(INITIAL_PARAMETERS);
+  const [view, setView] = useState<TrajectoryView>("projection");
+  // The canvas is drawn outside React, so it reads the view from a ref.
+  const viewRef = useRef<TrajectoryView>("projection");
   const {
     canvasRef,
     snapshot,
     canvasError,
+    reducedMotion,
     start,
     pause,
     resume,
     reset,
     setParameters: setEngineParameters,
+    setTiming,
   } = useSimulationCanvas({
     model: SIMULATION_MODEL,
     initialParameters: INITIAL_PARAMETERS,
     initialSnapshot: createInitialSnapshot(),
     engineOptions: {
-      fixedTimeStepSeconds: ELECTRON_TRAJECTORY_TIME_STEP_SECONDS,
-      timeScale: 1e-6,
+      ...getSimulationTiming(INITIAL_PARAMETERS),
       maxFrameDeltaSeconds: 0.1,
       maxSubSteps: 128,
     },
-    draw: drawTrajectory,
+    draw: (canvas, current) => drawTrajectory(canvas, current, viewRef.current),
   });
+
+  /** Applies new parameters, switching the engine's timing when the model changes. */
+  const applyToEngine = (next: ElectronTrajectoryParameters, previous: ElectronTrajectoryParameters) => {
+    if (next.relativistic !== previous.relativistic) {
+      setTiming(getSimulationTiming(next));
+    }
+    setEngineParameters(next, true);
+  };
+
+  const setRelativistic = (relativistic: boolean) => {
+    const next = {
+      ...parameters,
+      relativistic,
+      speedMetersPerSecond: relativistic
+        ? Math.max(parameters.speedMetersPerSecond, 0.5 * SPEED_OF_LIGHT)
+        : Math.min(parameters.speedMetersPerSecond, MAX_INTERACTIVE_SPEED_METERS_PER_SECOND),
+      magneticFieldMicroteslas: relativistic
+        ? Math.max(parameters.magneticFieldMicroteslas, 2000)
+        : Math.min(parameters.magneticFieldMicroteslas, MAX_FIELD_MICROTESLAS),
+    };
+    setParameters(next);
+    applyToEngine(next, parameters);
+  };
+
+  const changeView = (next: TrajectoryView) => {
+    viewRef.current = next;
+    setView(next);
+    // Redraw the current frame in the new view without resetting the run.
+    setEngineParameters(parameters, false);
+  };
 
   const updateParameters = (
     changes: Partial<ElectronTrajectoryParameters>,
   ) => {
     const nextParameters = { ...parameters, ...changes };
     setParameters(nextParameters);
-    setEngineParameters(nextParameters, true);
+    applyToEngine(nextParameters, parameters);
   };
 
   const applyParameters = (raw: Readonly<Record<string, unknown>>): boolean => {
@@ -398,7 +487,7 @@ export function ElectronTrajectoryLabPage({
       return false;
     }
     setParameters(restored);
-    setEngineParameters(restored, true);
+    applyToEngine(restored, parameters);
     return true;
   };
 
@@ -421,13 +510,16 @@ export function ElectronTrajectoryLabPage({
       const restored = target ? parseElectronParameters(target.parameters) : null;
       if (restored) {
         setParameters(restored);
+        if (restored.relativistic) {
+          setTiming(getSimulationTiming(restored));
+        }
         setEngineParameters(restored, true);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [savedExperimentId, hydrateProgress, setEngineParameters]);
+  }, [savedExperimentId, hydrateProgress, setEngineParameters, setTiming]);
 
   const handlePlayPause = () => {
     if (snapshot.status === "running") {
@@ -447,11 +539,9 @@ export function ElectronTrajectoryLabPage({
   );
   const particle = getParticleSpecies(snapshot.parameters.particle);
   const magneticField = getMagneticField(snapshot.parameters);
-  const cyclotronFrequency = calculateCyclotronFrequency(
-    particle.chargeCoulombs,
-    particle.massKilograms,
-    magneticField,
-  );
+  const cyclotronFrequency = snapshot.parameters.relativistic
+    ? calculateRelativisticCyclotronFrequency(particle.chargeCoulombs, particle.massKilograms, magneticField, snapshot.state.velocity)
+    : calculateCyclotronFrequency(particle.chargeCoulombs, particle.massKilograms, magneticField);
   const hasMagneticField = magneticField.magnitude > 0;
   const explanations = useMemo(
     () => explainElectronResult(parameters),
@@ -483,7 +573,9 @@ export function ElectronTrajectoryLabPage({
             changing the fields around it.
           </p>
         </div>
-        <span className="trajectory-lab__model-tag">CLASSICAL MODEL</span>
+        <span className="trajectory-lab__model-tag">
+          {parameters.relativistic ? "RELATIVISTIC MODEL · ADVANCED" : "CLASSICAL MODEL"}
+        </span>
       </header>
 
       <div className="trajectory-lab__layout">
@@ -507,11 +599,12 @@ export function ElectronTrajectoryLabPage({
               role="img"
             />
             <p className="visually-hidden" id="trajectory-canvas-description">
-              The drawing shows the particle path projected into a two
-              dimensional view. The magnetic field points along the vertical
-              Y-axis. The orange arrow is velocity and the red arrow is
-              Lorentz force. Numeric measurements and particle components are
-              provided below.
+              {view === "top"
+                ? "Top view looking down the Y-axis onto the x–z plane. Field pointing toward you is drawn as dots, away from you as crosses."
+                : "The drawing shows the particle path projected into a two dimensional view."}{" "}
+              The magnetic field points {describeFieldDirection(parameters)}. The
+              orange arrow is velocity and the red arrow is Lorentz force.
+              Numeric measurements and particle components are provided below.
             </p>
             <p className="visually-hidden" id="trajectory-vector-description">
               Particle position in meters: x{" "}
@@ -526,6 +619,12 @@ export function ElectronTrajectoryLabPage({
               {measurements.forceNewtons.z.toExponential(3)}.
             </p>
           </div>
+          {reducedMotion && (
+            <p className="trajectory-lab__motion-note">
+              Reduced motion is on: the drawing updates once per second while
+              the simulation runs. The physics and measurements are unchanged.
+            </p>
+          )}
           {canvasError && (
             <p className="lab-error" role="alert">
               Visualization error: {canvasError}
@@ -622,8 +721,19 @@ export function ElectronTrajectoryLabPage({
               </span>
             )}
             <span className="trajectory-visual__slow-motion">
-              Slow-motion playback · 1,000,000×
+              Slow-motion playback · {parameters.relativistic ? "1,000,000,000×" : "1,000,000×"}
             </span>
+            <label className="lab-select trajectory-view" htmlFor="trajectory-view">
+              <span>View</span>
+              <select
+                id="trajectory-view"
+                onChange={(event) => changeView(event.currentTarget.value === "top" ? "top" : "projection")}
+                value={view}
+              >
+                <option value="projection">3D projection</option>
+                <option value="top">Top view (dots and crosses)</option>
+              </select>
+            </label>
           </div>
         </section>
 
@@ -661,12 +771,12 @@ export function ElectronTrajectoryLabPage({
             )}
             id="initial-speed"
             label="Initial speed"
-            maximum={MAX_INTERACTIVE_SPEED_METERS_PER_SECOND}
+            maximum={speedLimit(parameters.relativistic)}
             minimum={0}
             onChange={(speedMetersPerSecond) =>
               updateParameters({ speedMetersPerSecond })
             }
-            step={100_000}
+            step={parameters.relativistic ? 1_000_000 : 100_000}
             value={parameters.speedMetersPerSecond}
           />
 
@@ -691,23 +801,47 @@ export function ElectronTrajectoryLabPage({
             displayValue={`${parameters.magneticFieldMicroteslas.toFixed(1)} µT`}
             id="magnetic-field"
             label="Magnetic field strength"
-            maximum={MAX_FIELD_MICROTESLAS}
+            maximum={fieldLimit(parameters.relativistic)}
             minimum={0}
             onChange={(magneticFieldMicroteslas) =>
               updateParameters({ magneticFieldMicroteslas })
             }
-            step={0.1}
+            step={parameters.relativistic ? 10 : 0.1}
             value={parameters.magneticFieldMicroteslas}
           />
           <ToggleControl
             checked={parameters.magneticFieldReversed}
-            description="Flip B from +Y to −Y"
+            description="Flip B to point the opposite way"
             id="reverse-field"
             label="Reverse magnetic field"
             onChange={(magneticFieldReversed) =>
               updateParameters({ magneticFieldReversed })
             }
           />
+          <RangeControl
+            displayValue={`${parameters.fieldPolarDegrees}°`}
+            id="field-tilt"
+            label="Field tilt from +Y"
+            maximum={180}
+            minimum={0}
+            onChange={(fieldPolarDegrees) => updateParameters({ fieldPolarDegrees })}
+            step={5}
+            value={parameters.fieldPolarDegrees}
+          />
+          <RangeControl
+            disabled={parameters.fieldPolarDegrees === 0 || parameters.fieldPolarDegrees === 180}
+            displayValue={`${parameters.fieldAzimuthDegrees}°`}
+            id="field-azimuth"
+            label="Tilt direction (from +X toward +Z)"
+            maximum={360}
+            minimum={0}
+            onChange={(fieldAzimuthDegrees) => updateParameters({ fieldAzimuthDegrees })}
+            step={5}
+            value={parameters.fieldAzimuthDegrees}
+          />
+          <p className="lab-control__hint">
+            The launch angle is measured from the field, so a tilted field tilts the whole orbit.
+          </p>
 
           <RangeControl
             displayValue={`${parameters.electricFieldVoltsPerMeter} V/m`}
@@ -757,6 +891,19 @@ export function ElectronTrajectoryLabPage({
               </label>
             ))}
           </fieldset>
+
+          <ToggleControl
+            checked={parameters.relativistic}
+            description="Advanced: relativistic Boris integration up to 0.99c, fields up to 20 mT"
+            id="relativistic-mode"
+            label="Relativistic mode"
+            onChange={setRelativistic}
+          />
+          {parameters.relativistic && (
+            <p className="lab-control__hint">
+              Relativistic mode uses p = γmv. Orbits grow by γ, and the particle never reaches c however strong the electric field.
+            </p>
+          )}
 
           <ToggleControl
             checked={parameters.targetChallengeEnabled}
@@ -814,12 +961,18 @@ export function ElectronTrajectoryLabPage({
         <div className="lab-explainer__formula">
           <span>PERPENDICULAR ORBIT</span>
           <strong>r = m v⊥ / (|q| B)</strong>
-          <small>For a uniform magnetic field and non-relativistic speed</small>
+          <small>
+            {parameters.relativistic
+              ? "Relativistic mode: r = γ m v⊥ / (|q| B), with γ = 1/√(1 − v²/c²)"
+              : "For a uniform magnetic field and non-relativistic speed"}
+          </small>
         </div>
         <p className="lab-explainer__assumption">
-          Model assumptions: uniform, time-independent fields; classical
-          (non-relativistic) motion below 0.1c; no radiation or collisions.
-          The Boris integrator advances the particle at a fixed timestep.
+          Model assumptions: uniform, time-independent fields; no radiation or
+          collisions.{" "}
+          {parameters.relativistic
+            ? "Relativistic mode (advanced) integrates the momentum p = γmv with the relativistic Boris scheme at a 20 ps step, valid up to 0.99c."
+            : "Classical (non-relativistic) motion below 0.1c; the Boris integrator advances the particle at a fixed 20 ns step."}
         </p>
       </section>
     </div>

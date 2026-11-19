@@ -1,8 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app/App";
-import { createSyncManager } from "./services/sync/progressSync";
-import { progressRepository } from "./store/progressStore";
+import { startProgressSync } from "./services/sync/syncService";
 import "./styles.css";
 
 const rootElement = document.getElementById("root");
@@ -17,6 +16,6 @@ createRoot(rootElement).render(
   </StrictMode>,
 );
 
-// No remote account is configured yet, so progress stays on this device; once an
-// adapter (for example Supabase) is provided here, it syncs whenever connectivity returns.
-createSyncManager(progressRepository, null).syncOnReconnect(window);
+// Syncs with Supabase when VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set;
+// otherwise progress stays on this device.
+startProgressSync(window);

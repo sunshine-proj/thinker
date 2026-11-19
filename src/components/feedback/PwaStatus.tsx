@@ -3,11 +3,16 @@ import { registerServiceWorker } from "../../services/pwa/registerServiceWorker"
 import { useInstallPrompt } from "../../services/pwa/installPrompt";
 import { useOnlineStatus } from "../../services/pwa/connectivity";
 
+export interface PwaStatusProps {
+  /** True when progress is synced with an account; false when it stays on this device. */
+  readonly remoteSync?: boolean;
+}
+
 /**
  * Connection, offline-readiness, update and install messages. Everything is a
  * plain-text status so it works without relying on colour or icons.
  */
-export function PwaStatus() {
+export function PwaStatus({ remoteSync = false }: PwaStatusProps = {}) {
   const online = useOnlineStatus();
   const { canInstall, install } = useInstallPrompt();
   const [offlineReady, setOfflineReady] = useState(false);
@@ -31,7 +36,9 @@ export function PwaStatus() {
 
   const messages = [
     !online &&
-      "You are offline. Games, experiments and your saved progress still work; progress will sync when a connection returns.",
+      (remoteSync
+        ? "You are offline. Games, experiments and your saved progress still work; new progress will sync to your account when a connection returns."
+        : "You are offline. Games, experiments and your saved progress still work. Progress is saved on this device."),
     offlineReady && online && "Physics Playground is ready to work offline.",
   ].filter((message): message is string => typeof message === "string");
 

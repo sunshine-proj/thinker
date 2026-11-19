@@ -26,6 +26,8 @@ export const orbitalMotionLab: LabDefinition = {
     { kind: "number", key: "periods", label: "Time to simulate", unit: "circular periods", minimum: 0.5, maximum: 3, step: 0.1, initial: 1.5 },
   ],
   describe: (v) => `${bodyOf(v).name} · ${v.altitude} km · ${(v.ratio as number).toFixed(2)} × circular speed`,
+  prediction: { prompt: "How long will one orbit take?", measurementId: "period", tolerance: 0.15 },
+  modes: { advancedControls: ["periods"], beginnerSteps: ["Pick a central body and a starting height.", "Predict the orbital period, then run.", "Raise the launch speed toward √2 times the circular speed: what happens to the orbit?"] },
   run(v) {
     const body = bodyOf(v);
     const r0 = body.radius + (v.altitude as number) * 1000;

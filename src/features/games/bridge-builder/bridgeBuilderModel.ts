@@ -106,6 +106,9 @@ export function evaluateBridge(
         : `Peak stress is ${stressMPa} MPa, ${(utilization * 100).toFixed(0)}% of the ${limitMPa} MPa allowable, for ${Math.round(cost)} credits.`;
 
   return {
+    ...(failure === "overstressed"
+      ? { catastrophe: { title: "The bridge collapsed", explanation: `The bending stress reached ${stressMPa} MPa, beyond the ${limitMPa} MPa the ${material.name.toLowerCase()} can take. Stress grows with the bending moment and falls with the square of the depth, so a deeper beam is the most effective fix.` } }
+      : {}),
     success: failure === "none",
     // Rewards efficient use of material: close to the limit is best.
     accuracyFraction: failure === "none" ? utilization : 0,

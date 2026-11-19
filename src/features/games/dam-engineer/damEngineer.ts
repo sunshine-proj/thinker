@@ -84,6 +84,7 @@ export function runDam(round: DamRound, v: NumericControl): DamOutcome {
     weightNewtons: CONCRETE_DENSITY * STANDARD_GRAVITY * d.thickness * d.damHeight, success,
     accuracyFraction: success ? 1 - Math.abs(sf - mid) / half : 0,
     predictionActual: calculateThicknessForSafetyFactor({ waterDepth: d.waterDepth, damHeight: d.damHeight, uplift: d.uplift }, SAFETY_MINIMUM),
+    ...(sf < 1 ? { catastrophe: { title: "The dam tipped over", explanation: `The water's overturning moment (${(overturning / 1000).toFixed(0)} kN·m) is larger than the dam's resisting moment (${(resisting / 1000).toFixed(0)} kN·m), so it rotates about its toe. Engineers demand a safety factor of at least ${SAFETY_MINIMUM}.` } } : {}),
     feedback: success ? `The water pushes with ${(calculateWaterForce(d.waterDepth) / 1000).toFixed(0)} kN per meter, giving an overturning moment of ${(overturning / 1000).toFixed(0)} kN·m; the dam resists ${(resisting / 1000).toFixed(0)} kN·m. Safety factor ${sf.toFixed(2)}.`
       : sf < SAFETY_MINIMUM ? `Safety factor ${sf.toFixed(2)} is below ${SAFETY_MINIMUM}: the dam could tip over. Make it thicker.`
       : `Safety factor ${sf.toFixed(2)} is safe but wasteful (above ${maximum}). Use less concrete.`,

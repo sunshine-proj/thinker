@@ -2,7 +2,8 @@ import { LineChart } from "../../../components/common";
 import { createNumericGamePage } from "../../../game-engine/rounds";
 import { NEUTRON_MASS } from "../../../physics/core";
 import { calculateElectronWavelengthFromVoltage, calculateWavelengthFromSpeed } from "../../../physics/quantum";
-import { runMatter, waveOrParticle } from "./waveOrParticle";
+import { calculateScreenIntensity } from "../../../physics/waves";
+import { SCREEN_DISTANCE_M, SLIT_SEPARATION_M, runMatter, waveOrParticle } from "./waveOrParticle";
 
 export const WaveOrParticlePage = createNumericGamePage({
   definition: waveOrParticle,
@@ -21,7 +22,7 @@ export const WaveOrParticlePage = createNumericGamePage({
       const lambda = o.wavelengthNm * 1e-9;
       const points = Array.from({ length: 401 }, (_, i) => {
         const y = -1e-3 + (2e-3 * i) / 400;
-        return { x: y * 1000, y: Math.cos((Math.PI * 1e-6 * y) / (lambda * 1)) ** 2 };
+        return { x: y * 1000, y: calculateScreenIntensity(lambda, SCREEN_DISTANCE_M, SLIT_SEPARATION_M, y) };
       });
       return <LineChart description={`Fringe pattern on the screen; bright fringes ${o.fringeSpacingMm?.toFixed(3)} millimeters apart.`} series={[{ label: "Relative intensity", points }]} title="Electron double-slit pattern" xDomain={[-1, 1]} xLabel="Position on the screen (mm)" yDomain={[0, 1.05]} yLabel="Relative intensity" />;
     }

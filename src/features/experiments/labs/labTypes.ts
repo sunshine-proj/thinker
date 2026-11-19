@@ -43,6 +43,23 @@ export interface LabResult {
   readonly explanations: readonly ResultExplanation[];
 }
 
+/** Before the first run the learner predicts one measurement (SKILLS §7, AGENTS §8). */
+export interface LabPrediction {
+  readonly prompt: string;
+  /** The measurement to predict; may depend on the setup, for example wire or solenoid. */
+  readonly measurementId: string | ((values: LabValues) => string);
+  /** Relative error (fraction) within which the prediction counts as confirmed. Defaults to 0.1. */
+  readonly tolerance?: number;
+}
+
+/** Beginner and advanced presentations of the same lab (PRD §7). */
+export interface LabModes {
+  /** Control keys hidden in beginner mode; they keep their current values. */
+  readonly advancedControls: readonly string[];
+  /** Guided steps shown in beginner mode. */
+  readonly beginnerSteps: readonly string[];
+}
+
 export interface LabDefinition {
   /** Matches the catalog entry id; saved runs are filed under it. */
   readonly id: string;
@@ -54,6 +71,24 @@ export interface LabDefinition {
   readonly controls: readonly LabControl[];
   run(values: LabValues): LabResult;
   describe(values: LabValues): string;
+  readonly prediction: LabPrediction;
+  readonly modes: LabModes;
+}
+
+export function predictionMeasurementId(definition: LabDefinition, values: LabValues): string {
+  const { measurementId } = definition.prediction;
+  return typeof measurementId === "function" ? measurementId(values) : measurementId;
+}
+
+/** Whether a predicted value is within the lab's tolerance of the measured one. */
+export function isPredictionConfirmed(predicted: number, measured: number, tolerance = 0.1): boolean {
+  if (!Number.isFinite(predicted) || !Number.isFinite(measured)) {
+    return false;
+  }
+  if (measured === 0) {
+    return Math.abs(predicted) <= tolerance;
+  }
+  return Math.abs(predicted - measured) / Math.abs(measured) <= tolerance;
 }
 
 export function defaultLabValues(definition: LabDefinition): Record<string, number | string> {

@@ -49,6 +49,11 @@ export interface AttemptOutcome {
   readonly predictionActual: number | null;
   /** Plain-language explanation of what happened and why. */
   readonly feedback: string;
+  /**
+   * Set when the attempt failed catastrophically (a crash landing, a collapse, a capsize,
+   * a reactor excursion): the round enters the FAILED state until the learner retries.
+   */
+  readonly catastrophe?: { readonly title: string; readonly explanation: string };
 }
 
 export interface RoundGameDefinition<

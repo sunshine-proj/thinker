@@ -3,7 +3,6 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { AppShell } from "../src/components/layout/AppShell";
 import { HomePage } from "../src/features/home/HomePage";
-import { SectionPage } from "../src/app/SectionPage";
 
 function renderApp(initialPath = "/") {
   return render(
@@ -13,14 +12,7 @@ function renderApp(initialPath = "/") {
           <Route index element={<HomePage />} />
           <Route
             path="worlds"
-            element={
-              <SectionPage
-                title="Physics Worlds"
-                eyebrow="Choose a direction"
-                description="Explore physics."
-                icon="worlds"
-              />
-            }
+            element={<h1>Physics Worlds</h1>}
           />
         </Route>
       </Routes>

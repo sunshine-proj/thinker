@@ -1,3 +1,4 @@
+import { ACHIEVEMENTS } from "../src/game-engine/progression/achievements";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
@@ -47,8 +48,8 @@ describe("achievement flow", () => {
     await useProgressStore.getState().recordGameResult(gameResult("circuit-builder", 290));
     render(wrap(<AchievementsPage />));
 
-    expect(await screen.findByText(/2 of 7 unlocked/)).toBeTruthy();
-    expect(screen.getAllByText("LOCKED").length).toBe(5);
+    expect(await screen.findByText(new RegExp(`2 of ${ACHIEVEMENTS.length} unlocked`))).toBeTruthy();
+    expect(screen.getAllByText("LOCKED").length).toBe(ACHIEVEMENTS.length - 2);
     expect(screen.getAllByText(/^UNLOCKED/).length).toBe(2);
     expect(screen.getByRole("region", { name: "Player level" }).textContent).toContain("Experimenter");
   });

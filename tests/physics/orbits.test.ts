@@ -5,6 +5,7 @@ import {
   calculateEscapeSpeed,
   calculateOrbitalElements,
   calculateOrbitalPeriod,
+  calculateSemiMajorAxisForPeriod,
   calculateVisViva,
   integrateOrbit,
 } from "../../src/physics/astronomy";
@@ -152,5 +153,20 @@ describe("numerical integration (velocity Verlet)", () => {
     expect(integrateOrbit(MU, start, 10 * period, { maximumSteps: 50 }).stoppedBy).toBe("step-limit");
     expect(() => integrateOrbit(MU, { position: Vector2.zero(), velocity: new Vector2(1, 0) }, 10)).toThrow(RangeError);
     expect(() => integrateOrbit(MU, start, 0)).toThrow(RangeError);
+  });
+});
+
+describe("Kepler's third law inverted", () => {
+  it("gives the geostationary radius of 42 164 km for one sidereal day", () => {
+    expect(calculateSemiMajorAxisForPeriod(MU, 86_164.0905) / 1000).toBeCloseTo(42_164, 0);
+  });
+
+  it("round-trips with the orbital period", () => {
+    const a = calculateSemiMajorAxisForPeriod(MU, 5_400);
+    expect(calculateOrbitalPeriod(MU, a)).toBeCloseTo(5_400, 6);
+  });
+
+  it("rejects non-positive periods", () => {
+    expect(() => calculateSemiMajorAxisForPeriod(MU, 0)).toThrow(RangeError);
   });
 });

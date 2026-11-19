@@ -4,12 +4,19 @@ import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { router } from "../../src/app/router";
 import { PHYSICS_WORLDS } from "../../src/data/games/gameCatalog";
+import { PHYSICS_TOPICS } from "../../src/data/topics";
+import { LIVE_GAMES } from "../../src/features/live-games";
+import { THOUGHT_EXPERIMENTS } from "../../src/features/thought-experiments/thoughtExperiments";
 
 const ROUTES = [
   "/", "/worlds", "/experiments", "/challenges", "/achievements", "/profile", "/thought-experiments",
   "/worlds/mechanics/projectile-master", "/worlds/mechanics/balance-challenge", "/worlds/electromagnetism/circuit-builder",
   "/experiments/electron-trajectory",
   ...PHYSICS_WORLDS.flatMap((world) => world.entries.map((entry) => entry.path)),
+  ...THOUGHT_EXPERIMENTS.map((experiment) => `/thought-experiments/${experiment.id}`),
+  "/knowledge",
+  ...LIVE_GAMES.map((game) => `/worlds/${game.worldId}/${game.relatedGameId}/live`),
+  ...PHYSICS_TOPICS.map((topic) => `/knowledge/${topic.id}`),
 ];
 
 // Colour contrast depends on computed styles and layout, which jsdom does not provide; it is checked by hand

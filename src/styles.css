@@ -3442,3 +3442,672 @@ a.world-card:focus-visible {
 .calorimeter-panel {
   padding: 8px 4px;
 }
+
+/* Predictions (shared by thought experiments and labs) */
+.choice-prediction {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.choice-prediction fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice-prediction legend {
+  margin-bottom: 8px;
+  color: var(--color-ink);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.choice-prediction__option {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid #dfe3ee;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.choice-prediction__option:has(input:checked) {
+  border-color: var(--color-brand);
+  background: #f4f6ff;
+}
+
+.choice-prediction__option input {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  accent-color: var(--color-brand);
+}
+
+.choice-prediction fieldset:disabled .choice-prediction__option {
+  cursor: default;
+}
+
+.choice-prediction__locked {
+  margin: 0;
+  color: #3d4760;
+  font-weight: 600;
+}
+
+.prediction-check {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-left: 4px solid;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+.prediction-check--match {
+  border-color: #1f8a63;
+  background: #eefaf4;
+  color: #155c43;
+}
+
+.prediction-check--miss {
+  border-color: #b7621a;
+  background: #fff6ec;
+  color: #7a3f0c;
+}
+
+/* Statements labeled by certainty */
+.statement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.statement {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-left: 4px solid #c6ccdb;
+  border-radius: 6px;
+  background: #f8f9fc;
+  color: #364057;
+  line-height: 1.55;
+}
+
+.statement__tag {
+  color: #4d566b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.statement--established {
+  border-color: #1f8a63;
+}
+
+.statement--prediction {
+  border-color: var(--color-brand);
+}
+
+.statement--assumption {
+  border-color: #b7621a;
+  border-left-style: dashed;
+}
+
+.statement--speculation {
+  border-color: #8a4fc4;
+  border-left-style: dotted;
+  background: #faf6fe;
+}
+
+.thought-page__summary {
+  margin: 12px 0 0;
+  color: #364057;
+  line-height: 1.55;
+}
+
+.thought-page__related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trajectory-lab__motion-note {
+  margin: 8px 0 0;
+  color: #4d566b;
+  font-size: 13px;
+}
+
+/* Knowledge Base */
+.knowledge-search input {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #cfd5e3;
+  border-radius: 10px;
+  font: inherit;
+}
+
+.knowledge-entry ul {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.6;
+}
+
+.knowledge-formula {
+  padding: 12px 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.knowledge-formula:first-of-type {
+  border-top: 0;
+}
+
+.knowledge-formula__expression {
+  margin: 0 0 6px;
+  color: var(--color-ink);
+  font-family: "Cambria Math", "STIX Two Math", Georgia, serif;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+
+.knowledge-formula__variables {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.knowledge-formula__variables th,
+.knowledge-formula__variables td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--color-line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.knowledge-formula__variables thead th {
+  color: #4d566b;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.knowledge-definitions {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.knowledge-definitions dt {
+  font-weight: 700;
+}
+
+.knowledge-definitions dd {
+  margin: 2px 0 0;
+  color: #4d566b;
+  line-height: 1.55;
+}
+
+.knowledge-question {
+  padding: 10px 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.knowledge-question summary {
+  min-height: 44px;
+  padding: 10px 0;
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.knowledge-question p {
+  margin: 8px 0 0;
+  color: #364057;
+  line-height: 1.55;
+}
+
+/* Home progress strips */
+.home-strip h2 {
+  margin: 0 0 8px;
+}
+
+.world-card--featured {
+  max-width: 520px;
+  border-color: #c9cffb;
+  background: linear-gradient(135deg, #fff 0%, #f1f3ff 100%);
+}
+
+.recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recent-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  color: #4d566b;
+  font-size: 13px;
+}
+
+/* Progress by world */
+.world-progress {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.world-progress li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid #e7eaf2;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.world-progress__label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #4d566b;
+  font-size: 12px;
+}
+
+.world-progress__label strong {
+  color: #364057;
+  font-size: 14px;
+}
+
+.world-progress progress {
+  width: 100%;
+  height: 10px;
+  accent-color: var(--color-brand);
+}
+
+/* Lab modes and predictions */
+.lab-mode {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 3px;
+  border: 1px solid #d9deea;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.lab-mode__option {
+  min-width: 96px;
+  min-height: 40px;
+  padding: 6px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #4d566b;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lab-mode__option--active {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+.lab-mode__option:focus-visible {
+  outline: 3px solid #aeb7ff;
+  outline-offset: 2px;
+}
+
+.lab-steps {
+  margin: 0;
+  padding-left: 22px;
+  line-height: 1.7;
+}
+
+.lab-prediction {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.lab-prediction label {
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.lab-prediction__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lab-prediction input {
+  width: 12em;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #cfd5e3;
+  border-radius: 10px;
+  font: inherit;
+}
+
+.lab-raw {
+  overflow-x: auto;
+}
+
+.lab-raw table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.lab-raw th,
+.lab-raw td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--color-line);
+  text-align: left;
+}
+
+.lab-raw td:nth-child(2) {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Listening */
+.listen-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+
+.listen-buttons__mute {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 6px;
+  color: #4d566b;
+  font-size: 13px;
+}
+
+.listen-buttons__mute input {
+  width: 18px;
+  height: 18px;
+}
+
+.listen-buttons__note {
+  flex-basis: 100%;
+  margin: 0;
+  color: #4d566b;
+  font-size: 12px;
+}
+
+/* Stars, hints and celebrations */
+.star-rating {
+  color: #8a5a00;
+  font-size: 16px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.star-rating__empty {
+  color: #5f6779;
+}
+
+.hint-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.game-celebration {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid #cfd6ff;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f6f7ff 0%, #fff8ea 100%);
+}
+
+.game-celebration h3 {
+  margin: 0;
+  font-family: var(--font-display);
+}
+
+.game-celebration .star-rating {
+  font-size: 28px;
+}
+
+.game-celebration__insight {
+  margin: 0;
+  color: #364057;
+  line-height: 1.55;
+}
+
+.game-celebration__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.game-celebration__burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.game-celebration__burst span {
+  position: absolute;
+  top: 40%;
+  left: 85%;
+  color: #e0a526;
+  opacity: 0;
+  animation: celebration-burst 1.4s ease-out forwards;
+  animation-delay: calc(var(--i) * 60ms);
+}
+
+@keyframes celebration-burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(calc(var(--i) * 45deg)) translateX(70px) scale(1.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-celebration__burst {
+    display: none;
+  }
+}
+
+/* World map */
+.world-map {
+  padding: 16px;
+  border: 1px solid #e7eaf2;
+  border-radius: 16px;
+  background: #fbfcff;
+}
+
+.world-map__story-title {
+  margin: 0 0 4px;
+  color: #3d4760;
+  font-size: 14px;
+}
+
+.world-map__progress {
+  margin: 0 0 12px;
+  color: #4d566b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.world-map__path {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.world-map__step {
+  position: relative;
+}
+
+.world-map__step--next .world-card {
+  border: 2px solid var(--color-brand);
+  box-shadow: 0 4px 14px rgb(84 103 223 / 18%);
+}
+
+.world-map__step--done .world-card {
+  background: #f4fbf7;
+}
+
+.home-streak {
+  margin: 12px 0 0;
+  color: #4d566b;
+  font-size: 13px;
+}
+
+.profile-preference {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 60ch;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.profile-preference input {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  flex: none;
+}
+
+.profile-preference > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #4d566b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.profile-preference label {
+  font-weight: 700;
+}
+
+.profile-preference strong {
+  color: #364057;
+  font-size: 14px;
+}
+
+/* Live games */
+.live-game__levels {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-game__stage {
+  border-radius: 12px;
+  outline: none;
+}
+
+.live-game__stage:focus-visible {
+  box-shadow: 0 0 0 3px #aeb7ff;
+}
+
+.live-game__canvas {
+  width: 100%;
+  height: clamp(260px, 52vw, 440px);
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.live-game__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.live-game__action {
+  min-height: 52px;
+  min-width: 120px;
+  font-size: 15px;
+  user-select: none;
+  touch-action: none;
+}
+
+.game-page__live-link {
+  margin: 8px 0 0;
+}
+
+.world-map__live {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  margin-top: 4px;
+  padding: 4px 6px;
+  color: var(--color-brand-dark);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.game-failure {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 14px;
+  border: 2px solid #b3261e;
+  border-radius: 12px;
+  background: #fff4f2;
+  color: #5c140e;
+}
+
+.game-failure p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.game-failure button {
+  align-self: flex-start;
+}

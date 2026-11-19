@@ -3,6 +3,7 @@ export {
   calculateEscapeSpeed,
   calculateOrbitalElements,
   calculateOrbitalPeriod,
+  calculateSemiMajorAxisForPeriod,
   calculateVisViva,
   integrateOrbit,
   type OrbitalElements,
@@ -51,3 +52,29 @@ export {
   type OrbitClass,
 } from "./blackHole";
 export { SURFACE_BODIES, findSurfaceBody, type Body_ } from "./bodies";
+export {
+  addVelocities,
+  calculateBetaForLorentzFactor,
+  calculateContractedLength,
+  calculateLightTravelTime,
+  calculateLorentzFactor,
+  calculateProperTime,
+  calculateRelativisticKineticEnergy,
+  calculateSurvivingFraction,
+  calculateTwinTrip,
+  type TwinTrip,
+} from "./specialRelativity";
+export {
+  calculateEquatorialSpeed,
+  calculateTangentialDriftHeight,
+  calculateTidalAcceleration,
+} from "./tides";
+export {
+  SUN_LUMINOSITY_FROM_STEFAN_BOLTZMANN,
+  calculateLuminosity,
+  calculatePeakWavelength,
+  calculateSolarLuminosity,
+  calculateSolarRadius,
+  calculateTemperatureFromPeak,
+  classifySpectralType,
+} from "./stars";

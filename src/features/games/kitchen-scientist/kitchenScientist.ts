@@ -1,6 +1,8 @@
 import { defineNumericGame, fixed, slider, type NumericControl, type NumericRound } from "../../../game-engine/rounds";
 import type { AttemptOutcome, PredictionSpec, RoundGameMeta } from "../../../game-engine/rounds/types";
-import { calculateConductionPower, calculateIcedDrink, calculateKettleTime } from "../../../physics/thermodynamics";
+import { LATENT_HEAT_FUSION_WATER, SPECIFIC_HEAT_WATER } from "../../../physics/core";
+import { calculateCircleArea } from "../../../physics/fluids";
+import { calculateConductionPower, calculateHeatOfFusion, calculateHeatToChangeTemperature, calculateIcedDrink, calculateKettleTime } from "../../../physics/thermodynamics";
 
 export type KitchenKind = "boil" | "ice" | "pot";
 
@@ -25,6 +27,30 @@ export const ALUMINIUM_CONDUCTIVITY = 237;
 export const BASE_POWER = 1500;
 export const BASE_DROP = 2;
 export const BASE_TOLERANCE_MM = 0.5;
+export const WATER_START = 20;
+export const WATER_BOIL = 100;
+/** Area of the circular pot base, m². */
+export const POT_BASE_AREA = calculateCircleArea(2 * POT_RADIUS);
+
+/** Power reaching the water, W. */
+export const POWER_INTO_WATER = HOB_POWER * HOB_EFFICIENCY;
+/** Heat needed to bring the pasta water to the boil, J. */
+export const HEAT_TO_BOIL = calculateHeatToChangeTemperature(WATER_MASS, SPECIFIC_HEAT_WATER, WATER_BOIL - WATER_START);
+
+/** Water temperature (°C) after heating for the given minutes; it stops rising at boiling. */
+export function waterTemperatureAfter(minutes: number): number {
+  return Math.min(WATER_BOIL, WATER_START + (POWER_INTO_WATER * minutes * 60) / (WATER_MASS * SPECIFIC_HEAT_WATER));
+}
+
+/** Latent heat (J) absorbed by melting the given number of ice cubes. */
+export function meltingHeatOfCubes(cubes: number): number {
+  return calculateHeatOfFusion(cubes * CUBE_MASS);
+}
+
+/** Temperature drop (K) across an aluminium base of the given thickness (mm): ΔT = P d / (k A). */
+export function baseTemperatureDrop(thicknessMm: number): number {
+  return (BASE_POWER * thicknessMm / 1000) / (ALUMINIUM_CONDUCTIVITY * POT_BASE_AREA);
+}
 
 export const KITCHEN_META: RoundGameMeta = {
   id: "kitchen-scientist",
@@ -68,32 +94,32 @@ export const KITCHEN_ROUNDS: readonly KitchenRound[] = Object.freeze([
 
 export function runKitchen(round: KitchenRound, v: NumericControl): KitchenOutcome {
   if (round.kind === "boil") {
-    const truth = calculateKettleTime(WATER_MASS, 20, 100, HOB_POWER, HOB_EFFICIENCY) / 60;
+    const truth = calculateKettleTime(WATER_MASS, WATER_START, WATER_BOIL, HOB_POWER, HOB_EFFICIENCY) / 60;
     const guess = v.minutes as number;
     const error = Math.abs(guess - truth);
     const success = error <= BOIL_TOLERANCE_MIN;
     return {
       headline: truth, detail: null, success, accuracyFraction: success ? 1 - error / BOIL_TOLERANCE_MIN : 0, predictionActual: truth,
-      feedback: success ? `Q = mcΔT = ${(WATER_MASS * 4186 * 80 / 1000).toFixed(0)} kJ delivered at ${HOB_POWER * HOB_EFFICIENCY} W takes ${truth.toFixed(2)} min.`
-        : `${guess} min is ${guess > truth ? "longer" : "shorter"} than the ${truth.toFixed(2)} min the energy needs: at ${HOB_POWER * HOB_EFFICIENCY} W the pot gains ${(HOB_POWER * HOB_EFFICIENCY * guess * 60 / 1000).toFixed(0)} kJ in that time.`,
+      feedback: success ? `Q = mcΔT = ${(HEAT_TO_BOIL / 1000).toFixed(0)} kJ delivered at ${POWER_INTO_WATER} W takes ${truth.toFixed(2)} min.`
+        : `${guess} min is ${guess > truth ? "longer" : "shorter"} than the ${truth.toFixed(2)} min the energy needs: at ${POWER_INTO_WATER} W the pot gains ${(POWER_INTO_WATER * guess * 60 / 1000).toFixed(0)} kJ in that time.`,
     };
   }
   if (round.kind === "ice") {
     const cubes = v.cubes as number;
     const drink = calculateIcedDrink(DRINK_MASS, DRINK_START, cubes * CUBE_MASS);
-    const exact = ((DRINK_MASS * 4186 * DRINK_START) - DRINK_TARGET * (DRINK_MASS * 4186)) / (CUBE_MASS * (334000 + 4186 * DRINK_TARGET));
+    const exact = (DRINK_MASS * SPECIFIC_HEAT_WATER * (DRINK_START - DRINK_TARGET)) / (CUBE_MASS * (LATENT_HEAT_FUSION_WATER + SPECIFIC_HEAT_WATER * DRINK_TARGET));
     const error = Math.abs(drink.finalCelsius - DRINK_TARGET);
     const success = error <= DRINK_TOLERANCE && drink.iceLeftKg === 0;
     return {
       headline: drink.finalCelsius, detail: drink.iceLeftKg, success, accuracyFraction: success ? 1 - error / DRINK_TOLERANCE : 0, predictionActual: exact,
-      feedback: success ? `${cubes} cubes absorb ${(cubes * CUBE_MASS * 334000 / 1000).toFixed(1)} kJ just to melt, leaving the drink at ${drink.finalCelsius.toFixed(1)} °C.`
+      feedback: success ? `${cubes} cubes absorb ${(meltingHeatOfCubes(cubes) / 1000).toFixed(1)} kJ just to melt, leaving the drink at ${drink.finalCelsius.toFixed(1)} °C.`
         : drink.iceLeftKg > 0 ? `Too much ice: the drink falls to 0 °C and ${(drink.iceLeftKg * 1000).toFixed(0)} g of ice is left unmelted.`
         : `${cubes} cubes leave the drink at ${drink.finalCelsius.toFixed(1)} °C, ${drink.finalCelsius > DRINK_TARGET ? "too warm" : "too cold"}.`,
     };
   }
-  const area = Math.PI * POT_RADIUS ** 2;
+  const area = POT_BASE_AREA;
   const thickness = (v.thickness as number) / 1000;
-  const drop = (BASE_POWER * thickness) / (ALUMINIUM_CONDUCTIVITY * area);
+  const drop = baseTemperatureDrop(v.thickness as number);
   const truth = (ALUMINIUM_CONDUCTIVITY * area * BASE_DROP) / BASE_POWER * 1000;
   const error = Math.abs(thickness * 1000 - truth);
   const success = error <= BASE_TOLERANCE_MM;

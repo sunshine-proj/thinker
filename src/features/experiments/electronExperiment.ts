@@ -1,6 +1,7 @@
 import { Vector3, SPEED_OF_LIGHT } from "../../physics/core";
 import {
   calculateCyclotronPeriod,
+  calculateParticleLorentzFactor,
   getParticleSpecies,
 } from "../../physics/electromagnetism";
 import {
@@ -24,6 +25,9 @@ export const ELECTRON_LIMITS = Object.freeze({
   maxElectricFieldVoltsPerMeter: 20,
   maxEntryPositionMeters: 0.5,
   maxSpeedMetersPerSecond: 29_000_000,
+  /** Relativistic mode allows up to 0.99c and fields up to 20 mT. */
+  maxRelativisticSpeedMetersPerSecond: Math.floor(SPEED_OF_LIGHT * 0.99),
+  maxRelativisticFieldMicroteslas: 20_000,
 });
 
 /** Measurements of the current run, in a form that can be saved and compared. */
@@ -42,11 +46,17 @@ export function collectElectronMeasurements(
     createMeasurement(
       "period",
       "Cyclotron period",
-      calculateCyclotronPeriod(
-        particle.chargeCoulombs,
-        particle.massKilograms,
-        getMagneticField(parameters),
-      ),
+      (() => {
+        const classical = calculateCyclotronPeriod(
+          particle.chargeCoulombs,
+          particle.massKilograms,
+          getMagneticField(parameters),
+        );
+        // A relativistic particle circles more slowly, T = 2πγm/(|q|B).
+        return classical === null || !parameters.relativistic
+          ? classical
+          : classical * calculateParticleLorentzFactor(state.velocity);
+      })(),
       "s",
     ),
     createMeasurement("energy", "Kinetic energy", measured.kineticEnergyJoules, "J"),
@@ -63,6 +73,9 @@ export function serializeElectronParameters(
     pitchAngleDegrees: parameters.pitchAngleDegrees,
     magneticFieldMicroteslas: parameters.magneticFieldMicroteslas,
     magneticFieldReversed: parameters.magneticFieldReversed,
+    fieldPolarDegrees: parameters.fieldPolarDegrees,
+    fieldAzimuthDegrees: parameters.fieldAzimuthDegrees,
+    relativistic: parameters.relativistic,
     electricFieldVoltsPerMeter: parameters.electricFieldVoltsPerMeter,
     initialPositionMeters: {
       x: parameters.initialPositionMeters.x,
@@ -92,12 +105,25 @@ export function parseElectronParameters(
   const data = raw as Record<string, unknown>;
   const position = data.initialPositionMeters as Record<string, unknown> | undefined;
   const limit = ELECTRON_LIMITS.maxEntryPositionMeters;
+  // Runs saved before the field direction and relativistic mode existed default to them off.
+  const relativistic = data.relativistic ?? false;
+  const fieldPolarDegrees = data.fieldPolarDegrees ?? 0;
+  const fieldAzimuthDegrees = data.fieldAzimuthDegrees ?? 0;
+  const maxSpeed = relativistic === true
+    ? ELECTRON_LIMITS.maxRelativisticSpeedMetersPerSecond
+    : ELECTRON_LIMITS.maxSpeedMetersPerSecond;
+  const maxField = relativistic === true
+    ? ELECTRON_LIMITS.maxRelativisticFieldMicroteslas
+    : ELECTRON_LIMITS.maxFieldMicroteslas;
 
   if (
     (data.particle !== "electron" && data.particle !== "proton") ||
-    !isNumberInRange(data.speedMetersPerSecond, 0, ELECTRON_LIMITS.maxSpeedMetersPerSecond) ||
+    typeof relativistic !== "boolean" ||
+    !isNumberInRange(fieldPolarDegrees, 0, 180) ||
+    !isNumberInRange(fieldAzimuthDegrees, 0, 360) ||
+    !isNumberInRange(data.speedMetersPerSecond, 0, maxSpeed) ||
     !isNumberInRange(data.pitchAngleDegrees, 0, 90) ||
-    !isNumberInRange(data.magneticFieldMicroteslas, 0, ELECTRON_LIMITS.maxFieldMicroteslas) ||
+    !isNumberInRange(data.magneticFieldMicroteslas, 0, maxField) ||
     typeof data.magneticFieldReversed !== "boolean" ||
     !isNumberInRange(
       data.electricFieldVoltsPerMeter,
@@ -120,6 +146,9 @@ export function parseElectronParameters(
     pitchAngleDegrees: data.pitchAngleDegrees,
     magneticFieldMicroteslas: data.magneticFieldMicroteslas,
     magneticFieldReversed: data.magneticFieldReversed,
+    fieldPolarDegrees,
+    fieldAzimuthDegrees,
+    relativistic,
     electricFieldVoltsPerMeter: data.electricFieldVoltsPerMeter,
     initialPositionMeters: new Vector3(position.x, position.y, position.z),
     targetChallengeEnabled: data.targetChallengeEnabled,
@@ -132,7 +161,9 @@ export function describeElectronSetup(parameters: ElectronTrajectoryParameters):
     parameters.electricFieldVoltsPerMeter === 0
       ? ""
       : ` · E ${parameters.electricFieldVoltsPerMeter} V/m`;
-  return `${parameters.particle === "electron" ? "Electron" : "Proton"} · ${formatMeasurementValue(parameters.speedMetersPerSecond, "m/s")} at ${parameters.pitchAngleDegrees}° · B ${field}${electric}`;
+  const tilt = parameters.fieldPolarDegrees === 0 ? "" : ` tilted ${parameters.fieldPolarDegrees}°/${parameters.fieldAzimuthDegrees}°`;
+  const mode = parameters.relativistic ? " · relativistic" : "";
+  return `${parameters.particle === "electron" ? "Electron" : "Proton"} · ${formatMeasurementValue(parameters.speedMetersPerSecond, "m/s")} at ${parameters.pitchAngleDegrees}° · B ${field}${tilt}${electric}${mode}`;
 }
 
 export interface ResultExplanation {
@@ -180,14 +211,23 @@ export function explainElectronResult(
     return explanations;
   }
 
+  // In relativistic mode the inertia is γm: r = γmv⊥/(|q|B) and T = 2πγm/(|q|B).
+  const gamma = parameters.relativistic ? 1 / Math.sqrt(1 - (speed / SPEED_OF_LIGHT) ** 2) : 1;
   const radius =
-    (particle.massKilograms * perpendicularSpeed) /
+    (gamma * particle.massKilograms * perpendicularSpeed) /
     (Math.abs(particle.chargeCoulombs) * fieldTesla);
-  const period = calculateCyclotronPeriod(
+  const classicalPeriod = calculateCyclotronPeriod(
     particle.chargeCoulombs,
     particle.massKilograms,
     getMagneticField(parameters),
   );
+  const period = classicalPeriod === null ? null : classicalPeriod * gamma;
+  if (parameters.relativistic) {
+    explanations.push({
+      title: "Relativistic mode",
+      text: `At ${(speed / SPEED_OF_LIGHT).toFixed(3)}c the Lorentz factor is γ = ${gamma.toFixed(3)}. The particle behaves as if its inertia were γm, so its circle is ${gamma.toFixed(2)} times larger and each turn ${gamma.toFixed(2)} times slower than the classical formulas predict. The magnetic force still does no work, so γ stays constant.`,
+    });
+  }
   const pitch = period === null ? 0 : parallelSpeed * period;
 
   if (electric === 0) {
@@ -225,9 +265,18 @@ export function explainElectronResult(
     return explanations;
   }
 
+  if (parameters.fieldPolarDegrees !== 0 && parameters.fieldPolarDegrees !== 180) {
+    // A tilted B is no longer perpendicular to E, so only E's part across B causes a drift.
+    explanations.push({
+      title: "Crossed fields at an angle",
+      text: `With the magnetic field tilted, the particle drifts with the E × B velocity, of size |E⊥|/B, where E⊥ is the part of E across B. The part of E along B accelerates the ${name} along the field, so it gains or loses speed and its helix stretches or tightens.`,
+    });
+    return explanations;
+  }
+
   // Crossed fields. With B along ±Y and E along −Z, a beam entering along +X is
   // undeflected when E/B (signed) equals its speed perpendicular to B.
-  const signedField = parameters.magneticFieldReversed ? -fieldTesla : fieldTesla;
+  const signedField = getMagneticField(parameters).y;
   const driftSpeed = electric / signedField;
   const balanced =
     perpendicularSpeed > 0 &&
@@ -238,7 +287,7 @@ export function explainElectronResult(
       ? `Here E/B = ${formatMeasurementValue(Math.abs(driftSpeed), "m/s")} matches the particle's speed across the field, so the electric and magnetic forces cancel (qE = qvB) and it travels in a nearly straight line. This is how a velocity selector works.`
       : `The electric force qE and magnetic force qv × B act together, so the path is neither a circle nor a straight line. For this field direction the two forces cancel only when the speed across B equals E/B = ${formatMeasurementValue(driftSpeed, "m/s")}${driftSpeed < 0 ? " (a negative value means they add instead of cancelling)" : ""}. Kinetic energy can change because the electric field does work on the particle.`,
   });
-  if (Math.abs(driftSpeed) >= SPEED_OF_LIGHT * 0.1) {
+  if (!parameters.relativistic && Math.abs(driftSpeed) >= SPEED_OF_LIGHT * 0.1) {
     explanations.push({
       title: "Outside the classical model",
       text: "This balance speed is above 0.1 c, where relativistic effects matter. The lab's classical model would stop here.",

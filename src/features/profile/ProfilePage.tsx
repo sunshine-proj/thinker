@@ -2,7 +2,12 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { LevelCard } from "../../components/common";
 import { useProgressLevel } from "./useProgressLevel";
-import { findCatalogEntry } from "../../data/games/gameCatalog";
+import { PHYSICS_WORLDS, findCatalogEntry } from "../../data/games/gameCatalog";
+import { findLiveTitle } from "../../data/games/liveGames";
+import { summarizeWorldProgress } from "../../game-engine/progression/progress";
+import { StarRating } from "../../game-engine/components/StarRating";
+import { bestStarsByGame } from "../../game-engine/scoring/stars";
+import { useLearnerPreferences } from "../../services/preferences";
 import { useProgressStore } from "../../store/progressStore";
 
 function formatDate(isoDate: string): string {
@@ -22,6 +27,10 @@ export function ProfilePage() {
   const experimentCount = useProgressStore((state) => state.experiments.length);
   const achievementCount = useProgressStore((state) => state.achievements.length);
   const level = useProgressLevel();
+  const results = useProgressStore((state) => state.results);
+  const [preferences, setPreferences] = useLearnerPreferences();
+  const stars = bestStarsByGame(results);
+  const maxStars = Object.fromEntries(results.filter((result) => result.maxStars).map((result) => [result.gameId, result.maxStars as number]));
 
   useEffect(() => {
     void hydrate();
@@ -56,6 +65,46 @@ export function ProfilePage() {
         </>
       )}
 
+      <section aria-labelledby="preferences-title" className="world-section">
+        <h2 id="preferences-title">How the app talks to you</h2>
+        <div className="profile-preference">
+          <input
+            aria-describedby="younger-learner-help"
+            checked={preferences.youngerLearner}
+            id="younger-learner"
+            onChange={(event) => setPreferences({ youngerLearner: event.currentTarget.checked })}
+            type="checkbox"
+          />
+          <span>
+            <label htmlFor="younger-learner">Younger learner mode</label>
+            <span id="younger-learner-help">Shorter explanations, and the first hint is already open on beginner rounds. The physics and scoring stay the same.</span>
+          </span>
+        </div>
+      </section>
+
+      {status === "ready" && (
+        <section aria-labelledby="world-progress-title" className="world-section">
+          <h2 id="world-progress-title">Progress by physics world</h2>
+          <ul className="world-progress">
+            {summarizeWorldProgress(progress, PHYSICS_WORLDS).map((world) => (
+              <li key={world.worldId}>
+                <span className="world-progress__label">
+                  <strong>{world.title}</strong>
+                  <span>
+                    {world.completedGames} of {world.totalGames} games · {world.bestScore} points
+                  </span>
+                </span>
+                <progress
+                  aria-label={`${world.title}: ${world.completedGames} of ${world.totalGames} games completed`}
+                  max={world.totalGames}
+                  value={world.completedGames}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {status !== "ready" ? (
         <p role="status">Loading your progress…</p>
       ) : progress.completedGames.length === 0 ? (
@@ -83,8 +132,9 @@ export function ProfilePage() {
                 <li key={gameId}>
                   <div className="world-card">
                     <span className="world-card__meta">BEST SCORE</span>
-                    <strong>{entry?.title ?? gameId}</strong>
+                    <strong>{entry?.title ?? findLiveTitle(gameId) ?? gameId}</strong>
                     <span>{progress.bestScores[gameId] ?? 0} points</span>
+                    {stars[gameId] !== undefined && <StarRating max={maxStars[gameId] ?? 9} stars={stars[gameId] as number} />}
                   </div>
                 </li>
               );

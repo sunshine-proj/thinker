@@ -83,7 +83,10 @@ describe("Balance Challenge game", () => {
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
 
     expect(screen.queryByText(/Multiply mass by distance/)).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Need a hint?" }));
+    // The shared hint ladder: a nudge first, then the method.
+    fireEvent.click(screen.getByRole("button", { name: "Need a nudge?" }));
+    expect(screen.queryByText(/Multiply mass by distance/)).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /Show the formula/ }));
     expect(screen.getByText(/Multiply mass by distance/)).toBeTruthy();
   });
 
@@ -106,8 +109,9 @@ describe("Balance Challenge game", () => {
       }
     });
 
-    expect(screen.getByText("Every lever balanced.")).toBeTruthy();
-    expect(screen.getByText(/You scored 300 points over 3 releases/)).toBeTruthy();
+    expect(screen.getByText("Every round complete.")).toBeTruthy();
+    expect(screen.getByText(/You scored 300 points over 3 attempts/)).toBeTruthy();
+    expect(screen.getByRole("img", { name: "9 of 9 stars" })).toBeTruthy();
     expect(screen.getByText("Completed")).toBeTruthy();
 
     await waitFor(() => {
@@ -122,7 +126,7 @@ describe("Balance Challenge game", () => {
       });
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Play again" }));
+    fireEvent.click(screen.getAllByRole("button", { name: /Play again/ })[0]!);
     expect(screen.getByRole("button", { name: "Start game" })).toBeTruthy();
     expect(screen.getByText("The classic seesaw")).toBeTruthy();
   });

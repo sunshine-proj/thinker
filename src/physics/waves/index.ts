@@ -56,3 +56,21 @@ export {
   type InterferenceKind,
   type Point,
 } from "./interference";
+export {
+  calculateAmplification,
+  calculatePeakAmplification,
+  calculatePendulumFrequency,
+  calculateResonantFrequency,
+  simulateDrivenAmplitude,
+} from "./resonance";
+export {
+  calculateDopplerFrequency,
+  calculateRestFrequencyFromShift,
+  calculateSourceSpeedFromShift,
+} from "./doppler";
+export {
+  advanceDampedPendulum,
+  calculateSwingAmplitude,
+  pushPendulum,
+  type PendulumState,
+} from "./pendulumDynamics";

@@ -10,6 +10,10 @@ export interface GameResult {
   readonly completionStatus: GameCompletionStatus;
   /** ISO-8601 timestamp. */
   readonly completedAt: string;
+  /** Stars earned (1–3 per round), when the game awards them. */
+  readonly stars?: number;
+  /** Most stars the game can award. */
+  readonly maxStars?: number;
 }
 
 export interface UserProgress {
@@ -56,4 +60,19 @@ export interface GameSession {
   /** ISO-8601 timestamp. */
   readonly savedAt: string;
   readonly data: unknown;
+}
+
+/** What a learner predicted before running a thought experiment or a lab. */
+export interface RecordedPrediction {
+  /** Unique per activity and question, so predicting again replaces the earlier answer. */
+  readonly id: string;
+  readonly activityId: string;
+  readonly activityKind: "thought-experiment" | "experiment";
+  readonly questionId: string;
+  /** The learner's answer: an option id or a typed estimate. */
+  readonly answer: string;
+  /** Whether the result matched the prediction; null until the run is compared. */
+  readonly correct: boolean | null;
+  /** ISO-8601 timestamp. */
+  readonly recordedAt: string;
 }

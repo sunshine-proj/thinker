@@ -5,6 +5,7 @@ export {
   calculateBohrRadius,
   calculateIonizationEnergy,
   calculateTransitionEnergy,
+  findAbsorption,
   calculateTransitionWavelengthNm,
   classifyWavelength,
   type SpectralRegion,
@@ -40,3 +41,11 @@ export {
   calculateThresholdWavelengthNm,
   calculateWavelengthForKineticEnergy,
 } from "./photoelectric";
+export {
+  calculateBarrierTransmission,
+  calculateBarrierTransmissionEv,
+  calculateBoxEnergy,
+  calculateBoxTransitionWavelength,
+  calculateBoxWidthForWavelength,
+  calculateWidthForTransmission,
+} from "./tunneling";

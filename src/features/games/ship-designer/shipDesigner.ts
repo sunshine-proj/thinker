@@ -77,6 +77,7 @@ export function runShip(round: ShipRound, v: NumericControl): ShipOutcome {
     return {
       draftMeters: draft, freeboardMeters: HULL_DEPTH - draft, metacentricHeight: gm, massTonnes: STABILITY_MASS_T, success,
       accuracyFraction: success ? 1 - Math.abs(gm - (GM_LOW + GM_HIGH) / 2) / ((GM_HIGH - GM_LOW) / 2) : 0, predictionActual: gm,
+      ...(gm <= 0 ? { catastrophe: { title: "The barge capsized", explanation: `With the metacentric height at ${gm.toFixed(2)} m, a small heel shifts the buoyancy too little to push the barge back: it rolls over. A wider hull raises the metacentre (BM = w²/12d).` } } : {}),
       feedback: success ? `Beam ${beam.toFixed(2)} m gives a draft of ${draft.toFixed(2)} m and GM = ${gm.toFixed(2)} m: stable with a comfortable roll.`
         : gm <= 0 ? `GM = ${gm.toFixed(2)} m is not positive: the barge capsizes at the slightest heel. Widen the hull.`
         : gm < GM_LOW ? `GM = ${gm.toFixed(2)} m is stable but marginal (needs at least ${GM_LOW} m). Widen the hull a little.`
@@ -93,6 +94,7 @@ export function runShip(round: ShipRound, v: NumericControl): ShipOutcome {
     const success = error <= RIVER_TOLERANCE;
     return {
       ...common, success, accuracyFraction: success ? 1 - error / RIVER_TOLERANCE : 0, predictionActual: density * LENGTH * BEAM * RIVER_DRAFT / 1000 - HULL_MASS_T,
+      ...(draft >= HULL_DEPTH ? { catastrophe: { title: "The barge sank", explanation: `To float, the barge must displace ${mass} t of water, which needs a draft of ${draft.toFixed(2)} m, deeper than its ${HULL_DEPTH} m hull. Water pours over the sides.` } } : {}),
       feedback: success ? `${mass} t displaces ${mass} m³·(ρ/1000) of water: the draft is ${draft.toFixed(2)} m, with ${freeboard.toFixed(2)} m of freeboard.`
         : draft >= HULL_DEPTH ? `At ${draft.toFixed(2)} m the draft exceeds the ${HULL_DEPTH} m hull: the barge sinks.` : `The draft is ${draft.toFixed(2)} m, ${draft > RIVER_DRAFT ? "too deep: unload some cargo" : "too shallow: add cargo"}.`,
     };

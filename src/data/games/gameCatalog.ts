@@ -7,6 +7,8 @@ export interface CatalogEntry {
   readonly path: string;
   readonly summary: string;
   readonly difficulty: GameDifficulty;
+  /** PRD §4.2 topic ids (src/data/topics.ts) this activity teaches. */
+  readonly topics: readonly string[];
 }
 
 export interface PhysicsWorld {
@@ -16,11 +18,18 @@ export interface PhysicsWorld {
   readonly entries: readonly CatalogEntry[];
   /** Planned activities from the product roadmap that are not playable yet. */
   readonly comingSoon: readonly string[];
+  /** An original framing story; the world's games are its chapters. */
+  readonly story: { readonly title: string; readonly premise: string; readonly guide: string };
 }
 
 export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
   {
     id: "mechanics",
+    story: {
+      title: "The Mountain Rescue Station",
+      premise: "Snow has cut off a mountain village, and the rescue station needs engineers who understand forces and motion. Every chapter is a job for the rescue team: launching supplies, braking sleds, lifting loads and building bridges.",
+      guide: "Station chief Ama Okoro",
+    },
     title: "Mechanics",
     description: "Motion, forces and equilibrium.",
     entries: [
@@ -31,6 +40,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/experiments/projectile-motion",
         summary: "Launch with any speed, angle, gravity and height.",
         difficulty: "Beginner",
+        topics: ["motion", "velocity", "acceleration", "gravity"],
       },
       {
         id: "friction-surfaces",
@@ -39,6 +49,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/experiments/friction",
         summary: "Push a block over different surfaces, flat or on a slope.",
         difficulty: "Intermediate",
+        topics: ["friction", "forces"],
       },
       {
         id: "gravity-comparison",
@@ -47,6 +58,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/experiments/gravity-comparison",
         summary: "Compare free fall and a pendulum on Earth, the Moon, Mars and more.",
         difficulty: "Beginner",
+        topics: ["gravity", "acceleration"],
       },
       {
         id: "roller-coaster",
@@ -55,6 +67,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/mechanics/roller-coaster",
         summary: "Choose hill and loop sizes using energy and g-forces.",
         difficulty: "Intermediate",
+        topics: ["energy", "circular-motion"],
       },
       {
         id: "parachute-designer",
@@ -63,6 +76,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/mechanics/parachute-designer",
         summary: "Size a canopy and choose when to open it for a safe landing.",
         difficulty: "Intermediate",
+        topics: ["forces", "acceleration"],
       },
       {
         id: "space-mission",
@@ -71,6 +85,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/mechanics/space-mission",
         summary: "Use the rocket equation to load propellant and stage a spacecraft.",
         difficulty: "Intermediate",
+        topics: ["momentum", "newtons-laws"],
       },
       {
         id: "race-simulator",
@@ -79,6 +94,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/mechanics/race-simulator",
         summary: "Tune acceleration and braking to win races and stop before a wall.",
         difficulty: "Beginner",
+        topics: ["motion", "velocity", "acceleration"],
       },
       {
         id: "projectile-master",
@@ -87,6 +103,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/mechanics/projectile-master",
         summary: "Predict and tune a launch to hit three targets.",
         difficulty: "Beginner",
+        topics: ["motion", "velocity", "gravity"],
       },
       {
         id: "balance-challenge",
@@ -95,6 +112,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/mechanics/balance-challenge",
         summary: "Use torque to balance levers, from seesaws to heavy beams.",
         difficulty: "Intermediate",
+        topics: ["equilibrium", "forces"],
       },
       {
         id: "bridge-builder",
@@ -103,12 +121,63 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/mechanics/bridge-builder",
         summary: "Choose material and depth so a beam bridge holds within budget.",
         difficulty: "Advanced",
+        topics: ["forces", "equilibrium", "engineering-applications"],
+      },
+      {
+        id: "ice-puck-pilot",
+        title: "Ice Puck Pilot",
+        kind: "game",
+        path: "/worlds/mechanics/ice-puck-pilot",
+        summary: "Fire thrusters and brake on frictionless ice with Newton's three laws.",
+        difficulty: "Beginner",
+        topics: ["newtons-laws", "forces"],
+      },
+      {
+        id: "sled-slope",
+        title: "Sled Slope",
+        kind: "game",
+        path: "/worlds/mechanics/sled-slope",
+        summary: "Find the slipping angle and stop a sled in the zone with friction.",
+        difficulty: "Beginner",
+        topics: ["friction", "forces"],
+      },
+      {
+        id: "cart-collider",
+        title: "Cart Collider",
+        kind: "game",
+        path: "/worlds/mechanics/cart-collider",
+        summary: "Crash carts on an air track: sticky, elastic and springy collisions.",
+        difficulty: "Intermediate",
+        topics: ["momentum", "energy"],
+      },
+      {
+        id: "elevator-engineer",
+        title: "Elevator Engineer",
+        kind: "game",
+        path: "/worlds/mechanics/elevator-engineer",
+        summary: "Size a lift motor, its counterweight and its energy use.",
+        difficulty: "Intermediate",
+        topics: ["work-power", "energy"],
+      },
+      {
+        id: "rolling-race",
+        title: "Rolling Race",
+        kind: "game",
+        path: "/worlds/mechanics/rolling-race",
+        summary: "Race hoops, discs and balls, and spin up a skater.",
+        difficulty: "Advanced",
+        topics: ["rotation", "energy"],
       },
     ],
     comingSoon: [],
   },
   {
     id: "electromagnetism",
+    story: {
+      title: "The Power Grid Blackout",
+      premise: "A storm has knocked out the town's power. Rewire circuits, rebuild generators and steer charged particles in the repair lab to bring the lights back street by street.",
+      guide: "Grid engineer Tomasz Wren",
+    },
     title: "Electricity & Magnetism",
     description: "Charges, fields and circuits.",
     entries: [
@@ -119,6 +188,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/experiments/magnetic-field",
         summary: "Measure the field of wires and solenoids against current and distance.",
         difficulty: "Intermediate",
+        topics: ["magnetic-fields", "current"],
       },
       {
         id: "particle-accelerator",
@@ -127,6 +197,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/electromagnetism/particle-accelerator",
         summary: "Tune a cyclotron, with an advanced relativistic mode.",
         difficulty: "Advanced",
+        topics: ["lorentz-force", "electric-fields", "relativity"],
       },
       {
         id: "electromagnetic-crane",
@@ -135,6 +206,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/electromagnetism/electromagnetic-crane",
         summary: "Design a lifting magnet within heating and saturation limits.",
         difficulty: "Intermediate",
+        topics: ["magnetic-fields", "current", "resistance"],
       },
       {
         id: "power-plant",
@@ -143,6 +215,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/electromagnetism/power-plant",
         summary: "Build an AC generator to deliver power using Faraday induction.",
         difficulty: "Intermediate",
+        topics: ["electromagnetic-induction", "voltage"],
       },
       {
         id: "magnetic-maze",
@@ -151,6 +224,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/electromagnetism/magnetic-maze",
         summary: "Steer charged particles to a target with magnetic fields.",
         difficulty: "Intermediate",
+        topics: ["lorentz-force", "magnetic-fields"],
       },
       {
         id: "electron-trajectory-lab",
@@ -159,6 +233,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/experiments/electron-trajectory",
         summary: "Steer charged particles with magnetic and electric fields.",
         difficulty: "Intermediate",
+        topics: ["lorentz-force", "electric-fields", "magnetic-fields"],
       },
       {
         id: "circuit-builder",
@@ -167,6 +242,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/electromagnetism/circuit-builder",
         summary: "Combine resistors to hit a target current without overheating.",
         difficulty: "Intermediate",
+        topics: ["ohms-law", "resistance", "current", "voltage", "electric-circuits"],
       },
       {
         id: "electric-detective",
@@ -175,12 +251,18 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/electromagnetism/electric-detective",
         summary: "Use force readings and Coulomb's law to find a hidden charge.",
         difficulty: "Advanced",
+        topics: ["electric-charge", "electric-fields"],
       },
     ],
     comingSoon: [],
   },
   {
     id: "optics",
+    story: {
+      title: "The Lighthouse Workshop",
+      premise: "An old lighthouse keeper's workshop is full of lenses, mirrors and prisms. Restore the lamp, build instruments and decode the colours of light to keep ships safe.",
+      guide: "Lighthouse keeper Idris Calder",
+    },
     title: "Optics & Light",
     description: "Reflection, refraction and lenses.",
     entries: [
@@ -191,6 +273,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/experiments/lens-focal-length",
         summary: "Measure a lens's focal length three ways.",
         difficulty: "Intermediate",
+        topics: ["lenses"],
       },
       {
         id: "microscope-builder",
@@ -199,6 +282,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/optics/microscope-builder",
         summary: "Combine objective and eyepiece lenses to magnify and resolve tiny specimens.",
         difficulty: "Intermediate",
+        topics: ["optical-instruments", "lenses"],
       },
       {
         id: "mirror-illusions",
@@ -207,6 +291,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/optics/mirror-illusions",
         summary: "Choose plane, concave and convex mirrors for useful illusions.",
         difficulty: "Intermediate",
+        topics: ["mirrors", "reflection"],
       },
       {
         id: "vision-simulator",
@@ -215,6 +300,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/optics/vision-simulator",
         summary: "Prescribe lenses for short-sighted, long-sighted and ageing eyes.",
         difficulty: "Intermediate",
+        topics: ["human-vision", "lenses"],
       },
       {
         id: "rainbow-creator",
@@ -223,6 +309,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/optics/rainbow-creator",
         summary: "Trace light through a raindrop to find where rainbows appear.",
         difficulty: "Advanced",
+        topics: ["refraction", "light-spectrum"],
       },
       {
         id: "laser-maze",
@@ -231,6 +318,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/optics/laser-maze",
         summary: "Steer a laser with mirrors and glass using reflection and Snell's law.",
         difficulty: "Intermediate",
+        topics: ["reflection", "refraction"],
       },
       {
         id: "lens-designer",
@@ -239,12 +327,36 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/optics/lens-designer",
         summary: "Design a lens to focus, enlarge, or magnify an image.",
         difficulty: "Intermediate",
+        topics: ["lenses"],
+      },
+      {
+        id: "soap-bubble-colours",
+        title: "Soap Bubble Colours",
+        kind: "game",
+        path: "/worlds/optics/soap-bubble-colours",
+        summary: "Tune thin films to make colours and anti-reflection coatings.",
+        difficulty: "Intermediate",
+        topics: ["optical-interference"],
+      },
+      {
+        id: "diffraction-detective",
+        title: "Diffraction Detective",
+        kind: "game",
+        path: "/worlds/optics/diffraction-detective",
+        summary: "Identify a laser, a CD's tracks and a hair's width from diffraction.",
+        difficulty: "Intermediate",
+        topics: ["diffraction"],
       },
     ],
     comingSoon: [],
   },
   {
     id: "thermodynamics",
+    story: {
+      title: "The Polar Research Base",
+      premise: "Life at a research base near the South Pole depends on heat: keeping cabins warm, running engines and fridges, and stopping the rails of the supply train from buckling in the summer sun.",
+      guide: "Base physicist Leilani Hart",
+    },
     title: "Thermodynamics",
     description: "Heat, temperature and energy transfer.",
     entries: [
@@ -255,6 +367,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/experiments/heat-transfer",
         summary: "Compare conduction, convection and radiation side by side.",
         difficulty: "Intermediate",
+        topics: ["heat-transfer"],
       },
       {
         id: "solar-cooker",
@@ -263,6 +376,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/thermodynamics/solar-cooker",
         summary: "Size and aim a reflector to boil water or bake with sunlight.",
         difficulty: "Intermediate",
+        topics: ["heat-transfer", "heat"],
       },
       {
         id: "material-detective",
@@ -271,6 +385,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/thermodynamics/material-detective",
         summary: "Identify a metal by its specific heat using calorimetry.",
         difficulty: "Intermediate",
+        topics: ["specific-heat", "thermal-equilibrium"],
       },
       {
         id: "refrigerator-engineer",
@@ -279,6 +394,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/thermodynamics/refrigerator-engineer",
         summary: "Balance heat leak against compressor work to chill a cabinet.",
         difficulty: "Intermediate",
+        topics: ["thermodynamic-laws"],
       },
       {
         id: "steam-engine",
@@ -287,6 +403,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/thermodynamics/steam-engine",
         summary: "Choose temperatures to get work from heat within the Carnot limit.",
         difficulty: "Intermediate",
+        topics: ["thermodynamic-laws", "work-power"],
       },
       {
         id: "ice-melting",
@@ -295,6 +412,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/thermodynamics/ice-melting",
         summary: "Balance heat flows to cool a drink or make a perfect slush.",
         difficulty: "Intermediate",
+        topics: ["heat", "thermal-equilibrium", "specific-heat"],
       },
       {
         id: "temperature-control",
@@ -303,12 +421,36 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/thermodynamics/temperature-control",
         summary: "Balance heater power against wall heat loss to keep a cabin warm.",
         difficulty: "Intermediate",
+        topics: ["temperature", "heat-transfer", "thermal-equilibrium"],
+      },
+      {
+        id: "railway-gap-engineer",
+        title: "Railway Gap Engineer",
+        kind: "game",
+        path: "/worlds/thermodynamics/railway-gap-engineer",
+        summary: "Leave gaps for rails and bridges, and design a thermostat strip.",
+        difficulty: "Beginner",
+        topics: ["thermal-expansion"],
+      },
+      {
+        id: "entropy-shuffle",
+        title: "Entropy Shuffle",
+        kind: "game",
+        path: "/worlds/thermodynamics/entropy-shuffle",
+        summary: "Count microstates to see why gas spreads out and entropy rises.",
+        difficulty: "Advanced",
+        topics: ["entropy", "thermodynamic-laws"],
       },
     ],
     comingSoon: [],
   },
   {
     id: "astronomy",
+    story: {
+      title: "The Starship Academy",
+      premise: "Cadets at the Starship Academy learn to fly by the laws of gravity: orbits, transfers, landings, black holes and journeys close to the speed of light.",
+      guide: "Flight instructor Kofi Asante",
+    },
     title: "Astronomy & Astrophysics",
     description: "Gravity, orbits and space missions.",
     entries: [
@@ -319,6 +461,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/experiments/orbital-motion",
         summary: "Launch satellites and watch circles, ellipses and escapes.",
         difficulty: "Advanced",
+        topics: ["orbital-mechanics", "gravity"],
       },
       {
         id: "black-hole-explorer",
@@ -327,6 +470,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/astronomy/black-hole-explorer",
         summary: "Find horizons, slow clocks and stable orbits around a black hole.",
         difficulty: "Advanced",
+        topics: ["black-holes", "relativity"],
       },
       {
         id: "asteroid-mission",
@@ -335,6 +479,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/astronomy/asteroid-mission",
         summary: "Plan a Hohmann transfer to an asteroid: orbit, burn and launch window.",
         difficulty: "Advanced",
+        topics: ["orbital-mechanics", "planetary-motion"],
       },
       {
         id: "escape-velocity",
@@ -343,6 +488,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/astronomy/escape-velocity",
         summary: "Use energy conservation to leave the Moon, reach a height or leave the Solar System.",
         difficulty: "Advanced",
+        topics: ["escape-velocity", "energy"],
       },
       {
         id: "solar-system-builder",
@@ -351,6 +497,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/astronomy/solar-system-builder",
         summary: "Simulate planets and comets with N-body gravity and check Kepler's laws.",
         difficulty: "Advanced",
+        topics: ["planetary-motion", "gravity"],
       },
       {
         id: "planet-designer",
@@ -359,6 +506,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/astronomy/planet-designer",
         summary: "Choose mass and radius to set a planet's gravity, density and escape speed.",
         difficulty: "Intermediate",
+        topics: ["gravity", "density", "escape-velocity"],
       },
       {
         id: "orbit-simulator",
@@ -367,6 +515,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/astronomy/orbit-simulator",
         summary: "Choose launch speeds for circular, elliptical, and timed Earth orbits.",
         difficulty: "Advanced",
+        topics: ["orbital-mechanics", "circular-motion"],
       },
       {
         id: "moon-landing",
@@ -375,12 +524,36 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/astronomy/moon-landing",
         summary: "Time a rocket burn to touch down gently on the Moon.",
         difficulty: "Advanced",
+        topics: ["newtons-laws", "forces"],
+      },
+      {
+        id: "star-classifier",
+        title: "Star Classifier",
+        kind: "game",
+        path: "/worlds/astronomy/star-classifier",
+        summary: "Read stars' temperatures and sizes from colour and brightness.",
+        difficulty: "Intermediate",
+        topics: ["stars"],
+      },
+      {
+        id: "lightspeed-voyager",
+        title: "Lightspeed Voyager",
+        kind: "game",
+        path: "/worlds/astronomy/lightspeed-voyager",
+        summary: "Fly near light speed: slower clocks, shorter ships, capped speeds.",
+        difficulty: "Advanced",
+        topics: ["relativity"],
       },
     ],
     comingSoon: [],
   },
   {
     id: "waves",
+    story: {
+      title: "The Concert Hall Mystery",
+      premise: "Strange echoes and hums are spoiling performances at the new concert hall. Investigate with frequency, resonance and interference to find what is shaking the building.",
+      guide: "Sound engineer Mei Lindqvist",
+    },
     title: "Waves & Sound",
     description: "Frequency, resonance and interference.",
     entries: [
@@ -391,6 +564,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/experiments/wave-interference",
         summary: "Find loud and silent spots between two speakers.",
         difficulty: "Intermediate",
+        topics: ["wave-interference", "sound"],
       },
       {
         id: "wave-interference",
@@ -399,6 +573,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/waves/wave-interference",
         summary: "Place listeners and slits where waves cancel or reinforce.",
         difficulty: "Advanced",
+        topics: ["wave-interference"],
       },
       {
         id: "frequency-detective",
@@ -407,6 +582,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/waves/frequency-detective",
         summary: "Use beats and spectra to identify frequencies of unseen sounds.",
         difficulty: "Intermediate",
+        topics: ["frequency", "wave-interference"],
       },
       {
         id: "echo-explorer",
@@ -415,6 +591,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/waves/echo-explorer",
         summary: "Turn echo delays into distances and temperatures with the speed of sound.",
         difficulty: "Beginner",
+        topics: ["sound"],
       },
       {
         id: "wave-simulator",
@@ -423,6 +600,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/waves/wave-simulator",
         summary: "Send pulses along a string to time echoes and make waves add or cancel.",
         difficulty: "Intermediate",
+        topics: ["wave-propagation", "wave-interference"],
       },
       {
         id: "virtual-guitar",
@@ -431,6 +609,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/waves/virtual-guitar",
         summary: "Tune, fret and touch a string to play notes with standing waves.",
         difficulty: "Intermediate",
+        topics: ["wavelength", "frequency"],
       },
       {
         id: "sound-creator",
@@ -439,12 +618,36 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/waves/sound-creator",
         summary: "Tune pitch, loudness and harmonics to create target sounds.",
         difficulty: "Beginner",
+        topics: ["frequency", "amplitude", "sound"],
+      },
+      {
+        id: "resonance-swing",
+        title: "Resonance Swing",
+        kind: "game",
+        path: "/worlds/waves/resonance-swing",
+        summary: "Push a swing, ring a glass and damp a wobbly bridge.",
+        difficulty: "Beginner",
+        topics: ["resonance", "frequency"],
+      },
+      {
+        id: "doppler-chase",
+        title: "Doppler Chase",
+        kind: "game",
+        path: "/worlds/waves/doppler-chase",
+        summary: "Hear sirens change pitch and work out how fast they move.",
+        difficulty: "Intermediate",
+        topics: ["doppler-effect", "sound"],
       },
     ],
     comingSoon: [],
   },
   {
     id: "modern-physics",
+    story: {
+      title: "The Quantum Lab Night Shift",
+      premise: "The quantum lab runs all night, and strange results keep appearing. Work with atoms, photons and particles to explain what the detectors are seeing.",
+      guide: "Night-shift researcher Noor Halvorsen",
+    },
     title: "Modern Physics & Quantum Mechanics",
     description: "Atoms, quanta and particles.",
     entries: [
@@ -455,6 +658,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/modern-physics/photoelectric-lab",
         summary: "Tune light and metals to control the energy of ejected electrons.",
         difficulty: "Intermediate",
+        topics: ["photoelectric-effect"],
       },
       {
         id: "radioactive-countdown",
@@ -463,6 +667,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/modern-physics/radioactive-countdown",
         summary: "Use half-lives, random decay counts and activity to solve decay problems.",
         difficulty: "Intermediate",
+        topics: ["radioactive-decay"],
       },
       {
         id: "quantum-puzzle",
@@ -471,6 +676,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/modern-physics/quantum-puzzle",
         summary: "Set superposition, interference and polarizer angles to hit target probabilities.",
         difficulty: "Advanced",
+        topics: ["quantum-superposition"],
       },
       {
         id: "wave-or-particle",
@@ -479,6 +685,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/modern-physics/wave-or-particle",
         summary: "Tune de Broglie wavelengths and double-slit fringes of electrons and neutrons.",
         difficulty: "Advanced",
+        topics: ["wave-particle-duality"],
       },
       {
         id: "particle-detective",
@@ -487,6 +694,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/modern-physics/particle-detective",
         summary: "Identify particles from the curvature of their tracks in a magnetic field.",
         difficulty: "Advanced",
+        topics: ["particle-physics", "lorentz-force"],
       },
       {
         id: "atom-builder",
@@ -495,12 +703,27 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/modern-physics/atom-builder",
         summary: "Build hydrogen-like atoms and choose electron jumps for a given color.",
         difficulty: "Intermediate",
+        topics: ["atomic-structure", "quantum-mechanics", "light-spectrum"],
+      },
+      {
+        id: "quantum-tunnel",
+        title: "Quantum Tunnel",
+        kind: "game",
+        path: "/worlds/modern-physics/quantum-tunnel",
+        summary: "Size a quantum dot and tunnel electrons through barriers.",
+        difficulty: "Advanced",
+        topics: ["quantum-mechanics"],
       },
     ],
     comingSoon: [],
   },
   {
     id: "fluids",
+    story: {
+      title: "The Harbour Design Bureau",
+      premise: "The harbour is growing, and the design bureau needs barges, dams, pipes and aircraft that work with water and air rather than against them.",
+      guide: "Chief designer Rafael Moyo",
+    },
     title: "Fluid Mechanics",
     description: "Pressure, buoyancy and flow.",
     entries: [
@@ -511,6 +734,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/fluids/floating-challenge",
         summary: "Float a block, a hollow steel ball and an egg to the right depth.",
         difficulty: "Beginner",
+        topics: ["buoyancy", "density"],
       },
       {
         id: "pipe-puzzle",
@@ -519,6 +743,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/fluids/pipe-puzzle",
         summary: "Size nozzles, Venturi throats and oil pipes with continuity, Bernoulli and Poiseuille.",
         difficulty: "Advanced",
+        topics: ["fluid-dynamics", "bernoulli", "viscosity"],
       },
       {
         id: "flight-simulator",
@@ -527,6 +752,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/fluids/flight-simulator",
         summary: "Use lift, angle of attack and drag to take off, cruise and glide.",
         difficulty: "Intermediate",
+        topics: ["aerodynamics"],
       },
       {
         id: "dam-engineer",
@@ -535,6 +761,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/fluids/dam-engineer",
         summary: "Size a concrete dam so water cannot tip it over.",
         difficulty: "Intermediate",
+        topics: ["pressure", "engineering-applications"],
       },
       {
         id: "water-pressure",
@@ -543,6 +770,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/fluids/water-pressure",
         summary: "Find pressure at depth for divers, submarine windows and water towers.",
         difficulty: "Beginner",
+        topics: ["pressure"],
       },
       {
         id: "ship-designer",
@@ -551,12 +779,27 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/fluids/ship-designer",
         summary: "Load and shape a barge so that it floats safely and stays upright.",
         difficulty: "Intermediate",
+        topics: ["buoyancy"],
+      },
+      {
+        id: "honey-drop-race",
+        title: "Honey Drop Race",
+        kind: "game",
+        path: "/worlds/fluids/honey-drop-race",
+        summary: "Time falling balls to measure viscosity with Stokes' law.",
+        difficulty: "Intermediate",
+        topics: ["viscosity"],
       },
     ],
     comingSoon: [],
   },
   {
     id: "nuclear",
+    story: {
+      title: "The Isotope Observatory",
+      premise: "At the observatory's nuclear lab, isotopes date ancient rocks, reactors make power and the Sun's fusion fire is studied. Run the experiments safely and read what nuclei tell us.",
+      guide: "Lab director Sakura Bianchi",
+    },
     title: "Nuclear Physics",
     description: "Isotopes, decay and nuclear energy.",
     entries: [
@@ -567,6 +810,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/nuclear/isotope-explorer",
         summary: "Place nuclei on the chart and follow alpha and beta decay series.",
         difficulty: "Intermediate",
+        topics: ["isotopes", "radioactive-decay"],
       },
       {
         id: "energy-detective",
@@ -575,6 +819,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/nuclear/energy-detective",
         summary: "Use E = Δmc² to weigh the Sun's output and nuclear reactions.",
         difficulty: "Intermediate",
+        topics: ["mass-energy"],
       },
       {
         id: "fusion-simulator",
@@ -583,6 +828,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/nuclear/fusion-simulator",
         summary: "Climb the Coulomb barrier and size a fusion fuel load.",
         difficulty: "Advanced",
+        topics: ["nuclear-fusion"],
       },
       {
         id: "half-life-challenge",
@@ -591,6 +837,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/nuclear/half-life-challenge",
         summary: "Time decay chains, read half-lives and unmix decaying samples.",
         difficulty: "Advanced",
+        topics: ["radioactive-decay"],
       },
       {
         id: "nuclear-puzzle",
@@ -599,12 +846,27 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/nuclear/nuclear-puzzle",
         summary: "Use binding energy to find stable nuclei and the energy of fission.",
         difficulty: "Intermediate",
+        topics: ["nuclear-structure", "nuclear-fission"],
+      },
+      {
+        id: "reactor-operator",
+        title: "Reactor Operator",
+        kind: "game",
+        path: "/worlds/nuclear/reactor-operator",
+        summary: "Use control rods to keep a chain reaction critical and safe.",
+        difficulty: "Intermediate",
+        topics: ["nuclear-fission"],
       },
     ],
     comingSoon: [],
   },
   {
     id: "everyday",
+    story: {
+      title: "The Science Fair Week",
+      premise: "It is science fair week at school. Every stall is everyday physics: sports, bikes, kitchens, phones and fairground rides. Win the judges over with real measurements.",
+      guide: "Fair organiser Jonah Pereira",
+    },
     title: "Physics in Everyday Life",
     description: "Sports, transport and the home.",
     entries: [
@@ -615,6 +877,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/everyday/amusement-park-physics",
         summary: "Set carousels, drop towers and the Rotor with circular motion and g-forces.",
         difficulty: "Intermediate",
+        topics: ["circular-motion"],
       },
       {
         id: "smartphone-detective",
@@ -623,6 +886,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/everyday/smartphone-detective",
         summary: "Read tilt, rotation and distance from phone sensors.",
         difficulty: "Beginner",
+        topics: ["sensors"],
       },
       {
         id: "car-safety-engineer",
@@ -631,6 +895,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/everyday/car-safety-engineer",
         summary: "Use momentum and impulse for crumple zones, airbags and collisions.",
         difficulty: "Intermediate",
+        topics: ["momentum", "transportation"],
       },
       {
         id: "kitchen-scientist",
@@ -639,6 +904,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/everyday/kitchen-scientist",
         summary: "Boil, chill and conduct: heat and phase change in the kitchen.",
         difficulty: "Intermediate",
+        topics: ["household-physics", "heat"],
       },
       {
         id: "tennis-physics",
@@ -647,6 +913,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/everyday/tennis-physics",
         summary: "Serve through air drag, meet the bounce standard, and find terminal speed.",
         difficulty: "Intermediate",
+        topics: ["sports-physics"],
       },
       {
         id: "basketball-challenge",
@@ -655,6 +922,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/everyday/basketball-challenge",
         summary: "Sink shots with projectile motion and tune a ball's bounce.",
         difficulty: "Intermediate",
+        topics: ["sports-physics"],
       },
       {
         id: "bicycle-physics",
@@ -663,6 +931,7 @@ export const PHYSICS_WORLDS: readonly PhysicsWorld[] = Object.freeze([
         path: "/worlds/everyday/bicycle-physics",
         summary: "Choose gears and riding position using torque, power and drag.",
         difficulty: "Beginner",
+        topics: ["transportation", "work-power"],
       },
     ],
     comingSoon: [],
@@ -679,4 +948,21 @@ export function findCatalogEntry(id: string): CatalogEntry | undefined {
   return PHYSICS_WORLDS.flatMap((world) => world.entries).find(
     (entry) => entry.id === id,
   );
+}
+
+/** Every catalog entry that teaches the given topic. */
+export function findEntriesForTopic(topicId: string): CatalogEntry[] {
+  return PHYSICS_WORLDS.flatMap((world) => world.entries).filter((entry) => entry.topics.includes(topicId));
+}
+
+const DIFFICULTY_ORDER = { Beginner: 0, Intermediate: 1, Advanced: 2 } as const;
+
+/** A world's suggested path: games from beginner to advanced (catalog order within a level), then its labs. */
+export function suggestedPath(world: PhysicsWorld): CatalogEntry[] {
+  const games = world.entries
+    .filter((entry) => entry.kind === "game")
+    .map((entry, index) => ({ entry, index }))
+    .sort((a, b) => DIFFICULTY_ORDER[a.entry.difficulty] - DIFFICULTY_ORDER[b.entry.difficulty] || a.index - b.index)
+    .map(({ entry }) => entry);
+  return [...games, ...world.entries.filter((entry) => entry.kind === "experiment")];
 }

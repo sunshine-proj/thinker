@@ -81,6 +81,14 @@ Use custom mathematical physics models when they provide better scientific contr
 
 Use the latest mutually compatible stable versions when initializing the project. Pin dependencies and avoid unnecessary packages.
 
+### Stack decisions (recorded in Phase 8, task 128)
+
+- **Styling: plain CSS, not Tailwind.** All styles live in `src/styles.css` with shared tokens on `:root`. The automated contrast, touch-target and responsive checks in `tests/quality/css.test.ts` read that one stylesheet, and the whole stylesheet is about 11 kB gzip. Adopting Tailwind would mean rewriting every component's markup for no gain in accessibility or size. Revisit only if the stylesheet becomes hard to maintain.
+- **Graphics: Canvas and SVG, not Three.js.** Every current simulation explains its physics better in 2D: the electron lab uses a 3D projection and a top view with dots and crosses, and orbits are planar. Three.js would add about 150 kB gzip to the pages that use it. Introduce it only for a simulation that genuinely needs interactive 3D, lazily loaded on that page.
+- **Phaser and Matter.js are not used.** Real-time games run on the project's own `SimulationEngine` with tested physics step functions (`src/game-engine/live`), which gives better scientific control (AGENTS §3).
+- **Supabase without a client library.** Sync talks to Supabase's documented REST endpoints with `fetch` (`src/services/sync/supabaseAdapter.ts`), so no SDK is added to the bundle. It is active only when `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set; the schema is in `supabase/migrations/`.
+- **Linting: oxlint** (see the README), because typescript-eslint does not support TypeScript 7 yet.
+
 ## 4. Recommended Project Structure
 
 Maintain a modular architecture:

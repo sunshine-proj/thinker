@@ -123,6 +123,11 @@ Organize content into thematic physics categories.
 - Space Mission.
 - Parachute Designer.
 - Roller Coaster Engineer.
+- Ice Puck Pilot (Newton's laws).
+- Sled Slope (friction).
+- Cart Collider (momentum).
+- Elevator Engineer (work and power).
+- Rolling Race (rotation).
 
 #### World 2: Electricity & Magnetism
 
@@ -170,6 +175,8 @@ Organize content into thematic physics categories.
 - Refrigerator Engineer.
 - Material Detective.
 - Solar Cooker.
+- Railway Gap Engineer (thermal expansion).
+- Entropy Shuffle (entropy).
 
 #### World 4: Optics & Light
 
@@ -192,6 +199,8 @@ Organize content into thematic physics categories.
 - Vision Simulator.
 - Mirror Illusions.
 - Microscope Builder.
+- Soap Bubble Colours (interference).
+- Diffraction Detective (diffraction).
 
 #### World 5: Waves & Sound
 
@@ -214,6 +223,8 @@ Organize content into thematic physics categories.
 - Echo Explorer.
 - Frequency Detective.
 - Wave Interference.
+- Resonance Swing (resonance).
+- Doppler Chase (Doppler effect).
 
 #### World 6: Astronomy & Astrophysics
 
@@ -236,6 +247,8 @@ Organize content into thematic physics categories.
 - Asteroid Mission.
 - Black Hole Explorer.
 - Moon Landing.
+- Star Classifier (stars).
+- Lightspeed Voyager (special relativity).
 
 #### World 7: Modern Physics & Quantum Mechanics
 
@@ -256,6 +269,7 @@ Organize content into thematic physics categories.
 - Quantum Puzzle.
 - Radioactive Countdown.
 - Photoelectric Lab.
+- Quantum Tunnel (quantisation and tunnelling).
 
 #### World 8: Fluid Mechanics
 
@@ -277,6 +291,7 @@ Organize content into thematic physics categories.
 - Flight Simulator.
 - Pipe Puzzle.
 - Floating Challenge.
+- Honey Drop Race (viscosity).
 
 #### World 9: Nuclear Physics
 
@@ -296,6 +311,7 @@ Organize content into thematic physics categories.
 - Fusion Simulator.
 - Energy Detective.
 - Isotope Explorer.
+- Reactor Operator (fission and chain-reaction control).
 
 #### World 10: Physics in Everyday Life
 
@@ -355,6 +371,10 @@ Users control physical systems.
 Users investigate a phenomenon and identify its physical explanation.
 
 Game formats should be reusable across physics worlds.
+
+### 5.9 Live Games
+
+Each world also has one real-time flagship game, played with direct manipulation (drag, aim, steer or throttle) on the same tested physics: Projectile Master, Magnetic Maze, Temperature Control, Laser Maze, Resonance Swing, Moon Landing, Atom Builder, Ship Designer, Reactor Operator and Basketball Challenge. Games added in Phase 8 are listed under their worlds in §4.2 with the topic they cover.
 
 ### Initial Mechanics Game: Projectile Master
 

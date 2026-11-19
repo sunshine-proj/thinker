@@ -11,7 +11,8 @@
     "lint": "oxlint",
     "typecheck": "tsc -b",
     "verify:pwa": "node tools/verify-pwa.mjs",
-    "verify:performance": "node tools/verify-performance.mjs"
+    "verify:performance": "node tools/verify-performance.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "react": "19.3.1",
@@ -20,6 +21,7 @@
     "zustand": "5.0.16"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.1",
     "@testing-library/react": "16.3.3",
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",

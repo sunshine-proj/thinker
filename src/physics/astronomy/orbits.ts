@@ -56,6 +56,13 @@ export function calculateOrbitalPeriod(mu: number, semiMajorAxis: number): numbe
   return 2 * Math.PI * Math.sqrt(semiMajorAxis ** 3 / mu);
 }
 
+/** Kepler's third law solved for the semi-major axis: a = ∛(μ T² / 4π²), in meters. */
+export function calculateSemiMajorAxisForPeriod(mu: number, periodSeconds: number): number {
+  assertPositive(mu, "mu");
+  assertPositive(periodSeconds, "periodSeconds");
+  return Math.cbrt((mu * periodSeconds ** 2) / (4 * Math.PI ** 2));
+}
+
 /** Orbital speed at radius r on an orbit of semi-major axis a (vis-viva): v² = μ(2/r − 1/a). */
 export function calculateVisViva(mu: number, radius: number, semiMajorAxis: number): number {
   assertPositive(mu, "mu");

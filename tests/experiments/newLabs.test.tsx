@@ -122,6 +122,7 @@ describe("LabPage", () => {
 
   it("updates the measurements when a control changes and lists the explanation", () => {
     render(<MemoryRouter><LabPage definition={gravityComparison} /></MemoryRouter>);
+    fireEvent.click(screen.getByRole("button", { name: "Run without a prediction" }));
     expect(screen.getByText("2.02 s")).toBeTruthy();
     fireEvent.change(screen.getByLabelText("Where are you?"), { target: { value: "moon" } });
     expect(screen.getByText("4.97 s")).toBeTruthy();
@@ -131,6 +132,7 @@ describe("LabPage", () => {
 
   it("saves, lists, compares and reloads runs, and opens a saved run from the index", async () => {
     const { unmount } = render(<MemoryRouter><LabPage definition={projectileLab} /></MemoryRouter>);
+    fireEvent.click(screen.getByRole("button", { name: "Run without a prediction" }));
     fireEvent.click(screen.getByRole("button", { name: "Save experiment" }));
     await waitFor(() => expect(useProgressStore.getState().experiments).toHaveLength(1));
     const first = useProgressStore.getState().experiments[0]!;
@@ -152,5 +154,53 @@ describe("LabPage", () => {
     const links = await screen.findAllByRole("link");
     expect(links.some((link) => link.getAttribute("href") === `/experiments/projectile-motion?saved=${encodeURIComponent(first.id)}`)).toBe(true);
     expect(links.some((link) => link.getAttribute("href") === "/experiments/friction")).toBe(true);
+  });
+});
+
+describe("LabPage predictions and modes", () => {
+  it("hides results until the learner predicts, then compares and records the prediction", async () => {
+    render(<MemoryRouter><LabPage definition={gravityComparison} /></MemoryRouter>);
+    expect(screen.queryByRole("heading", { name: "Measurements" })).toBeNull();
+    const input = screen.getByLabelText(/How long will the object take to fall/);
+    const lock = screen.getByRole("button", { name: "Lock in and run" });
+    expect((lock as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(input, { target: { value: "2" } });
+    fireEvent.click(lock);
+    expect(await screen.findByText(/Your prediction was within 10 %/)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Measurements" })).toBeTruthy();
+    await waitFor(() => expect(useProgressStore.getState().predictions).toHaveLength(1));
+    expect(useProgressStore.getState().predictions[0]).toMatchObject({
+      activityId: "gravity-comparison", activityKind: "experiment", questionId: "fallTime", answer: "2", correct: true,
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Make a new prediction" }));
+    fireEvent.change(screen.getByLabelText(/How long will the object take to fall/), { target: { value: "5" } });
+    fireEvent.click(screen.getByRole("button", { name: "Lock in and run" }));
+    expect(await screen.findByText(/more than 10 %/)).toBeTruthy();
+  });
+
+  it("shows fewer controls and guided steps in beginner mode, and raw data in advanced mode", () => {
+    render(<MemoryRouter><LabPage definition={projectileLab} /></MemoryRouter>);
+    expect(screen.getByRole("heading", { name: "How to run this experiment" })).toBeTruthy();
+    expect(screen.queryByLabelText("Gravity")).toBeNull();
+    expect(screen.getByLabelText("Launch angle")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Advanced" }));
+    expect(screen.getByLabelText("Gravity")).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "How to run this experiment" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Run without a prediction" }));
+    expect(screen.getByRole("heading", { name: "Raw data" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Beginner" }));
+    expect(screen.queryByRole("heading", { name: "Raw data" })).toBeNull();
+  });
+
+  it("gives every lab a prediction it can measure and valid advanced controls", () => {
+    for (const lab of LABS) {
+      const values = defaultLabValues(lab);
+      const id = typeof lab.prediction.measurementId === "function" ? lab.prediction.measurementId(values) : lab.prediction.measurementId;
+      expect(lab.run(values).measurements.some((m) => m.id === id), lab.id).toBe(true);
+      const keys = new Set(lab.controls.map((control) => control.key));
+      lab.modes.advancedControls.forEach((key) => expect(keys, `${lab.id}.${key}`).toContain(key));
+      expect(lab.modes.beginnerSteps.length).toBeGreaterThanOrEqual(2);
+      expect(lab.controls.length - lab.modes.advancedControls.length).toBeGreaterThan(0);
+    }
   });
 });

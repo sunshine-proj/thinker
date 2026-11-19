@@ -1,8 +1,17 @@
-import type { FormEvent, ReactNode } from "react";
+import { useEffect, useMemo, type FormEvent, type ReactNode } from "react";
 import { MeasurementGrid, type MeasurementItem } from "../../components/common";
+import { PHYSICS_WORLDS, findCatalogEntry } from "../../data/games/gameCatalog";
+import { LIVE_VERSIONS, livePathFor } from "../../data/games/liveGames";
+import { Link, useInRouterContext } from "react-router-dom";
+import { playEffect } from "../../services/audio/tonePlayer";
+import { firstSentence, useLearnerPreferences } from "../../services/preferences";
+import { useProgressStore } from "../../store/progressStore";
+import { suggestHarderChallenge } from "../progression/recommendations";
 import {
-  GameHint,
+  GameCelebration,
   GameLifecycleControls,
+  HintLadder,
+  StarRating,
   GameObjectiveList,
   GameProgressBar,
   GameScoreSummary,
@@ -47,6 +56,47 @@ export function RoundGamePage<
   const game = useRoundGame(definition);
   const { meta, rounds } = definition;
   const { round, lifecycle, last } = game;
+  const [{ youngerLearner }] = useLearnerPreferences();
+  const results = useProgressStore((state) => state.results);
+  const completed = lifecycle.status === "completed";
+
+  // Younger learners see the first hint straight away on beginner rounds (no star penalty).
+  const freeHint = youngerLearner && round.difficulty === "Beginner" ? 1 : 0;
+  const hintLevel = Math.max(game.hintLevel, freeHint);
+  const hintSteps = useMemo(() => {
+    const steps = [
+      { title: "Nudge", text: `Think about the key relation: ${meta.formula}. Which quantity are you solving for, and which do you know?` },
+      { title: "The method", text: round.hint },
+    ];
+    const spec = definition.prediction(round);
+    if (spec) {
+      try {
+        const actual = definition.evaluate(round, game.control, null, 1).predictionActual;
+        if (actual !== null && Number.isFinite(actual)) {
+          steps.push({ title: "Worked step", text: `${spec.label.replace(/^Your prediction of /, "The ")} works out at about ${Number(actual.toPrecision(3))} ${spec.unit}. Check that your setting gives this.`.replace(/\s+\./, ".") });
+        }
+      } catch {
+        // No worked step for settings the model cannot evaluate.
+      }
+    }
+    return steps;
+    // The worked step depends on the round, not on every slider movement.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [round, meta.formula, definition]);
+
+  useEffect(() => {
+    if (!last) {
+      return;
+    }
+    playEffect(completed ? "complete" : last.outcome.success ? "success" : "miss");
+  }, [last, completed]);
+
+  const live = LIVE_VERSIONS[meta.id];
+  const gamePath = findCatalogEntry(meta.id)?.path;
+  const inRouter = useInRouterContext();
+  const harder = completed
+    ? suggestHarderChallenge(meta.id, PHYSICS_WORLDS, new Set(results.map((result) => result.gameId)))
+    : null;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -67,7 +117,16 @@ export function RoundGamePage<
         <div>
           <p className="eyebrow">{meta.eyebrow}</p>
           <h1>{meta.title}</h1>
-          <p className="game-page__intro">{meta.introduction}</p>
+          <p className="game-page__intro">{youngerLearner ? firstSentence(meta.introduction) : meta.introduction}</p>
+          {live && gamePath && (
+            <p className="game-page__live-link">
+              {inRouter ? (
+                <Link className="text-link" to={livePathFor(gamePath)}>Play the live version: {live.title}</Link>
+              ) : (
+                <a className="text-link" href={livePathFor(gamePath)}>Play the live version: {live.title}</a>
+              )}
+            </p>
+          )}
         </div>
         <span className="trajectory-lab__model-tag">{meta.modelTag}</span>
       </header>
@@ -85,6 +144,7 @@ export function RoundGamePage<
           },
           { label: "OBJECTIVES", value: game.completedCount, total: rounds.length },
           { label: "ATTEMPTS", value: game.totalAttempts },
+          { label: "STARS", value: game.totalStars, total: game.maxStars },
         ]}
         status={lifecycle.status}
       />
@@ -117,21 +177,39 @@ export function RoundGamePage<
           <div className="balance-plot-wrap">{renderVisual(game)}</div>
           <MeasurementGrid items={renderMeasurements(game)} />
           {renderDetails?.(game)}
+          {lifecycle.status === "failed" && last?.outcome.catastrophe && (
+            <div className="game-failure" role="alert">
+              <strong>{last.outcome.catastrophe.title}</strong>
+              <p>{last.outcome.catastrophe.explanation}</p>
+              <button className="lab-button lab-button--primary" onClick={() => game.lifecycleAction("retry")} type="button">
+                Retry this round
+              </button>
+            </div>
+          )}
           {resultText && (
             <p
               className={last?.outcome.success ? "game-result game-result--hit" : "game-result"}
               role="status"
             >
+              {last?.stars ? (
+                <>
+                  <StarRating max={3} stars={last.stars} />{" "}
+                </>
+              ) : null}
               {resultText}
             </p>
           )}
-          {lifecycle.status === "completed" && (
-            <div className="game-complete" role="status">
-              <strong>Every round complete.</strong>
-              <span>
-                You scored {game.score.totalPoints} points over {game.totalAttempts} attempts.
-              </span>
-            </div>
+          {completed && (
+            <GameCelebration
+              attempts={game.totalAttempts}
+              insight={firstSentence(meta.explanation)}
+              maxStars={game.maxStars}
+              next={harder ? { title: harder.title, path: harder.path } : null}
+              onPlayAgain={game.reset}
+              points={game.score.totalPoints}
+              stars={game.totalStars}
+              title={meta.title}
+            />
           )}
         </section>
 
@@ -203,18 +281,25 @@ export function RoundGamePage<
           </form>
 
           {!game.roundSolved && lifecycle.status !== "completed" && (
-            <GameHint
+            <HintLadder
               disabled={!game.isPlaying}
-              hint={round.hint}
-              onToggle={game.toggleHint}
-              visible={game.showHint}
+              level={hintLevel}
+              onReveal={game.revealNextHint}
+              steps={hintSteps}
             />
           )}
 
           <div className="game-formula">
             <span>KEY RELATIONS</span>
             <strong>{meta.formula}</strong>
-            <p>{meta.formulaCaption}</p>
+            {youngerLearner ? (
+              <details>
+                <summary>What do the symbols mean?</summary>
+                <p>{meta.formulaCaption}</p>
+              </details>
+            ) : (
+              <p>{meta.formulaCaption}</p>
+            )}
           </div>
         </aside>
       </div>
@@ -223,7 +308,17 @@ export function RoundGamePage<
         <div>
           <p className="eyebrow">THE PHYSICS</p>
           <h2 id="learning-title">What is going on?</h2>
-          <p>{meta.explanation}</p>
+          {youngerLearner ? (
+            <>
+              <p>{firstSentence(meta.explanation)}</p>
+              <details>
+                <summary>Read the full explanation</summary>
+                <p>{meta.explanation}</p>
+              </details>
+            </>
+          ) : (
+            <p>{meta.explanation}</p>
+          )}
           <ul className="game-objectives-list">
             {meta.learningObjectives.map((text) => (
               <li key={text}>{text}</li>

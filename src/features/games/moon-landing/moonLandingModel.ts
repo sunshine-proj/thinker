@@ -54,12 +54,16 @@ export function evaluateLanding(round: LandingRound, control: LandingControl): L
     feedback = `You ignited too late: the engine could not slow the lander in time, and it hit at ${speed.toFixed(1)} m/s (the legs take ${SAFE_TOUCHDOWN_SPEED} m/s). Ignite higher up.`;
   }
 
+  const crashed = descent.end === "touchdown" && !success;
   return {
     success,
     accuracyFraction: success ? 1 - speed / SAFE_TOUCHDOWN_SPEED : 0,
     predictionActual: descent.fuelUsedKilograms,
     feedback,
     descent,
+    ...(crashed
+      ? { catastrophe: { title: "Crash landing", explanation: `The lander hit the surface at ${speed.toFixed(1)} m/s; its legs survive only ${SAFE_TOUCHDOWN_SPEED} m/s. Its kinetic energy, ½mv², grows with the square of the speed, so even a little too fast is a lot too much.` } }
+      : {}),
   };
 }
 

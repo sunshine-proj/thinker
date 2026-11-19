@@ -17,6 +17,7 @@ import {
   type ScoreState,
 } from "../scoring/ScoringSystem";
 import { scoreStandardAttempt, type StandardScore } from "../scoring/standardScoring";
+import { MAX_HINT_LEVEL, MAX_STARS_PER_ROUND, calculateRoundStars, totalStars } from "../scoring/stars";
 import type {
   AttemptOutcome,
   PredictionSpec,
@@ -28,6 +29,8 @@ export interface AttemptRecord<Control, Outcome extends AttemptOutcome> {
   readonly control: Control;
   readonly outcome: Outcome;
   readonly points: StandardScore;
+  /** Stars for this attempt when it solved the round. */
+  readonly stars: number | null;
 }
 
 interface RoundSession<Control> {
@@ -39,6 +42,7 @@ interface RoundSession<Control> {
   readonly roundAttempts: number;
   readonly control: Control;
   readonly prediction: string;
+  readonly starsByRound?: number[];
 }
 
 export function useRoundGame<
@@ -61,7 +65,8 @@ export function useRoundGame<
   );
   const [score, setScore] = useState(createScoreState);
   const [last, setLast] = useState<AttemptRecord<Control, Outcome> | null>(null);
-  const [showHint, setShowHint] = useState(false);
+  const [hintLevel, setHintLevel] = useState(0);
+  const [starsByRound, setStarsByRound] = useState<number[]>(() => rounds.map(() => 0));
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const round = rounds[roundIndex] as Round;
@@ -93,6 +98,7 @@ export function useRoundGame<
           roundAttempts,
           control,
           prediction,
+          starsByRound,
         }
       : null;
 
@@ -127,6 +133,9 @@ export function useRoundGame<
             roundAttempts: attempts,
             control: savedControl,
             prediction: savedPrediction,
+            starsByRound: Array.isArray(raw.starsByRound) && raw.starsByRound.length === rounds.length && raw.starsByRound.every((value) => Number.isInteger(value) && value >= 0 && value <= MAX_STARS_PER_ROUND)
+              ? (raw.starsByRound as number[])
+              : rounds.map(() => 0),
           };
     },
     [definition, rounds],
@@ -140,12 +149,13 @@ export function useRoundGame<
     setRoundAttempts(saved.roundAttempts);
     setControlState(saved.control);
     setPredictionState(saved.prediction);
+    setStarsByRound(saved.starsByRound ?? rounds.map(() => 0));
     setLast(null);
-    setShowHint(false);
+    setHintLevel(0);
     setErrorMessage(null);
     // Resumed games wait for the learner to press Resume.
     setLifecycle({ status: "paused" });
-  }, []);
+  }, [rounds]);
 
   const session: GameSessionControls = useGameSession({
     gameId: meta.id,
@@ -191,10 +201,15 @@ export function useRoundGame<
         predictionActual: outcome.predictionActual,
         attemptNumber,
       });
-      setLast({ control, outcome, points });
+      const stars = outcome.success ? calculateRoundStars(points.score, hintLevel) : null;
+      setLast({ control, outcome, points, stars });
       setRoundAttempts(attemptNumber);
       setTotalAttempts((count) => count + 1);
       setErrorMessage(null);
+
+      if (!outcome.success && outcome.catastrophe) {
+        setLifecycle((current) => transitionGameLifecycle(current, "fail"));
+      }
 
       if (outcome.success) {
         const nextScore = recordScore(
@@ -206,6 +221,8 @@ export function useRoundGame<
         setCompletedRounds((done) =>
           done.map((value, index) => (index === roundIndex ? true : value)),
         );
+        const nextStars = starsByRound.map((value, index) => (index === roundIndex ? Math.max(value, stars ?? 0) : value));
+        setStarsByRound(nextStars);
         if (isLastRound) {
           setLifecycle((current) => transitionGameLifecycle(current, "complete"));
           void recordGameResult({
@@ -214,6 +231,8 @@ export function useRoundGame<
             difficulty: round.difficulty,
             completionStatus: "completed",
             completedAt: new Date().toISOString(),
+            stars: totalStars(nextStars),
+            maxStars: rounds.length * MAX_STARS_PER_ROUND,
           });
         }
       }
@@ -230,7 +249,7 @@ export function useRoundGame<
     setPredictionState("");
     setLast(null);
     setRoundAttempts(0);
-    setShowHint(false);
+    setHintLevel(0);
     setErrorMessage(null);
   };
 
@@ -245,10 +264,11 @@ export function useRoundGame<
     setLifecycle((current) => transitionGameLifecycle(current, "reset"));
     setTotalAttempts(0);
     setCompletedRounds(rounds.map(() => false));
+    setStarsByRound(rounds.map(() => 0));
     setScore(createScoreState());
   };
 
-  const lifecycleAction = (action: "start" | "pause" | "resume") =>
+  const lifecycleAction = (action: "start" | "pause" | "resume" | "retry") =>
     setLifecycle((current) => transitionGameLifecycle(current, action));
 
   return {
@@ -272,8 +292,12 @@ export function useRoundGame<
     totalAttempts,
     score,
     last,
-    showHint,
-    toggleHint: () => setShowHint((visible) => !visible),
+    /** Hint levels revealed this round: 0 none, 1 nudge, 2 formula, 3 worked step. */
+    hintLevel,
+    revealNextHint: () => setHintLevel((level) => Math.min(MAX_HINT_LEVEL, level + 1)),
+    starsByRound,
+    totalStars: totalStars(starsByRound),
+    maxStars: rounds.length * MAX_STARS_PER_ROUND,
     errorMessage,
     submit,
     nextRound,

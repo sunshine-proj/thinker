@@ -1,5 +1,6 @@
 import { LineChart } from "../../../components/common";
 import { createNumericGamePage } from "../../../game-engine/rounds";
+import { STANDARD_GRAVITY } from "../../../physics/core";
 import { calculateIlluminance, calculateTiltedAccelerometerReading } from "../../../physics/mechanics";
 import { GYRO_RATE, LIGHT_INTENSITY, TILT_READING, runSensor, smartphoneDetective } from "./smartphoneDetective";
 
@@ -11,7 +12,7 @@ export const SmartphoneDetectivePage = createNumericGamePage({
     return [
       { label: names[game.round.kind], value: `${o.reading.toFixed(game.round.kind === "gyro" ? 0 : 2)} ${o.unit}` },
       { label: "MEASURED", value: game.round.kind === "tilt" ? `${TILT_READING} m/s²` : game.round.kind === "gyro" ? `${GYRO_RATE}°/s for 2 s` : "100 lx" },
-      { label: "g", value: "9.81 m/s²" },
+      { label: "g", value: `${STANDARD_GRAVITY} m/s²` },
       { label: "LAMP", value: `${LIGHT_INTENSITY} cd` },
     ];
   },
@@ -19,7 +20,7 @@ export const SmartphoneDetectivePage = createNumericGamePage({
     if (game.round.kind === "tilt") {
       const points = Array.from({ length: 91 }, (_, i) => ({ x: i, y: calculateTiltedAccelerometerReading(i) }));
       const angle = game.control.angle as number;
-      return <LineChart description="Accelerometer reading along the long edge against tilt angle, a sine curve up to 9.81 meters per second squared at 90 degrees. The measured 4.9 is a dashed line." series={[{ label: "g sin θ", points }, { label: "Measured 4.9 m/s²", dashed: true, points: [{ x: 0, y: TILT_READING }, { x: 90, y: TILT_READING }] }, { label: "Your tilt", dashed: true, points: [{ x: angle, y: 0 }, { x: angle, y: 10 }] }]} title="Accelerometer and tilt" xDomain={[0, 90]} xLabel="Tilt angle (°)" yDomain={[0, 10]} yLabel="Reading (m/s²)" />;
+      return <LineChart description="Accelerometer reading along the long edge against tilt angle, a sine curve up to g, about 9.81 meters per second squared, at 90 degrees. The measured 4.9 is a dashed line." series={[{ label: "g sin θ", points }, { label: "Measured 4.9 m/s²", dashed: true, points: [{ x: 0, y: TILT_READING }, { x: 90, y: TILT_READING }] }, { label: "Your tilt", dashed: true, points: [{ x: angle, y: 0 }, { x: angle, y: 10 }] }]} title="Accelerometer and tilt" xDomain={[0, 90]} xLabel="Tilt angle (°)" yDomain={[0, 10]} yLabel="Reading (m/s²)" />;
     }
     if (game.round.kind === "gyro") {
       const angle = game.control.angle as number;

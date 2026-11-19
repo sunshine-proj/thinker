@@ -9,6 +9,7 @@ import {
 import type {
   GameResult,
   GameSession,
+  RecordedPrediction,
   SavedExperiment,
   UnlockedAchievement,
   UserProgress,
@@ -21,16 +22,23 @@ export interface ProgressState {
   readonly results: readonly GameResult[];
   readonly experiments: readonly SavedExperiment[];
   readonly achievements: readonly UnlockedAchievement[];
+  readonly predictions: readonly RecordedPrediction[];
   /** Achievements unlocked this session that have not been acknowledged yet. */
   readonly newlyUnlocked: readonly UnlockedAchievement[];
   readonly progress: UserProgress;
   /** Set when data could not be read or saved; everything still works in memory. */
   readonly persistenceError: string | null;
   hydrate(): Promise<void>;
+  /** Re-reads everything from storage, for example after sync added records from another device. */
+  reload(): Promise<void>;
   recordGameResult(result: GameResult): Promise<void>;
   saveExperiment(experiment: NewExperiment): Promise<SavedExperiment>;
   deleteExperiment(id: string): Promise<void>;
+  /** Records (or replaces) a prediction made before a thought experiment or lab run. */
+  recordPrediction(prediction: Omit<RecordedPrediction, "id" | "recordedAt">): Promise<RecordedPrediction>;
   loadSession(gameId: string): Promise<GameSession | null>;
+  /** Every in-progress game this device can resume. */
+  listSessions(): Promise<GameSession[]>;
   saveSession(gameId: string, data: unknown): Promise<void>;
   deleteSession(gameId: string): Promise<void>;
   acknowledgeAchievements(): void;
@@ -48,15 +56,21 @@ function createId(): string {
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 }
 
-export function createProgressStore(repository: ProgressRepository) {
+/** Notified when the learner deletes a saved experiment (used by sync to delete it remotely). */
+export type ExperimentDeletionListener = (id: string) => void;
+
+export function createProgressStore(
+  repository: ProgressRepository,
+  deletionListeners: ReadonlySet<ExperimentDeletionListener> = new Set(),
+) {
   let hydration: Promise<void> | null = null;
 
   return create<ProgressState>((set, get) => {
     /** Unlocks and persists any achievements the current data now earns. */
     const unlockAchievements = async (): Promise<void> => {
-      const { results, experiments, achievements } = get();
+      const { results, experiments, achievements, predictions } = get();
       const unlocked = findNewlyUnlocked(
-        { results, experiments, playableGameIds: getPlayableGameIds() },
+        { results, experiments, predictions, playableGameIds: getPlayableGameIds() },
         new Set(achievements.map((achievement) => achievement.achievementId)),
       );
       if (unlocked.length === 0) {
@@ -86,6 +100,7 @@ export function createProgressStore(repository: ProgressRepository) {
       results: [],
       experiments: [],
       achievements: [],
+      predictions: [],
       newlyUnlocked: [],
       progress: summarizeProgress([]),
       persistenceError: null,
@@ -94,16 +109,18 @@ export function createProgressStore(repository: ProgressRepository) {
         hydration ??= (async () => {
           set({ status: "loading" });
           try {
-            const [results, experiments, achievements] = await Promise.all([
+            const [results, experiments, achievements, predictions] = await Promise.all([
               repository.listGameResults(),
               repository.listSavedExperiments(),
               repository.listAchievements(),
+              repository.listPredictions(),
             ]);
             set({
               status: "ready",
               results,
               experiments,
               achievements,
+              predictions,
               progress: summarizeProgress(results),
               persistenceError: null,
             });
@@ -115,6 +132,13 @@ export function createProgressStore(repository: ProgressRepository) {
           }
         })();
         return hydration;
+      },
+
+      async reload() {
+        await hydration;
+        hydration = null;
+        await get().hydrate();
+        await unlockAchievements();
       },
 
       async recordGameResult(result) {
@@ -152,6 +176,7 @@ export function createProgressStore(repository: ProgressRepository) {
       },
 
       async deleteExperiment(id) {
+        deletionListeners.forEach((listener) => listener(id));
         set({
           experiments: get().experiments.filter((experiment) => experiment.id !== id),
         });
@@ -162,12 +187,46 @@ export function createProgressStore(repository: ProgressRepository) {
         }
       },
 
+      async recordPrediction(newPrediction) {
+        if (!newPrediction.activityId.trim() || !newPrediction.questionId.trim()) {
+          throw new RangeError("A prediction needs an activity and a question.");
+        }
+        await get().hydrate();
+        const prediction: RecordedPrediction = {
+          ...newPrediction,
+          id: `${newPrediction.activityId}:${newPrediction.questionId}`,
+          recordedAt: new Date().toISOString(),
+        };
+        set({
+          predictions: [
+            ...get().predictions.filter((existing) => existing.id !== prediction.id),
+            prediction,
+          ],
+        });
+        try {
+          await repository.savePrediction(prediction);
+        } catch (error) {
+          set({ persistenceError: describeError(error, "saved") });
+        }
+        await unlockAchievements();
+        return prediction;
+      },
+
       async loadSession(gameId) {
         try {
           return await repository.loadSession(gameId);
         } catch (error) {
           set({ persistenceError: describeError(error, "loaded") });
           return null;
+        }
+      },
+
+      async listSessions() {
+        try {
+          return await repository.listSessions();
+        } catch (error) {
+          set({ persistenceError: describeError(error, "loaded") });
+          return [];
         }
       },
 
@@ -200,6 +259,7 @@ export function createProgressStore(repository: ProgressRepository) {
           results: [],
           experiments: [],
           achievements: [],
+          predictions: [],
           newlyUnlocked: [],
           progress: summarizeProgress([]),
         });
@@ -216,4 +276,5 @@ export function createProgressStore(repository: ProgressRepository) {
 
 /** The device's repository, shared by the store and by background services such as sync. */
 export const progressRepository = createProgressRepository();
-export const useProgressStore = createProgressStore(progressRepository);
+export const experimentDeletionListeners = new Set<ExperimentDeletionListener>();
+export const useProgressStore = createProgressStore(progressRepository, experimentDeletionListeners);

@@ -18,6 +18,8 @@ export const projectileLab: LabDefinition = {
     { kind: "number", key: "height", label: "Launch height", unit: "m", minimum: 0, maximum: 100, step: 1, initial: 0 },
   ],
   describe: (values) => `${values.speed} m/s at ${values.angle}° · g ${values.gravity} m/s² · from ${values.height} m`,
+  prediction: { prompt: "How far will the projectile land?", measurementId: "range" },
+  modes: { advancedControls: ["gravity", "height"], beginnerSteps: ["Set the launch speed and angle.", "Predict the range, then run.", "Try 30° and 60° at the same speed: what do you notice?"] },
   run(values) {
     const speed = values.speed as number;
     const angle = values.angle as number;

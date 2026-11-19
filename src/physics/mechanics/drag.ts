@@ -36,6 +36,30 @@ export function calculateTerminalSpeed(
   return Math.sqrt((2 * massKilograms * gravity) / (airDensity * dragAreaSquareMeters));
 }
 
+/**
+ * Time (s) to fall a height from rest with quadratic drag, exact:
+ * y(t) = (v_t²/g) ln cosh(g t / v_t), so t = (v_t/g) arcosh(exp(g h / v_t²)).
+ */
+export function calculateDragFallTime(heightMeters: number, terminalSpeed: number, gravity = STANDARD_GRAVITY): number {
+  assertPositive(heightMeters, "heightMeters");
+  assertPositive(terminalSpeed, "terminalSpeed");
+  assertPositive(gravity, "gravity");
+  const exponent = (gravity * heightMeters) / terminalSpeed ** 2;
+  // arcosh(eˣ) = x + ln(1 + √(1 − e^(−2x))), which never overflows.
+  const arcosh = exponent + Math.log(1 + Math.sqrt(-Math.expm1(-2 * exponent)));
+  return (terminalSpeed / gravity) * arcosh;
+}
+
+/** Distance (m) fallen from rest after t seconds with quadratic drag: (v_t²/g) ln cosh(g t / v_t). */
+export function calculateDragFallDistance(timeSeconds: number, terminalSpeed: number, gravity = STANDARD_GRAVITY): number {
+  assertNonNegative(timeSeconds, "timeSeconds");
+  assertPositive(terminalSpeed, "terminalSpeed");
+  assertPositive(gravity, "gravity");
+  const x = (gravity * timeSeconds) / terminalSpeed;
+  // ln cosh x = x + ln(1 + e^(−2x)) − ln 2, stable for large x.
+  return (terminalSpeed ** 2 / gravity) * (x + Math.log1p(Math.exp(-2 * x)) - Math.LN2);
+}
+
 export interface ParachuteFall {
   readonly massKilograms: number;
   readonly bodyDragAreaSquareMeters: number;

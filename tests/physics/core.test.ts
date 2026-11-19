@@ -157,3 +157,23 @@ describe("physical constants", () => {
     expect(PLANCK_CONSTANT).toBe(6.62607015e-34);
   });
 });
+
+describe("CODATA 2022 constants", () => {
+  it("uses one CODATA release for measured constants", async () => {
+    const c = await import("../../src/physics/core");
+    expect(c.CODATA_RELEASE).toBe("CODATA 2022");
+    expect(c.VACUUM_PERMITTIVITY).toBe(8.8541878188e-12);
+    expect(c.VACUUM_PERMEABILITY).toBe(1.25663706127e-6);
+    expect(c.NEUTRON_MASS).toBe(1.67492750056e-27);
+    expect(c.ATOMIC_MASS_UNIT).toBe(1.66053906892e-27);
+    expect(c.ATOMIC_MASS_UNIT_MEV).toBe(931.49410372);
+    expect(c.BOHR_RADIUS).toBe(5.29177210544e-11);
+  });
+
+  it("is self-consistent: μ₀ ε₀ c² = 1 and u c² matches its MeV equivalent", async () => {
+    const c = await import("../../src/physics/core");
+    expect(c.VACUUM_PERMEABILITY * c.VACUUM_PERMITTIVITY * c.SPEED_OF_LIGHT ** 2).toBeCloseTo(1, 9);
+    const uMeV = (c.ATOMIC_MASS_UNIT * c.SPEED_OF_LIGHT ** 2) / (c.ELEMENTARY_CHARGE * 1e6);
+    expect(uMeV / c.ATOMIC_MASS_UNIT_MEV).toBeCloseTo(1, 9);
+  });
+});

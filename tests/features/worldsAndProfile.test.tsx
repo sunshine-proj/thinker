@@ -16,8 +16,8 @@ describe("Physics Worlds", () => {
     );
 
     for (const entry of PHYSICS_WORLDS.flatMap((world) => world.entries)) {
-      const link = screen.getByRole("link", { name: new RegExp(entry.title) });
-      expect(link.getAttribute("href")).toBe(entry.path);
+      const links = screen.getAllByRole("link", { name: new RegExp(entry.title) });
+      expect(links.some((link) => link.getAttribute("href") === entry.path), entry.id).toBe(true);
     }
     // Every planned game is playable now, so no world lists anything as coming soon.
     expect(PHYSICS_WORLDS.every((world) => world.comingSoon.length === 0)).toBe(true);

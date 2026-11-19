@@ -42,6 +42,12 @@ export interface SimulationEngineOptions<State, Parameters> {
   maxFrameDeltaSeconds?: number;
   /** Maximum integration steps performed for a single rendered frame. Defaults to 8. */
   maxSubSteps?: number;
+  /**
+   * Minimum wall-clock seconds between rendered frames while running. Defaults to 0
+   * (render every animation frame). Larger values give a stepped display for
+   * learners who prefer reduced motion; physics still advances at the fixed step.
+   */
+  renderIntervalSeconds?: number;
   scheduler?: SimulationScheduler;
   onRender?: (snapshot: SimulationSnapshot<State, Parameters>) => void;
   onError?: (error: unknown) => void;
@@ -83,10 +89,12 @@ export class SimulationEngine<State, Parameters> {
   private droppedTimeSeconds = 0;
   private accumulatorSeconds = 0;
   private lastFrameTimestamp: number | null = null;
+  private lastRenderTimestamp: number | null = null;
+  private renderIntervalSeconds: number;
   private frameHandle: number | null = null;
   private error: unknown | null = null;
-  private readonly fixedTimeStepSeconds: number;
-  private readonly timeScale: number;
+  private fixedTimeStepSeconds: number;
+  private timeScale: number;
   private readonly maxFrameDeltaSeconds: number;
   private readonly maxSubSteps: number;
   private readonly scheduler: SimulationScheduler;
@@ -105,6 +113,8 @@ export class SimulationEngine<State, Parameters> {
     this.timeScale = options.timeScale ?? 1;
     this.maxFrameDeltaSeconds = options.maxFrameDeltaSeconds ?? 0.25;
     this.maxSubSteps = options.maxSubSteps ?? 8;
+    this.renderIntervalSeconds = options.renderIntervalSeconds ?? 0;
+    assertNonNegativeInterval(this.renderIntervalSeconds);
     this.scheduler = options.scheduler ?? browserScheduler;
     this.onRender = options.onRender;
     this.onError = options.onError;
@@ -119,6 +129,30 @@ export class SimulationEngine<State, Parameters> {
 
     this.parameters = parameters;
     this.state = model.createInitialState(parameters);
+  }
+
+  /**
+   * Changes the physics step and playback speed, for example when a model switches
+   * to a regime with much faster dynamics. Only allowed while the simulation is not
+   * running; the state is reset so time stays consistent.
+   */
+  setTiming(timing: { readonly fixedTimeStepSeconds: number; readonly timeScale: number }): void {
+    this.assertNotDisposed();
+    if (this.status === "running") {
+      throw new Error("Pause or reset the simulation before changing its timing.");
+    }
+    assertPositive(timing.fixedTimeStepSeconds, "fixedTimeStepSeconds");
+    assertPositive(timing.timeScale, "timeScale");
+    this.fixedTimeStepSeconds = timing.fixedTimeStepSeconds;
+    this.timeScale = timing.timeScale;
+    this.reset();
+  }
+
+  /** Changes the minimum time between rendered frames (0 renders every frame). */
+  setRenderIntervalSeconds(seconds: number): void {
+    assertNonNegativeInterval(seconds);
+    this.renderIntervalSeconds = seconds;
+    this.lastRenderTimestamp = null;
   }
 
   getSnapshot(): SimulationSnapshot<State, Parameters> {
@@ -168,6 +202,7 @@ export class SimulationEngine<State, Parameters> {
 
     this.status = "running";
     this.lastFrameTimestamp = this.scheduler.now();
+    this.lastRenderTimestamp = null;
     this.publish();
     this.scheduleNextFrame();
   }
@@ -183,6 +218,10 @@ export class SimulationEngine<State, Parameters> {
     this.lastFrameTimestamp = null;
     this.status = "paused";
     this.publish();
+    if (this.renderIntervalSeconds > 0) {
+      // A stepped display may be behind the state; show where the pause happened.
+      this.render();
+    }
   }
 
   resume(): void {
@@ -340,7 +379,15 @@ export class SimulationEngine<State, Parameters> {
         this.publish();
       }
 
-      this.render();
+      const renderDue =
+        this.status !== "running" ||
+        this.lastRenderTimestamp === null ||
+        timestamp - this.lastRenderTimestamp >=
+          this.renderIntervalSeconds * 1_000;
+      if (renderDue) {
+        this.lastRenderTimestamp = timestamp;
+        this.render();
+      }
 
       if (this.status === "running") {
         this.scheduleNextFrame();
@@ -407,5 +454,11 @@ export class SimulationEngine<State, Parameters> {
     if (this.status === "disposed") {
       throw new Error("The simulation engine has been disposed.");
     }
+  }
+}
+
+function assertNonNegativeInterval(seconds: number): void {
+  if (!Number.isFinite(seconds) || seconds < 0) {
+    throw new RangeError("renderIntervalSeconds must be a finite number of at least 0.");
   }
 }

@@ -333,4 +333,60 @@ describe("SimulationEngine", () => {
         }),
     ).toThrow(RangeError);
   });
+
+  it("renders at a reduced rate for reduced motion while physics keeps its fixed step", () => {
+    const onRender = vi.fn();
+    const { engine, scheduler } = createEngine({ speed: 1 }, {
+      onRender,
+      renderIntervalSeconds: 1,
+      maxFrameDeltaSeconds: 1,
+      maxSubSteps: 1000,
+    });
+    engine.start();
+    onRender.mockClear();
+    for (let frame = 0; frame < 120; frame += 1) {
+      scheduler.advanceBy(1000 / 60);
+    }
+    // Two seconds of frames: the first frame plus one per elapsed second.
+    expect(onRender.mock.calls.length).toBeLessThanOrEqual(3);
+    expect(engine.getSnapshot().timeSeconds).toBeCloseTo(2, 6);
+    expect(engine.getSnapshot().state.position).toBeCloseTo(2, 6);
+    engine.pause();
+    const lastRendered = onRender.mock.calls.at(-1)?.[0];
+    expect(lastRendered.state.position).toBeCloseTo(2, 6);
+  });
+
+  it("can switch between smooth and stepped rendering", () => {
+    const onRender = vi.fn();
+    const { engine, scheduler } = createEngine({ speed: 1 }, { onRender });
+    engine.start();
+    onRender.mockClear();
+    scheduler.advanceBy(16);
+    scheduler.advanceBy(16);
+    expect(onRender).toHaveBeenCalledTimes(2);
+    engine.setRenderIntervalSeconds(10);
+    onRender.mockClear();
+    scheduler.advanceBy(16);
+    scheduler.advanceBy(16);
+    scheduler.advanceBy(16);
+    expect(onRender).toHaveBeenCalledTimes(1);
+    expect(() => engine.setRenderIntervalSeconds(-1)).toThrow(RangeError);
+    expect(() => createEngine({ speed: 1 }, { renderIntervalSeconds: Number.NaN })).toThrow(RangeError);
+  });
+
+  it("changes its timestep and time scale only when not running, resetting the state", () => {
+    const { engine, scheduler } = createEngine({ speed: 1 }, { fixedTimeStepSeconds: 0.1, maxSubSteps: 1000, maxFrameDeltaSeconds: 1 });
+    engine.start();
+    expect(() => engine.setTiming({ fixedTimeStepSeconds: 0.01, timeScale: 0.5 })).toThrow(/Pause or reset/);
+    engine.pause();
+    engine.setTiming({ fixedTimeStepSeconds: 0.01, timeScale: 0.5 });
+    expect(engine.getSnapshot().status).toBe("ready");
+    expect(engine.getSnapshot().timeSeconds).toBe(0);
+    engine.start();
+    scheduler.advanceBy(1000);
+    // Half a simulated second at the new time scale, to within one 0.01 s step.
+    expect(Math.abs(engine.getSnapshot().timeSeconds - 0.5)).toBeLessThanOrEqual(0.01 + 1e-12);
+    engine.pause();
+    expect(() => engine.setTiming({ fixedTimeStepSeconds: 0, timeScale: 1 })).toThrow(RangeError);
+  });
 });

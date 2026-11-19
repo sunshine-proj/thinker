@@ -51,3 +51,17 @@ export function calculateMetacentricHeight(draftMeters: number, beamMeters: numb
   assertNonNegative(centerOfGravityMeters, "centerOfGravityMeters");
   return draftMeters / 2 + beamMeters ** 2 / (12 * draftMeters) - centerOfGravityMeters;
 }
+
+/**
+ * Small-angle heel (degrees) of a floating hull when a load of mass m sits a distance d
+ * off the centreline: tanφ = m d / (Δ · GM), with Δ the total mass and GM the
+ * metacentric height. Valid for small angles and GM > 0; returns 90 for an unstable hull.
+ */
+export function calculateHeelAngle(loadMassKg: number, offsetMeters: number, displacementKg: number, metacentricHeight: number): number {
+  assertNonNegative(loadMassKg, "loadMassKg");
+  assertPositive(displacementKg, "displacementKg");
+  if (metacentricHeight <= 0) {
+    return 90;
+  }
+  return (Math.atan((loadMassKg * offsetMeters) / (displacementKg * metacentricHeight)) * 180) / Math.PI;
+}

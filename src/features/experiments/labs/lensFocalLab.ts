@@ -17,6 +17,8 @@ export const lensFocalLab: LabDefinition = {
     { kind: "number", key: "separation", label: "Object–screen distance D (Bessel method)", unit: "cm", minimum: 10, maximum: 300, step: 1, initial: 100 },
   ],
   describe: (v) => `f ${v.focal} cm · u ${v.object} cm · object ${v.height} cm · D ${v.separation} cm`,
+  prediction: { prompt: "How far from the lens will the sharp image form?", measurementId: "image" },
+  modes: { advancedControls: ["separation", "height"], beginnerSteps: ["Choose the lens's focal length and place the object.", "Predict where the sharp image forms, then run.", "Move the object closer to the focal point: where does the image go?"] },
   run(v) {
     const f = v.focal as number;
     const u = v.object as number;

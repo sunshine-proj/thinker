@@ -48,3 +48,16 @@ export {
   calculateSpecimenDistance,
   calculateUsefulMagnificationLimit,
 } from "./microscope";
+export {
+  calculateReinforcedWavelengths,
+  calculateThinnestFilm,
+  calculateTwoBeamFactor,
+  hasOneInversion,
+} from "./thinFilm";
+export {
+  calculateGratingAngle,
+  calculateMinimumPosition,
+  calculateSingleSlitIntensity,
+  calculateSpacingFromAngle,
+  calculateWavelengthFromGrating,
+} from "./diffraction";

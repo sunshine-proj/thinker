@@ -64,13 +64,13 @@ export function GameLifecycleControls({
           </button>
         </>
       )}
-      {status === "completed" && (
+      {(status === "completed" || status === "failed") && (
         <button
           className="lab-button lab-button--secondary"
           onClick={onReset}
           type="button"
         >
-          {resetLabel}
+          {status === "failed" ? "Restart the game" : resetLabel}
         </button>
       )}
     </div>

@@ -11,6 +11,10 @@ import {
   type SimulationModel,
   type SimulationSnapshot,
 } from "../simulation/engine";
+import {
+  REDUCED_MOTION_RENDER_INTERVAL_SECONDS,
+  usePrefersReducedMotion,
+} from "./usePrefersReducedMotion";
 
 const REACT_UPDATE_INTERVAL_MS = 100;
 
@@ -22,6 +26,11 @@ export interface UseSimulationCanvasOptions<State, Parameters> {
     SimulationEngineOptions<State, Parameters>,
     "onRender"
   >;
+  /**
+   * Seconds between frames when the learner prefers reduced motion. Defaults to one
+   * second; real-time games use a shorter, still calmer interval so they stay playable.
+   */
+  readonly reducedMotionIntervalSeconds?: number;
   /** Draws one frame. Must not touch React state; errors are surfaced as `canvasError`. */
   readonly draw: (
     canvas: HTMLCanvasElement,
@@ -34,11 +43,15 @@ export interface SimulationCanvasControls<State, Parameters> {
   /** Snapshot mirrored into React, throttled while the simulation runs. */
   readonly snapshot: SimulationSnapshot<State, Parameters>;
   readonly canvasError: string | null;
+  /** True when the canvas shows stepped snapshots because the learner prefers reduced motion. */
+  readonly reducedMotion: boolean;
   readonly start: () => void;
   readonly pause: () => void;
   readonly resume: () => void;
   readonly reset: () => void;
   readonly setParameters: (parameters: Parameters, reset?: boolean) => void;
+  /** Changes the physics step and playback speed; resets the simulation. */
+  readonly setTiming: (timing: { readonly fixedTimeStepSeconds: number; readonly timeScale: number }) => void;
 }
 
 /**
@@ -57,6 +70,8 @@ export function useSimulationCanvas<State, Parameters>(
   });
   const [snapshot, setSnapshot] = useState(options.initialSnapshot);
   const [canvasError, setCanvasError] = useState<string | null>(null);
+  const reducedMotion = usePrefersReducedMotion();
+  const reducedMotionRef = useRef(reducedMotion);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -67,6 +82,9 @@ export function useSimulationCanvas<State, Parameters>(
     const { model, initialParameters, engineOptions } = optionsRef.current;
     const engine = new SimulationEngine(model, initialParameters, {
       ...engineOptions,
+      renderIntervalSeconds: reducedMotionRef.current
+        ? (optionsRef.current.reducedMotionIntervalSeconds ?? REDUCED_MOTION_RENDER_INTERVAL_SECONDS)
+        : (engineOptions.renderIntervalSeconds ?? 0),
       onRender: (nextSnapshot) => {
         try {
           optionsRef.current.draw(canvas, nextSnapshot);
@@ -128,6 +146,15 @@ export function useSimulationCanvas<State, Parameters>(
     };
   }, []);
 
+  useEffect(() => {
+    reducedMotionRef.current = reducedMotion;
+    engineRef.current?.setRenderIntervalSeconds(
+      reducedMotion
+        ? (optionsRef.current.reducedMotionIntervalSeconds ?? REDUCED_MOTION_RENDER_INTERVAL_SECONDS)
+        : (optionsRef.current.engineOptions.renderIntervalSeconds ?? 0),
+    );
+  }, [reducedMotion]);
+
   const start = useCallback(() => engineRef.current?.start(), []);
   const pause = useCallback(() => engineRef.current?.pause(), []);
   const resume = useCallback(() => engineRef.current?.resume(), []);
@@ -142,14 +169,24 @@ export function useSimulationCanvas<State, Parameters>(
     [],
   );
 
+  const setTiming = useCallback(
+    (timing: { readonly fixedTimeStepSeconds: number; readonly timeScale: number }) => {
+      engineRef.current?.pause();
+      engineRef.current?.setTiming(timing);
+    },
+    [],
+  );
+
   return {
     canvasRef,
     snapshot,
     canvasError,
+    reducedMotion,
     start,
     pause,
     resume,
     reset,
     setParameters,
+    setTiming,
   };
 }

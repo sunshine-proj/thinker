@@ -1,8 +1,69 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AppIcon } from "../../components/common/AppIcon";
 import { LevelCard } from "../../components/common";
+import { PHYSICS_WORLDS, findCatalogEntry } from "../../data/games/gameCatalog";
+import {
+  continueLearning,
+  featuredExperiment,
+  recentActivities,
+  recommendGames,
+  type ContinueItem,
+} from "../../game-engine/progression/recommendations";
+import { calculateStreak, pickSurprise } from "../../game-engine/progression/streak";
+import { useProgressStore } from "../../store/progressStore";
 import { useChallengeStatus } from "../challenges/useChallengeStatus";
 import { useProgressLevel } from "../profile/useProgressLevel";
+import { findThoughtExperimentTitle } from "../../data/thoughtExperimentTitles";
+
+const ALL_EXPERIMENTS = PHYSICS_WORLDS.flatMap((world) => world.entries).filter((entry) => entry.kind === "experiment");
+
+function formatWhen(iso: string): string {
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+}
+
+/** Home sections that depend on the learner's own progress (PRD §4.1). */
+function useHomeProgress() {
+  const results = useProgressStore((state) => state.results);
+  const predictions = useProgressStore((state) => state.predictions);
+  const experiments = useProgressStore((state) => state.experiments);
+  const status = useProgressStore((state) => state.status);
+  const listSessions = useProgressStore((state) => state.listSessions);
+  const [continueItems, setContinueItems] = useState<ContinueItem[]>([]);
+  const [today] = useState(() => new Date());
+
+  useEffect(() => {
+    let cancelled = false;
+    void listSessions().then((sessions) => {
+      if (!cancelled) {
+        setContinueItems(continueLearning(sessions, findCatalogEntry));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [listSessions]);
+
+  const streak = calculateStreak(
+    [
+      ...results.map((result) => result.completedAt),
+      ...experiments.map((experiment) => experiment.createdAt),
+      ...predictions.map((prediction) => prediction.recordedAt),
+    ],
+    today,
+  );
+
+  return {
+    ready: status === "ready",
+    streak,
+    playedIds: new Set(results.map((result) => result.gameId)),
+    continueItems,
+    recommended: recommendGames(results, PHYSICS_WORLDS),
+    featured: featuredExperiment(ALL_EXPERIMENTS, today),
+    recent: recentActivities(results, predictions, findCatalogEntry, findThoughtExperimentTitle),
+  };
+}
 
 const learningSteps = [
   {
@@ -25,6 +86,15 @@ const learningSteps = [
 export function HomePage() {
   const { ready, daily } = useChallengeStatus();
   const level = useProgressLevel();
+  const { ready: progressReady, streak, playedIds, continueItems, recommended, featured, recent } = useHomeProgress();
+  const navigate = useNavigate();
+  const surprise = () => {
+    const games = PHYSICS_WORLDS.flatMap((world) => world.entries).filter((entry) => entry.kind === "game");
+    const pick = pickSurprise(games, playedIds);
+    if (pick) {
+      void navigate(pick.path);
+    }
+  };
   return (
     <div className="home-page">
       <section aria-labelledby="welcome-title" className="welcome-panel">
@@ -51,19 +121,16 @@ export function HomePage() {
             <Link className="button button--quiet" to="/worlds">
               Browse Physics Worlds
             </Link>
-            <Link
-              className="button button--quiet"
-              to="/worlds/mechanics/projectile-master"
-            >
-              Play Projectile Master
-            </Link>
-            <Link
-              className="button button--quiet"
-              to="/worlds/mechanics/balance-challenge"
-            >
-              Play Balance Challenge
-            </Link>
+            <button className="button button--quiet" onClick={surprise} type="button">
+              Surprise me
+            </button>
           </div>
+          {progressReady && streak > 0 && (
+            <p className="home-streak" role="status">
+              <span aria-hidden="true">🔥 </span>
+              {streak}-day streak. Missing a day only resets the streak; your progress is always kept.
+            </p>
+          )}
         </div>
         <div aria-hidden="true" className="welcome-panel__art">
           <div className="welcome-panel__orbit welcome-panel__orbit--outer" />
@@ -81,6 +148,23 @@ export function HomePage() {
           +
         </span>
       </section>
+
+      {continueItems.length > 0 && (
+        <section aria-labelledby="continue-title" className="home-strip">
+          <h2 id="continue-title">Continue learning</h2>
+          <ul className="world-section__list">
+            {continueItems.map(({ entry, savedAt }) => (
+              <li key={entry.id}>
+                <Link className="world-card" to={entry.path}>
+                  <span className="world-card__meta">IN PROGRESS · SAVED {formatWhen(savedAt).toUpperCase()}</span>
+                  <strong>Resume {entry.title}</strong>
+                  <span>{entry.summary}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section aria-labelledby="start-title" className="start-section">
         <div className="section-heading">
@@ -146,6 +230,53 @@ export function HomePage() {
         <LevelCard status={level} />
       </section>
 
+      <section aria-labelledby="recommended-title" className="home-strip">
+        <h2 id="recommended-title">Recommended for you</h2>
+        <p className="world-section__description">
+          {progressReady && recommended.length > 0 ? "Games from worlds you have not explored yet." : "You have played every game. Try beating your best scores."}
+        </p>
+        <ul className="world-section__list">
+          {recommended.map((entry) => (
+            <li key={entry.id}>
+              <Link aria-label={`Play ${entry.title}`} className="world-card" to={entry.path}>
+                <span className="world-card__meta">
+                  {PHYSICS_WORLDS.find((world) => world.entries.includes(entry))?.title.toUpperCase()} · {entry.difficulty.toUpperCase()}
+                </span>
+                <strong>{entry.title}</strong>
+                <span>{entry.summary}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {featured && (
+        <section aria-labelledby="featured-title" className="home-strip">
+          <h2 id="featured-title">Featured experiment</h2>
+          <Link className="world-card world-card--featured" to={featured.path}>
+            <span className="world-card__meta">TODAY IN THE LAB</span>
+            <strong>{featured.title}</strong>
+            <span>{featured.summary}</span>
+          </Link>
+        </section>
+      )}
+
+      <section aria-labelledby="recent-title" className="home-strip">
+        <h2 id="recent-title">Recently completed</h2>
+        {recent.length === 0 ? (
+          <p className="world-section__description">Nothing yet. Finish a game or a thought experiment and it will appear here.</p>
+        ) : (
+          <ol className="recent-list">
+            {recent.map((activity) => (
+              <li key={`${activity.path}-${activity.at}`}>
+                <Link className="text-link" to={activity.path}>{activity.title}</Link>
+                <span>{activity.detail} · {formatWhen(activity.at)}</span>
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
+
       <section aria-labelledby="approach-title" className="approach-section">
         <div className="approach-section__intro">
           <p className="eyebrow">The Physics Playground way</p>
@@ -176,7 +307,7 @@ export function HomePage() {
           <p className="eyebrow">A question to get you thinking</p>
           <h2>What would happen if gravity suddenly doubled?</h2>
         </div>
-        <Link className="text-link" to="/thought-experiments">
+        <Link className="text-link" to="/thought-experiments/gravity-doubles">
           Follow the question
           <AppIcon name="arrowRight" />
         </Link>

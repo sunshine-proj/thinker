@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { AppShell } from "../../src/components/layout/AppShell";
@@ -226,9 +226,11 @@ describe("Projectile Master game", () => {
       </MemoryRouter>,
     );
 
+    // A new learner is recommended a game from every world, starting with Mechanics.
+    const recommended = screen.getByRole("region", { name: "Recommended for you" });
     expect(
-      screen.getByRole("link", { name: "Play Projectile Master" }).getAttribute("href"),
-    ).toBe(gamePath);
+      within(recommended).getAllByRole("link")[0]?.getAttribute("href"),
+    ).toMatch(/^\/worlds\/mechanics\//);
 
     view.unmount();
     render(

@@ -88,6 +88,9 @@ describe("Circuit Builder game", () => {
     close();
     expect(screen.getByText(/Overheated!/)).toBeTruthy();
     expect(screen.getAllByText(/over rating/)).toHaveLength(2);
+    // Overheating is a physical failure: the round waits until the learner retries.
+    expect(screen.getByRole("alert").textContent).toMatch(/burned out/);
+    fireEvent.click(screen.getByRole("button", { name: "Retry this round" }));
 
     // Share the load: (100 ∥ 100) + (100 ∥ 100).
     removeFirst(200);
@@ -101,8 +104,8 @@ describe("Circuit Builder game", () => {
     close();
 
     expect(screen.getByText(/Circuit complete! 90 points/)).toBeTruthy(); // 60 + 20 + 10 (second closing of this round)
-    expect(screen.getByText("Every circuit built.")).toBeTruthy();
-    expect(screen.getByText(/You scored 290 points over 4 switch closings/)).toBeTruthy();
+    expect(screen.getByText("Every round complete.")).toBeTruthy();
+    expect(screen.getByText(/You scored 290 points over 4 attempts/)).toBeTruthy();
 
     await waitFor(() => {
       const saved = useProgressStore.getState().results.filter((r) => r.gameId === "circuit-builder");

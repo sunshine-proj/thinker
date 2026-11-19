@@ -1,3 +1,11 @@
+/*
+ * Measured constants are CODATA 2022 recommended values (NIST, May 2024); the
+ * speed of light, elementary charge, Planck and Boltzmann constants and the
+ * Avogadro constant are exact by the 2019 SI definition. Keep every value on
+ * one release so derived quantities stay consistent.
+ */
+export const CODATA_RELEASE = "CODATA 2022";
+
 /** Exact SI-defined speed of light, in meters per second. */
 export const SPEED_OF_LIGHT = 299_792_458;
 /** Standard gravitational acceleration, in meters per second squared. */
@@ -17,8 +25,8 @@ export const BOLTZMANN_CONSTANT = 1.380649e-23;
 /** Planck constant, in joule-seconds. */
 export const PLANCK_CONSTANT = 6.62607015e-34;
 
-/** Vacuum permittivity ε₀, in farads per meter (CODATA 2018). */
-export const VACUUM_PERMITTIVITY = 8.8541878128e-12;
+/** Vacuum permittivity ε₀, in farads per meter. */
+export const VACUUM_PERMITTIVITY = 8.8541878188e-12;
 /** Coulomb constant k = 1 / (4π ε₀), in N·m²/C². */
 export const COULOMB_CONSTANT = 1 / (4 * Math.PI * VACUUM_PERMITTIVITY);
 
@@ -55,7 +63,7 @@ export const AIR_MOLAR_MASS = 0.0289647;
 export const AIR_ADIABATIC_INDEX = 1.4;
 
 /** Neutron mass, kg. */
-export const NEUTRON_MASS = 1.67492749804e-27;
+export const NEUTRON_MASS = 1.67492750056e-27;
 /** Avogadro constant, 1/mol. */
 export const AVOGADRO_CONSTANT = 6.02214076e23;
 /** Density of fresh water near 4 °C, kg/m³. */
@@ -66,9 +74,9 @@ export const SEAWATER_DENSITY = 1025;
 export const ATMOSPHERIC_PRESSURE = 101325;
 
 /** Atomic mass unit, kg. */
-export const ATOMIC_MASS_UNIT = 1.66053906660e-27;
+export const ATOMIC_MASS_UNIT = 1.66053906892e-27;
 /** Energy equivalent of one atomic mass unit, MeV. */
-export const ATOMIC_MASS_UNIT_MEV = 931.49410242;
+export const ATOMIC_MASS_UNIT_MEV = 931.49410372;
 /** Density of dry air at sea level and 15 °C, kg/m³. */
 export const AIR_DENSITY = 1.225;
 /** Density of concrete, kg/m³. */
@@ -79,8 +87,28 @@ export const STEEL_DENSITY = 7850;
 /** Stefan–Boltzmann constant σ, W/(m²·K⁴). */
 export const STEFAN_BOLTZMANN_CONSTANT = 5.670374419e-8;
 
-/** Vacuum permeability μ₀, in henries per meter (CODATA 2018). */
-export const VACUUM_PERMEABILITY = 1.25663706212e-6;
+/** Vacuum permeability μ₀, in henries per meter. */
+export const VACUUM_PERMEABILITY = 1.25663706127e-6;
+/** Rydberg energy R∞hc (hydrogen ground-state binding energy for an infinitely heavy nucleus), eV. */
+export const RYDBERG_ENERGY_EV = 13.605693122990;
+/** Bohr radius a₀, m. */
+export const BOHR_RADIUS = 5.29177210544e-11;
+/** Muon mean lifetime at rest, s (Particle Data Group). */
+export const MUON_MEAN_LIFETIME = 2.1969811e-6;
+/** Earth's sidereal rotation period, s. */
+export const EARTH_SIDEREAL_DAY = 86_164.0905;
+/** Mean Earth–Moon distance (centre to centre), m. */
+export const EARTH_MOON_DISTANCE = 3.844e8;
+/** Molar mass of helium-4, kg/mol. */
+export const HELIUM_MOLAR_MASS = 4.002602e-3;
+/** Wien's displacement constant b, m·K. */
+export const WIEN_DISPLACEMENT_CONSTANT = 2.897771955e-3;
+/** IAU nominal solar luminosity, W. */
+export const SOLAR_LUMINOSITY = 3.828e26;
+/** IAU nominal solar radius, m. */
+export const SOLAR_RADIUS = 6.957e8;
+/** IAU nominal solar effective temperature, K. */
+export const SOLAR_EFFECTIVE_TEMPERATURE = 5772;
 /** Electron-volt in joules. */
 export const ELECTRON_VOLT = ELEMENTARY_CHARGE;
 

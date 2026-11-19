@@ -44,7 +44,17 @@ describe("PwaStatus", () => {
     vi.spyOn(registration, "registerServiceWorker").mockResolvedValue(null);
     render(<PwaStatus />);
 
-    expect(screen.getByRole("status").textContent).toMatch(/offline.*still work.*sync/i);
+    const text = screen.getByRole("status").textContent ?? "";
+    expect(text).toMatch(/offline.*still work.*saved on this device/i);
+    expect(text).not.toMatch(/sync/i);
+  });
+
+  it("promises syncing only when an account is configured", () => {
+    vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
+    vi.spyOn(registration, "registerServiceWorker").mockResolvedValue(null);
+    render(<PwaStatus remoteSync />);
+
+    expect(screen.getByRole("status").textContent).toMatch(/sync to your account/i);
   });
 
   it("announces offline readiness and offers to apply an update", async () => {

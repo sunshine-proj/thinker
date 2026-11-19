@@ -20,13 +20,14 @@ export function useChallengeStatus(initialNow?: Date) {
   const [now] = useState(() => initialNow ?? new Date());
   const results = useProgressStore((state) => state.results);
   const experiments = useProgressStore((state) => state.experiments);
+  const predictions = useProgressStore((state) => state.predictions);
   const status = useProgressStore((state) => state.status);
   const hydrate = useProgressStore((state) => state.hydrate);
   useEffect(() => {
     void hydrate();
   }, [hydrate]);
 
-  const context = { results, experiments };
+  const context = { results, experiments, predictions };
   const daily = selectDailyChallenge(CHALLENGES, now);
 
   return {

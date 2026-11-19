@@ -137,3 +137,14 @@ describe("all labs", () => {
     }
   });
 });
+
+describe("prediction tolerance", () => {
+  it("confirms predictions within the relative tolerance", async () => {
+    const { isPredictionConfirmed } = await import("../../src/features/experiments/labs/labTypes");
+    expect(isPredictionConfirmed(2.1, 2.02)).toBe(true);
+    expect(isPredictionConfirmed(2.5, 2.02)).toBe(false);
+    expect(isPredictionConfirmed(0.05, 0)).toBe(true);
+    expect(isPredictionConfirmed(Number.NaN, 1)).toBe(false);
+    expect(isPredictionConfirmed(1.14, 1, 0.15)).toBe(true);
+  });
+});

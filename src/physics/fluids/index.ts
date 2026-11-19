@@ -3,6 +3,7 @@ export {
   calculateDraft,
   calculateForceOnSurface,
   calculateGaugePressure,
+  calculateHeelAngle,
   calculateMetacentricHeight,
   calculatePressure,
 } from "./hydrostatics";
@@ -42,3 +43,11 @@ export {
   calculateWallThicknessForDensity,
   floats,
 } from "./buoyancy";
+export {
+  VISCOUS_FLUIDS,
+  calculateRadiusForReynolds,
+  calculateSphereReynolds,
+  calculateStokesTerminalSpeed,
+  calculateViscosityFromFall,
+  type ViscousFluid,
+} from "./stokes";

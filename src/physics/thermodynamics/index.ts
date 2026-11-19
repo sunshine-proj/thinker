@@ -46,3 +46,26 @@ export {
   type Fluid,
   type Material,
 } from "./heatModes";
+export {
+  calculateMeanKineticEnergy,
+  calculatePressureAtConstantVolume,
+  calculateRmsSpeed,
+  calculateThermalWavelength,
+} from "./kineticTheory";
+export {
+  EXPANSION_MATERIALS,
+  calculateBimetalDeflection,
+  calculateExpansionGap,
+  calculateLinearExpansion,
+  findExpansionMaterial,
+  type ExpansionMaterial,
+} from "./expansion";
+export {
+  calculateAllOnOneSideProbability,
+  calculateBoltzmannEntropy,
+  calculateEntropyChangeInK,
+  calculateSplitProbability,
+  countMicrostates,
+  lnBinomial,
+  simulateEhrenfest,
+} from "./statisticalEntropy";

@@ -18,6 +18,8 @@ export const waveInterferenceLab: LabDefinition = {
     { kind: "number", key: "position", label: "Your position along the line", unit: "m", minimum: -HALF_WIDTH, maximum: HALF_WIDTH, step: 0.05, initial: 1 },
   ],
   describe: (v) => `${v.frequency} Hz · speakers ${v.separation} m apart · line at ${v.distance} m · at x ${v.position} m`,
+  prediction: { prompt: "How far apart will the loud spots be on the listening line?", measurementId: "spacing" },
+  modes: { advancedControls: ["distance"], beginnerSteps: ["Set the frequency and the speaker separation.", "Predict the spacing of the loud spots, then run.", "Raise the frequency: do the loud spots move closer or farther apart?"] },
   run(v) {
     const frequency = v.frequency as number;
     const d = v.separation as number;

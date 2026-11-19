@@ -1,4 +1,5 @@
-export type GameStatus = "ready" | "playing" | "paused" | "completed";
+/** "failed": a physically catastrophic attempt (a crash, a collapse); retry continues the round. */
+export type GameStatus = "ready" | "playing" | "paused" | "completed" | "failed";
 
 export interface GameLifecycle {
   readonly status: GameStatus;
@@ -9,6 +10,8 @@ export type GameLifecycleAction =
   | "pause"
   | "resume"
   | "complete"
+  | "fail"
+  | "retry"
   | "reset";
 
 const VALID_TRANSITIONS: Readonly<
@@ -18,7 +21,9 @@ const VALID_TRANSITIONS: Readonly<
   pause: ["playing"],
   resume: ["paused"],
   complete: ["playing"],
-  reset: ["ready", "playing", "paused", "completed"],
+  fail: ["playing"],
+  retry: ["failed"],
+  reset: ["ready", "playing", "paused", "completed", "failed"],
 };
 
 const NEXT_STATUS: Readonly<Record<GameLifecycleAction, GameStatus>> = {
@@ -26,6 +31,8 @@ const NEXT_STATUS: Readonly<Record<GameLifecycleAction, GameStatus>> = {
   pause: "paused",
   resume: "playing",
   complete: "completed",
+  fail: "failed",
+  retry: "playing",
   reset: "ready",
 };
 

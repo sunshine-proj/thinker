@@ -1,3 +1,4 @@
+import { progressSync } from "../../services/sync/syncService";
 import { Suspense } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { AppIcon } from "../common/AppIcon";
@@ -79,7 +80,7 @@ export function AppShell() {
           <PrimaryNavigation label="Quick navigation" />
         </div>
 
-        <PwaStatus />
+        <PwaStatus remoteSync={progressSync.remote} />
         <AchievementNotice />
 
         <main className="main-content" id="main-content" tabIndex={-1}>

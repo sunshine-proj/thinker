@@ -1,10 +1,21 @@
-import type { GameResult, SavedExperiment } from "../../types/progress";
-import { getBestScore } from "./achievements";
+import type { GameResult, RecordedPrediction, SavedExperiment } from "../../types/progress";
+import { finishedThoughtExperiments, getBestScore } from "./achievements";
 
 export type ChallengeRequirement =
   | { readonly kind: "game-score"; readonly gameId: string; readonly minimumScore: number }
   | { readonly kind: "any-game" }
-  | { readonly kind: "saved-experiments"; readonly count: number };
+  | { readonly kind: "saved-experiments"; readonly count: number }
+  /** A saved run of an experiment whose measurement lands within tolerance of a target (SI units). */
+  | {
+      readonly kind: "experiment-measurement";
+      readonly experimentId: string;
+      readonly measurementId: string;
+      readonly target: number;
+      readonly tolerance: number;
+      /** Saved parameters that must match, for example the particle. */
+      readonly parameters?: Readonly<Record<string, string | number | boolean>>;
+    }
+  | { readonly kind: "thought-experiments"; readonly count: number };
 
 export interface ChallengeDefinition {
   readonly id: string;
@@ -18,6 +29,35 @@ export interface ChallengeDefinition {
 export interface ChallengeContext {
   readonly results: readonly GameResult[];
   readonly experiments: readonly SavedExperiment[];
+  readonly predictions?: readonly RecordedPrediction[];
+}
+
+function meetsMeasurement(
+  experiment: SavedExperiment,
+  requirement: Extract<ChallengeRequirement, { kind: "experiment-measurement" }>,
+): boolean {
+  if (experiment.experimentId !== requirement.experimentId) {
+    return false;
+  }
+  const parametersMatch = Object.entries(requirement.parameters ?? {}).every(
+    ([key, value]) => experiment.parameters[key] === value,
+  );
+  const measurement = experiment.results.find((result) => result.id === requirement.measurementId);
+  return (
+    parametersMatch &&
+    measurement !== undefined &&
+    measurement.value !== null &&
+    Math.abs(measurement.value - requirement.target) <= requirement.tolerance
+  );
+}
+
+function thoughtFinishTimes(predictions: readonly RecordedPrediction[] = []): Map<string, string> {
+  const finished = finishedThoughtExperiments(predictions);
+  return new Map(
+    predictions
+      .filter((prediction) => finished.has(prediction.activityId) && prediction.questionId === "variation")
+      .map((prediction) => [prediction.activityId, prediction.recordedAt]),
+  );
 }
 
 /** Local calendar day as YYYY-MM-DD, so "today" follows the learner's clock. */
@@ -49,6 +89,10 @@ export function isChallengeComplete(
       );
     case "saved-experiments":
       return context.experiments.length >= requirement.count;
+    case "experiment-measurement":
+      return context.experiments.some((experiment) => meetsMeasurement(experiment, requirement));
+    case "thought-experiments":
+      return finishedThoughtExperiments(context.predictions).size >= requirement.count;
   }
 }
 
@@ -79,6 +123,15 @@ export function isChallengeCompleteOnDay(
         context.experiments.filter((experiment) =>
           isOnDay(experiment.createdAt, dateKey),
         ).length >= requirement.count
+      );
+    case "experiment-measurement":
+      return context.experiments.some(
+        (experiment) => isOnDay(experiment.createdAt, dateKey) && meetsMeasurement(experiment, requirement),
+      );
+    case "thought-experiments":
+      return (
+        [...thoughtFinishTimes(context.predictions).values()].filter((at) => isOnDay(at, dateKey)).length >=
+        requirement.count
       );
   }
 }

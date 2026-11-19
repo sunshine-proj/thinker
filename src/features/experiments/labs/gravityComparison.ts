@@ -21,6 +21,8 @@ export const gravityComparison: LabDefinition = {
     { kind: "number", key: "amplitude", label: "Release angle", unit: "°", minimum: 1, maximum: 60, step: 1, initial: 10 },
   ],
   describe: (values) => `${bodyOf(values).name} · drop ${values.height} m · pendulum ${values.length} m at ${values.amplitude}°`,
+  prediction: { prompt: "How long will the object take to fall from the drop height?", measurementId: "fallTime" },
+  modes: { advancedControls: ["amplitude"], beginnerSteps: ["Choose where you are: Earth, the Moon, Mars or another body.", "Predict the fall time, then run the experiment.", "Change the body and compare: does the fall time change in proportion to g?"] },
   run(values) {
     const body = bodyOf(values);
     const g = body.surfaceGravity;

@@ -13,6 +13,8 @@ npm test                    # includes tests/quality/*
 npm run build
 npm run verify:pwa          # manifest, icons, service worker, every built asset precached, offline fallback
 npm run verify:performance  # bundle-size budgets on the production build
+npx playwright install chromium   # once
+npm run test:e2e            # Playwright: builds, serves and tests in Chromium (desktop and Pixel 7)
 ```
 
 ## Automated
@@ -26,6 +28,9 @@ npm run verify:performance  # bundle-size budgets on the production build
 | Offline | Production build precaches every asset including all lazy page chunks and falls back to the app shell for navigation; progress is stored in IndexedDB with an in-memory fallback and syncs on reconnect. | `npm run verify:pwa`, `tests/pwa.test.tsx`, `tests/services` |
 | Performance | Size budgets: entry script ≤ 130 kB gzip, any page chunk ≤ 60 kB gzip, stylesheet ≤ 20 kB gzip, pages code-split. | `npm run verify:performance` |
 | Performance | Simulation cost: every lab setting evaluates in under 150 ms, the heaviest game models (N-body, drag, FFT, wave equation) in a fraction of a second, and the orbit integrator is bounded. | `tests/quality/performance.test.ts` |
+| End to end | Playwright against the production build, desktop and phone viewports: installable manifest and service worker, offline navigation (reload, worlds, a game, a Knowledge Base page) with the offline message, resuming a game after a reload, keeping a prediction across reloads, and a live game with touch controls and no sideways scrolling. | `e2e/pwa.e2e.ts` |
+| Live games | Every level of every real-time game is won by a scripted, physically sensible strategy (and the failure modes trigger), so no level is impossible. | `tests/games/liveGames.test.tsx` |
+| Content coverage | Every PRD §4.2 topic is taught by at least one game and has a Knowledge Base entry with units for every symbol. | `tests/games/phaseEightGames.test.tsx`, `tests/features/knowledgeBase.test.tsx` |
 | Browser compatibility | The build targets Vite's `baseline-widely-available` set (Chrome and Edge 107+, Firefox 104+, Safari 16+). | `vite.config.ts` default |
 
 ## Manual checklist (needs real browsers and devices)
@@ -46,12 +51,15 @@ These have **not** been run by the automated suite. Before a release, check at l
       then go back online and confirm the progress is kept. Also try "Update available" after deploying a new build.
 - [ ] **Performance on a mid-range phone:** open the Solar System Builder, Wave Simulator and the Orbital Motion lab and check that
       sliders respond without noticeable lag (use the browser's performance profiler if in doubt). Run Lighthouse on the production build.
-- [ ] **Reduced motion and dark mode:** with "reduce motion" enabled in the operating system, animations should stop; the app has a light theme only.
+- [ ] **Reduced motion and dark mode:** with "reduce motion" enabled in the operating system, CSS animations stop, the electron lab redraws once per second and live games four times per second; the app has a light theme only.
+- [ ] **Live games:** play one live game with a keyboard only, one with touch only and one with a screen reader; check that the action buttons, keys (Space, arrows) and the text description of the scene work.
+- [ ] **Sound:** in Doppler Chase, Sound Creator and Virtual Guitar, check the tones play, the mute switch works and nothing is too loud.
 - [ ] **Colour-vision:** check charts and diagrams with a colour-blindness simulator; every chart series is also distinguished by a legend, dashes
       or labels.
 
 ## Known limits
 
-- No end-to-end tests with Playwright have been added yet; the project lists Playwright in its stack but the suite currently runs in jsdom.
+- Playwright runs in Chromium only; Firefox and WebKit (Safari) still have to be checked by hand (see the checklist).
+- Sound is tested by mocking Web Audio; whether tones are audible and pleasant needs a person.
 - The axe contrast rule is replaced by the stylesheet check above; text over images or gradients is not covered.
 - Layout (overlap, overflow) cannot be tested in jsdom; the CSS checks verify the rules that prevent it, not the rendered result.

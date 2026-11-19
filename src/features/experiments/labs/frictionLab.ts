@@ -20,6 +20,8 @@ export const frictionLab: LabDefinition = {
     { kind: "number", key: "force", label: "Pushing force up the slope", unit: "N", minimum: 0, maximum: MAX_FORCE, step: 1, initial: 0 },
   ],
   describe: (values) => `${surfaceOf(values).name} · ${values.mass} kg · slope ${values.slope}° · push ${values.force} N`,
+  prediction: { prompt: "At what slope angle will the block start to slip on its own?", measurementId: "critical" },
+  modes: { advancedControls: ["force"], beginnerSteps: ["Pick a pair of surfaces and a block mass.", "Predict the angle at which the block slips, then run.", "Tilt the slope past that angle and change the mass: does the slipping angle depend on mass?"] },
   run(values) {
     const surface = surfaceOf(values);
     const mass = values.mass as number;

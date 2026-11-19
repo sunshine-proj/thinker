@@ -1,13 +1,12 @@
 import { lazy } from "react";
 import { createBrowserRouter, Outlet, useSearchParams } from "react-router-dom";
 import { AppShell } from "../components/layout/AppShell";
-import { ExperimentsIndexPage } from "../features/experiments/ExperimentsIndexPage";
 import { HomePage } from "../features/home/HomePage";
-import { PhysicsWorldsPage } from "../features/physics-worlds/PhysicsWorldsPage";
-import { ProfilePage } from "../features/profile/ProfilePage";
 import { NotFoundPage } from "./NotFoundPage";
-import { SectionPage } from "./SectionPage";
 
+const ExperimentsIndexPage = lazy(() => import("../features/experiments/ExperimentsIndexPage").then((module) => ({ default: module.ExperimentsIndexPage })));
+const PhysicsWorldsPage = lazy(() => import("../features/physics-worlds/PhysicsWorldsPage").then((module) => ({ default: module.PhysicsWorldsPage })));
+const ProfilePage = lazy(() => import("../features/profile/ProfilePage").then((module) => ({ default: module.ProfilePage })));
 // Pages are loaded on demand so the first visit downloads only the shell and the page being opened.
 const ElectronTrajectoryLabPage = lazy(() => import("../features/experiments/ElectronTrajectoryLabPage").then((module) => ({ default: module.ElectronTrajectoryLabPage })));
 const ProjectileMasterPage = lazy(() => import("../features/games/projectile-master/ProjectileMasterPage").then((module) => ({ default: module.ProjectileMasterPage })));
@@ -74,6 +73,27 @@ const CarSafetyEngineerPage = lazy(() => import("../features/games/car-safety-en
 const SmartphoneDetectivePage = lazy(() => import("../features/games/smartphone-detective/SmartphoneDetectivePage").then((module) => ({ default: module.SmartphoneDetectivePage })));
 const AmusementParkPhysicsPage = lazy(() => import("../features/games/amusement-park-physics/AmusementParkPhysicsPage").then((module) => ({ default: module.AmusementParkPhysicsPage })));
 const MirrorIllusionsPage = lazy(() => import("../features/games/mirror-illusions/MirrorIllusionsPage").then((module) => ({ default: module.MirrorIllusionsPage })));
+const IcePuckPilotPage = lazy(() => import("../features/games/ice-puck-pilot/IcePuckPilotPage").then((module) => ({ default: module.IcePuckPilotPage })));
+const SledSlopePage = lazy(() => import("../features/games/sled-slope/SledSlopePage").then((module) => ({ default: module.SledSlopePage })));
+const CartColliderPage = lazy(() => import("../features/games/cart-collider/CartColliderPage").then((module) => ({ default: module.CartColliderPage })));
+const ElevatorEngineerPage = lazy(() => import("../features/games/elevator-engineer/ElevatorEngineerPage").then((module) => ({ default: module.ElevatorEngineerPage })));
+const RollingRacePage = lazy(() => import("../features/games/rolling-race/RollingRacePage").then((module) => ({ default: module.RollingRacePage })));
+const RailwayGapEngineerPage = lazy(() => import("../features/games/railway-gap-engineer/RailwayGapEngineerPage").then((module) => ({ default: module.RailwayGapEngineerPage })));
+const EntropyShufflePage = lazy(() => import("../features/games/entropy-shuffle/EntropyShufflePage").then((module) => ({ default: module.EntropyShufflePage })));
+const SoapBubbleColoursPage = lazy(() => import("../features/games/soap-bubble-colours/SoapBubbleColoursPage").then((module) => ({ default: module.SoapBubbleColoursPage })));
+const DiffractionDetectivePage = lazy(() => import("../features/games/diffraction-detective/DiffractionDetectivePage").then((module) => ({ default: module.DiffractionDetectivePage })));
+const ResonanceSwingPage = lazy(() => import("../features/games/resonance-swing/ResonanceSwingPage").then((module) => ({ default: module.ResonanceSwingPage })));
+const DopplerChasePage = lazy(() => import("../features/games/doppler-chase/DopplerChasePage").then((module) => ({ default: module.DopplerChasePage })));
+const StarClassifierPage = lazy(() => import("../features/games/star-classifier/StarClassifierPage").then((module) => ({ default: module.StarClassifierPage })));
+const LightspeedVoyagerPage = lazy(() => import("../features/games/lightspeed-voyager/LightspeedVoyagerPage").then((module) => ({ default: module.LightspeedVoyagerPage })));
+const QuantumTunnelPage = lazy(() => import("../features/games/quantum-tunnel/QuantumTunnelPage").then((module) => ({ default: module.QuantumTunnelPage })));
+const HoneyDropRacePage = lazy(() => import("../features/games/honey-drop-race/HoneyDropRacePage").then((module) => ({ default: module.HoneyDropRacePage })));
+const ReactorOperatorPage = lazy(() => import("../features/games/reactor-operator/ReactorOperatorPage").then((module) => ({ default: module.ReactorOperatorPage })));
+const LiveGameRoute = lazy(() => import("../features/live-games/LiveGameRoute").then((module) => ({ default: module.LiveGameRoute })));
+const ThoughtExperimentsPage = lazy(() => import("../features/thought-experiments/ThoughtExperimentsPage").then((module) => ({ default: module.ThoughtExperimentsPage })));
+const ThoughtExperimentRoute = lazy(() => import("../features/thought-experiments/ThoughtExperimentRoute").then((module) => ({ default: module.ThoughtExperimentRoute })));
+const KnowledgeBasePage = lazy(() => import("../features/knowledge-base/KnowledgeBasePage").then((module) => ({ default: module.KnowledgeBasePage })));
+const KnowledgeEntryPage = lazy(() => import("../features/knowledge-base/KnowledgeEntryPage").then((module) => ({ default: module.KnowledgeEntryPage })));
 const LabRoute = lazy(() => import("../features/experiments/labs/LabRoute").then((module) => ({ default: module.LabRoute })));
 
 function ElectronTrajectoryLabRoute() {
@@ -340,6 +360,71 @@ export const router = createBrowserRouter([
         element: <AmusementParkPhysicsPage />,
       },
       {
+        path: "worlds/mechanics/ice-puck-pilot",
+        element: <IcePuckPilotPage />,
+      },
+      {
+        path: "worlds/mechanics/sled-slope",
+        element: <SledSlopePage />,
+      },
+      {
+        path: "worlds/mechanics/cart-collider",
+        element: <CartColliderPage />,
+      },
+      {
+        path: "worlds/mechanics/elevator-engineer",
+        element: <ElevatorEngineerPage />,
+      },
+      {
+        path: "worlds/mechanics/rolling-race",
+        element: <RollingRacePage />,
+      },
+      {
+        path: "worlds/thermodynamics/railway-gap-engineer",
+        element: <RailwayGapEngineerPage />,
+      },
+      {
+        path: "worlds/thermodynamics/entropy-shuffle",
+        element: <EntropyShufflePage />,
+      },
+      {
+        path: "worlds/optics/soap-bubble-colours",
+        element: <SoapBubbleColoursPage />,
+      },
+      {
+        path: "worlds/optics/diffraction-detective",
+        element: <DiffractionDetectivePage />,
+      },
+      {
+        path: "worlds/waves/resonance-swing",
+        element: <ResonanceSwingPage />,
+      },
+      {
+        path: "worlds/waves/doppler-chase",
+        element: <DopplerChasePage />,
+      },
+      {
+        path: "worlds/astronomy/star-classifier",
+        element: <StarClassifierPage />,
+      },
+      {
+        path: "worlds/astronomy/lightspeed-voyager",
+        element: <LightspeedVoyagerPage />,
+      },
+      {
+        path: "worlds/modern-physics/quantum-tunnel",
+        element: <QuantumTunnelPage />,
+      },
+      {
+        path: "worlds/fluids/honey-drop-race",
+        element: <HoneyDropRacePage />,
+      },
+      {
+        path: "worlds/nuclear/reactor-operator",
+        element: <ReactorOperatorPage />,
+      },
+      { path: "worlds/:worldId/:gameId/live", element: <LiveGameRoute /> },
+      {
         path: "experiments",
         element: <Outlet />,
         children: [
@@ -361,25 +446,19 @@ export const router = createBrowserRouter([
       { path: "challenges", element: <ChallengesPage /> },
       {
         path: "thought-experiments",
-        element: (
-          <SectionPage
-            title="Thought Experiments"
-            eyebrow="Imagine the impossible"
-            description="Make a prediction, question your assumptions, and follow an idea wherever physics takes it."
-            icon="thoughtExperiments"
-          />
-        ),
+        element: <Outlet />,
+        children: [
+          { index: true, element: <ThoughtExperimentsPage /> },
+          { path: ":experimentId", element: <ThoughtExperimentRoute /> },
+        ],
       },
       {
         path: "knowledge",
-        element: (
-          <SectionPage
-            title="Knowledge Base"
-            eyebrow="Build your understanding"
-            description="A growing collection of clear explanations, useful formulas, and connections to the world around you."
-            icon="knowledge"
-          />
-        ),
+        element: <Outlet />,
+        children: [
+          { index: true, element: <KnowledgeBasePage /> },
+          { path: ":topicId", element: <KnowledgeEntryPage /> },
+        ],
       },
       { path: "achievements", element: <AchievementsPage /> },
       { path: "profile", element: <ProfilePage /> },

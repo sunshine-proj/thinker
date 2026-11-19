@@ -10,6 +10,9 @@ export function validateGameResult(result: GameResult): void {
   if (Number.isNaN(Date.parse(result.completedAt))) {
     throw new RangeError("Game result completedAt must be an ISO-8601 date.");
   }
+  if (result.stars !== undefined && (!Number.isInteger(result.stars) || result.stars < 0 || result.stars > (result.maxStars ?? Number.MAX_SAFE_INTEGER))) {
+    throw new RangeError("Game result stars must be a whole number no larger than maxStars.");
+  }
 }
 
 /** Derives learner progress from the full list of stored game results. */
@@ -45,4 +48,31 @@ export function summarizeProgress(
     ),
     lastActivity,
   };
+}
+
+export interface WorldProgress {
+  readonly worldId: string;
+  readonly title: string;
+  readonly completedGames: number;
+  readonly totalGames: number;
+  /** Best scores summed over the world's games. */
+  readonly bestScore: number;
+}
+
+/** Completed games and best scores per physics world (PRD §11 "progress by physics world"). */
+export function summarizeWorldProgress(
+  progress: UserProgress,
+  worlds: readonly { readonly id: string; readonly title: string; readonly entries: readonly { readonly id: string; readonly kind: string }[] }[],
+): WorldProgress[] {
+  const completed = new Set(progress.completedGames);
+  return worlds.map((world) => {
+    const games = world.entries.filter((entry) => entry.kind === "game");
+    return {
+      worldId: world.id,
+      title: world.title,
+      completedGames: games.filter((game) => completed.has(game.id)).length,
+      totalGames: games.length,
+      bestScore: games.reduce((sum, game) => sum + (progress.bestScores[game.id] ?? 0), 0),
+    };
+  });
 }

@@ -26,7 +26,7 @@ export const SPACE_MISSION_META: RoundGameMeta = {
   introduction: "Load your spacecraft with just enough propellant to reach the speed change a mission needs, then trade engine efficiency against weight and try staging.",
   instructions: "Predict the speed change (delta-v), choose propellant (and engine or stage options), then launch. You must reach the target delta-v without exceeding the launch-mass limit.",
   formula: "Δv = Iₛₚ g₀ ln(m₀/m₁)",
-  formulaCaption: "Iₛₚ is the engine's specific impulse (s), g₀ = 9.81 m/s², m₀ the mass at ignition and m₁ the mass after the propellant is burned.",
+  formulaCaption: "Iₛₚ is the engine's specific impulse (s), g₀ = 9.80665 m/s² (standard gravity, about 9.81), m₀ the mass at ignition and m₁ the mass after the propellant is burned.",
   explanation: "A rocket accelerates by throwing mass backward, so momentum is conserved. Because it must also carry the propellant it has not yet burned, the speed it gains grows only with the logarithm of the mass ratio: doubling the propellant adds far less than double the delta-v. An engine with higher specific impulse extracts more speed from each kilogram, but may be heavier. Staging discards empty tanks, so later propellant pushes a lighter vehicle.",
   assumptions: "The burn is treated as instantaneous in free space, ignoring gravity losses and drag. Specific impulse is constant, and stage and engine masses are simple game values, not real hardware.",
   learningObjectives: ["Apply the rocket equation Δv = Iₛₚ g₀ ln(m₀/m₁).", "See why more propellant gives diminishing returns.", "Understand how staging improves the mass ratio."],

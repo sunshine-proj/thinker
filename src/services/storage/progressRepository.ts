@@ -1,6 +1,7 @@
 import type {
   GameResult,
   GameSession,
+  RecordedPrediction,
   SavedExperiment,
   UnlockedAchievement,
 } from "../../types/progress";
@@ -18,8 +19,12 @@ export interface ProgressRepository {
   saveAchievement(achievement: UnlockedAchievement): Promise<void>;
 
   loadSession(gameId: string): Promise<GameSession | null>;
+  listSessions(): Promise<GameSession[]>;
   saveSession(session: GameSession): Promise<void>;
   deleteSession(gameId: string): Promise<void>;
+
+  listPredictions(): Promise<RecordedPrediction[]>;
+  savePrediction(prediction: RecordedPrediction): Promise<void>;
 
   /** Removes every stored record. */
   clear(): Promise<void>;
@@ -30,6 +35,15 @@ export class MemoryProgressRepository implements ProgressRepository {
   private experiments = new Map<string, SavedExperiment>();
   private achievements = new Map<string, UnlockedAchievement>();
   private sessions = new Map<string, GameSession>();
+  private predictions = new Map<string, RecordedPrediction>();
+
+  async listPredictions(): Promise<RecordedPrediction[]> {
+    return [...this.predictions.values()];
+  }
+
+  async savePrediction(prediction: RecordedPrediction): Promise<void> {
+    this.predictions.set(prediction.id, prediction);
+  }
 
   async listGameResults(): Promise<GameResult[]> {
     return [...this.results];
@@ -67,6 +81,10 @@ export class MemoryProgressRepository implements ProgressRepository {
     this.sessions.set(session.gameId, session);
   }
 
+  async listSessions(): Promise<GameSession[]> {
+    return [...this.sessions.values()];
+  }
+
   async deleteSession(gameId: string): Promise<void> {
     this.sessions.delete(gameId);
   }
@@ -76,18 +94,20 @@ export class MemoryProgressRepository implements ProgressRepository {
     this.experiments.clear();
     this.achievements.clear();
     this.sessions.clear();
+    this.predictions.clear();
   }
 }
 
 export const DATABASE_NAME = "physics-playground";
-/** v1: game results. v2: saved experiments, achievements, and game sessions. */
-export const DATABASE_VERSION = 2;
+/** v1: game results. v2: saved experiments, achievements, and game sessions. v3: predictions. */
+export const DATABASE_VERSION = 3;
 
 const STORES = {
   gameResults: "gameResults",
   savedExperiments: "savedExperiments",
   achievements: "achievements",
   gameSessions: "gameSessions",
+  predictions: "predictions",
 } as const;
 
 function requestToPromise<T>(request: IDBRequest<T>): Promise<T> {
@@ -126,6 +146,10 @@ function upgradeDatabase(database: IDBDatabase): void {
   }
   if (!database.objectStoreNames.contains(STORES.gameSessions)) {
     database.createObjectStore(STORES.gameSessions, { keyPath: "gameId" });
+  }
+  if (!database.objectStoreNames.contains(STORES.predictions)) {
+    const store = database.createObjectStore(STORES.predictions, { keyPath: "id" });
+    store.createIndex("activityId", "activityId");
   }
 }
 
@@ -213,12 +237,24 @@ export class IndexedDbProgressRepository implements ProgressRepository {
     return session ?? null;
   }
 
+  listSessions(): Promise<GameSession[]> {
+    return this.readAll(STORES.gameSessions);
+  }
+
   saveSession(session: GameSession): Promise<void> {
     return this.write(STORES.gameSessions, (store) => void store.put(session));
   }
 
   deleteSession(gameId: string): Promise<void> {
     return this.write(STORES.gameSessions, (store) => void store.delete(gameId));
+  }
+
+  listPredictions(): Promise<RecordedPrediction[]> {
+    return this.readAll(STORES.predictions);
+  }
+
+  savePrediction(prediction: RecordedPrediction): Promise<void> {
+    return this.write(STORES.predictions, (store) => void store.put(prediction));
   }
 
   async clear(): Promise<void> {

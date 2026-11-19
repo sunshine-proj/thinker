@@ -55,7 +55,7 @@ export const RIDE_ROUNDS: readonly RideRound[] = Object.freeze([
     id: "the-carousel", title: "The carousel", difficulty: "Beginner", kind: "carousel",
     situation: `Riders sit ${CAROUSEL_RADIUS} m from the center of a carousel. Choose the time for one revolution so that they feel a centripetal acceleration of ${CAROUSEL_G} g (± ${CAROUSEL_TOLERANCE} s in the period).`,
     controls: [fixed("radius", "Radius", "m", CAROUSEL_RADIUS), slider("period", "Time per revolution", "s", 2, 15, 0.05, 10)],
-    hint: "T = 2π√(r/a) with a = 0.5 × 9.81 m/s².",
+    hint: "T = 2π√(r/a) with a = 0.5 g ≈ 0.5 × 9.81 m/s².",
   },
   {
     id: "the-drop-tower", title: "The drop tower", difficulty: "Intermediate", kind: "tower",

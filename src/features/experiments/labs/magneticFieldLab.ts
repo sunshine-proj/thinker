@@ -26,6 +26,8 @@ export const magneticFieldLab: LabDefinition = {
     { kind: "choice", key: "core", label: "Core", options: [{ value: "air", label: "Air" }, { value: "iron", label: "Iron (μr = 200)" }], initial: "air", visibleWhen: (v) => !isWire(v) },
   ],
   describe: (values) => (isWire(values) ? `Wire · ${values.current} A at ${values.distance} cm` : `Solenoid · ${values.turns} turns/m · ${values.current} A · ${values.core === "iron" ? "iron" : "air"} core`),
+  prediction: { prompt: "How strong will the magnetic field be?", measurementId: (values) => (values.source === "solenoid" ? "fieldMilli" : "fieldMicro") },
+  modes: { advancedControls: ["core"], beginnerSteps: ["Choose a straight wire or a solenoid and set the current.", "Predict the field strength, then run.", "Double the current or the distance: how does the field change?"] },
   run(values) {
     const current = values.current as number;
     if (isWire(values)) {
