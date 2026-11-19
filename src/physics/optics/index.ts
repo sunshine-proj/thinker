@@ -61,3 +61,5 @@ export {
   calculateSpacingFromAngle,
   calculateWavelengthFromGrating,
 } from "./diffraction";
+export { calculateCrownGlassIndex, calculatePrismDeviation } from "./prism";
+export { calculateLampDistanceForShadow, calculatePenumbraWidth, calculateShadowSize } from "./shadows";

@@ -1,5 +1,6 @@
 import {
   COULOMB_CONSTANT,
+  STANDARD_GRAVITY,
   Vector2,
   assertFiniteNumber,
   assertPositive,
@@ -90,4 +91,31 @@ export function calculateDistanceFromForce(
     (COULOMB_CONSTANT * Math.abs(sourceChargeCoulombs * testChargeCoulombs)) /
       forceNewtons,
   );
+}
+
+/**
+ * Two charged balloons hanging from one point on strings of length L repel each other.
+ * In equilibrium each string tilts by θ with tanθ = F/(m g), where F = k q₁ q₂ / d² and
+ * the separation is d = 2 L sinθ. Solved by bisection on d. Equal masses are assumed, so
+ * both strings tilt by the same angle even when the charges differ (Newton's third law).
+ */
+export function solveHangingSeparation(chargeA: number, chargeB: number, massKg: number, stringMeters: number, gravity = STANDARD_GRAVITY): number {
+  if (!(massKg > 0) || !(stringMeters > 0)) {
+    throw new RangeError("Mass and string length must be positive.");
+  }
+  const product = chargeA * chargeB;
+  if (product <= 0) {
+    return 0;
+  }
+  const k = COULOMB_CONSTANT;
+  // f(d) = 2L sin(atan(F/mg)) − d decreases from positive to negative over (0, 2L).
+  const f = (d: number) => 2 * stringMeters * Math.sin(Math.atan((k * product) / (d * d) / (massKg * gravity))) - d;
+  let low = 1e-6;
+  let high = 2 * stringMeters;
+  for (let i = 0; i < 200; i += 1) {
+    const middle = (low + high) / 2;
+    if (f(middle) > 0) low = middle;
+    else high = middle;
+  }
+  return (low + high) / 2;
 }

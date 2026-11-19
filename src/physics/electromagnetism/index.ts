@@ -39,6 +39,7 @@ export {
   calculateElectricField,
   calculateElectricFieldFromCharge,
   calculateForceOnCharge,
+  solveHangingSeparation,
   type PointCharge,
 } from "./electrostatics";
 export {

@@ -51,3 +51,4 @@ export {
   calculateViscosityFromFall,
   type ViscousFluid,
 } from "./stokes";
+export { calculateAirDensity, calculateFloatTemperature, calculateHotAirLift } from "./hotAir";

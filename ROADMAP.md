@@ -193,26 +193,26 @@ Most games are slider-and-submit rounds. That works for learning, but it is not 
 ### 9.2 Mechanics
 
 - [x] 136. **Tank Duel.** Turn-based artillery against a computer tank on rolling hills, with wind and different gravity per level. Physics: projectile motion with constant gravity and wind acceleration.
-- [ ] 137. **Domino Rally.** Place a ball, ramps and blocks to set off a chain reaction that rings a bell. Physics: energy transfer and momentum in collisions.
-- [ ] 138. **Space Hockey.** Steer a puck with thruster puffs through a slalom of stars on frictionless ice. Physics: Newton's first and second laws.
+- [x] 137. **Domino Rally.** Place a ball, ramps and blocks to set off a chain reaction that rings a bell. Physics: energy transfer and momentum in collisions.
+- [x] 138. **Space Hockey.** Steer a puck with thruster puffs through a slalom of stars on frictionless ice. Physics: Newton's first and second laws.
 
 ### 9.3 Electricity & Magnetism
 
 - [x] 139. **Light Up the City.** Wire bulbs into streets (series) and streets onto the battery (parallel) so every house glows without blowing a bulb or the fuse. Physics: series and parallel circuits, Ohm's law, power.
-- [ ] 140. **Magnet Fishing.** Lower an electromagnet into a pond and set the current to catch only the metal fish. Physics: electromagnet strength and magnetic materials.
-- [ ] 141. **Balloon Static Party.** Charge balloons by rubbing them, then stick them to walls or make them push each other apart. Physics: electric charge and Coulomb's law.
+- [x] 140. **Magnet Fishing.** Lower an electromagnet into a pond and set the current to catch only the metal fish. Physics: electromagnet strength and magnetic materials.
+- [x] 141. **Balloon Static Party.** Charge balloons by rubbing them, then stick them to walls or make them push each other apart. Physics: electric charge and Coulomb's law.
 
 ### 9.4 Thermodynamics
 
-- [ ] 142. **Ice Cream Rescue.** Choose the insulation for an ice-cream van so the ice cream survives a hot journey. Physics: conduction and insulation.
-- [ ] 143. **Hot Air Balloon Race.** Control the burner to climb and dodge obstacles. Physics: density of hot air and buoyancy.
-- [ ] 144. **Penguin Igloo Builder.** Keep penguins warm through the night on a heat budget. Physics: heat loss and thermal equilibrium.
+- [x] 142. **Ice Cream Rescue.** Choose the insulation for an ice-cream van so the ice cream survives a hot journey. Physics: conduction and insulation.
+- [x] 143. **Hot Air Balloon Race.** Control the burner to climb and dodge obstacles. Physics: density of hot air and buoyancy.
+- [x] 144. **Penguin Igloo Builder.** Keep penguins warm through the night on a heat budget. Physics: heat loss and thermal equilibrium.
 
 ### 9.5 Optics & Light
 
-- [ ] 145. **Laser Heist.** Rotate mirrors to guide a laser past the guards to a gem. Physics: the law of reflection.
-- [ ] 146. **Rainbow Painter.** Split white light with prisms to paint a picture colour by colour. Physics: dispersion.
-- [ ] 147. **Shadow Puppet Theatre.** Move the lamp so a puppet's shadow matches a target size. Physics: light travels in straight lines; similar triangles.
+- [x] 145. **Laser Heist.** Rotate mirrors to guide a laser past the guards to a gem. Physics: the law of reflection.
+- [x] 146. **Rainbow Painter.** Split white light with prisms to paint a picture colour by colour. Physics: dispersion.
+- [x] 147. **Shadow Puppet Theatre.** Move the lamp so a puppet's shadow matches a target size. Physics: light travels in straight lines; similar triangles.
 
 ### 9.6 Waves & Sound
 
